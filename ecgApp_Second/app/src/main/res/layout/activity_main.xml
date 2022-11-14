@@ -38,7 +38,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#60C3BEBE"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:layout_gravity="center">
 
             <Button
                 android:id="@+id/ecg1_bt"
@@ -47,7 +48,8 @@
                 android:layout_centerVertical="true"
                 android:backgroundTint="#1976D2"
                 app:cornerRadius="20dp"
-                android:text="@string/ecg1_bt_text"/>
+                android:text="@string/ecg1_bt_text"
+                android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
 
@@ -65,7 +67,8 @@
                 android:layout_centerVertical="true"
                 android:backgroundTint="#1976D2"
                 app:cornerRadius="20dp"
-                android:text="@string/ecg2_bt_text"/>
+                android:text="@string/ecg2_bt_text"
+                android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
     </LinearLayout>

@@ -1,5 +1,6 @@
 package org.jacmeb.ecgapp_second;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.AssetManager;
@@ -31,6 +32,8 @@ public class PlotActivity extends AppCompatActivity {
     Number minY, maxY;
     float FREQ = 200.0f;
     float PERIOD = 1/FREQ;
+    PanZoom panZoom;
+    com.androidplot.xy.XYPlot plot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +77,7 @@ public class PlotActivity extends AppCompatActivity {
         LineAndPointFormatter seriesFormatECG = new LineAndPointFormatter(Color.BLUE, null, null, null);
         LineAndPointFormatter seriesFormatBL = new LineAndPointFormatter(Color.RED, null, null, null);
 
-        com.androidplot.xy.XYPlot plot = (com.androidplot.xy.XYPlot)findViewById(R.id.plot);
+        plot = (com.androidplot.xy.XYPlot)findViewById(R.id.plot);
 
         //Range = y ___ Domain = x
         double xMin = Collections.min(xTime);
