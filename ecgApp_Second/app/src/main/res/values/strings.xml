@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ecgApp</string>
+    <string name="welcome">Welcome to the ECG app!</string>
+    <string name="select">Select your ECG:</string>
+    <string name="ecg1_bt_text">BT1</string>
+    <string name="ecg2_bt_text">BT2</string>
+    <string name="start_bt">START</string>
+    <string name="plot_title">ECG Plot</string>
+    <string name="X_title">time(s)</string>
+    <string name="Y_title">mV</string>
+</resources>
