@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+    <com.androidplot.xy.XYPlot
+        android:id="@+id/plot"
+        style="@style/APDefacto.Light"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        app:title="@string/plot_title"
+        app:rangeTitle="@string/Y_title"
+        app:domainTitle="@string/X_title"
+        app:lineLabelInsetLeft="20dp"
+        app:paddingTop="10dp"
+        app:paddingBottom="10dp"
+        app:paddingLeft="10dp">
+    </com.androidplot.xy.XYPlot>
+</LinearLayout>
