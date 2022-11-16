@@ -57,7 +57,7 @@ public class PlotActivity extends AppCompatActivity {
 
     /**
      * This is the main method of this activity. It gets the information about the file selected by
-     * accessing it throw the intent that activated the activity. Then tries to read the file and
+     * accessing it through the intent that activated the activity. Then tries to read the file and
      * plot it.
      * @param savedInstanceState Bundle object to retrieve information about previous activities
      */
@@ -86,8 +86,9 @@ public class PlotActivity extends AppCompatActivity {
      * This method tries to read the values of the selected ECG file and saves the values to an
      * ArrayList.
      * It was developed based on the hint provided by the professors of the class.
-     * It also establish a baseline array also to be plotted and help the analyses of the ECG plot.
-     * The points added to the baseline array are based on the PERIOD specified.
+     * It also establish a baseLine array also to be plotted and help the analyses of the ECG plot.
+     * The points added to the xTime array are based on the PERIOD specified. This way, the xx axis is
+     * correctly associated to the yy axis.
      * @throws IOException class for exceptions thrown while accessing information using streams, files and directories.
      */
     public void ReadValues() throws IOException {

@@ -27,7 +27,7 @@ import android.widget.Toast;
  * This is the initial activity, where the user will be prompt with the possibility to choose
  * between two files (each one having a specific select button) and a start button that activates
  * the PlotActivity.java, where the selected file is plotted.
- * In case the Application is unable to find any files inside the "res/ecgFiles" folder, the start
+ * In case the Application is unable to find any files inside the "assets/ecgFiles" folder, the start
  * button is hidden and the other two buttons display an error message in the form of a toast
  * message.
  *
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
      *  boolean worked: boolean that specifies if the program could access the files (true) or not
      *      (false)
      *  int file_num: specifies which files was selected, the first one (=0) or the second one (=1)
-     *      or if none was selected (=1)
+     *      or if none was selected (=-1)
      */
     public final static String ID_EXTRA = "org.jacmeb.ecgApp.FILE";
     AssetManager asMan;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This is the main method, where the layout is associated to the activity. It also tries to
-     * access the files in "res/ecgFiles" and get their names. If it successes, then gives the
+     * access the files in "assets/ecgFiles" and get their names. If it successes, then gives the
      * names of the files to each of the two select buttons and enables listeners to the two select
      * buttons and the start button.
      * If the program can not access the folder, then it hides the start button and defines the text
