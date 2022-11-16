@@ -1,13 +1,25 @@
-package org.jacmeb.ecgapp_second;
+package org.jacmeb.ecgapp;
 
-import androidx.annotation.NonNull;
+/**
+ *
+ * <h1>Android application that plots an ECG file.</h1>
+ * The user can select one of two files to plot in the phone.
+ * This project was developed as an assignment for the CMEB class, presented by FEUP.
+ *
+ * @author João Carvalho
+ * @author José Almeida
+ * @author Manuel Fortunato
+ * @author Paula Ogata
+ *
+ */
+
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.widget.TextView;
 
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
@@ -22,7 +34,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ *
+ * This is the plot Activity. This activity is activated by the main one. It receives the information
+ * about which ECG file was selected and plots it, using AndroidPlot XY.
+ *
+ */
+
 public class PlotActivity extends AppCompatActivity {
+    String file;
     String fName;
     ArrayList<Integer> values = new ArrayList<>();
     ArrayList<Double> xTime = new ArrayList<>();
@@ -35,12 +55,25 @@ public class PlotActivity extends AppCompatActivity {
     PanZoom panZoom;
     com.androidplot.xy.XYPlot plot;
 
+    /**
+     * This is the main method of this activity. It gets the information about the file selected by
+     * accessing it throw the intent that activated the activity. Then tries to read the file and
+     * plot it.
+     * @param savedInstanceState Bundle object to retrieve information about previous activities
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plot);
 
-        fName = "ecgFiles/" + getIntent().getStringExtra(MainActivity.ID_EXTRA);
+        ActionBar bar = getSupportActionBar();
+        if(bar!=null) {
+            bar.hide();
+        }
+
+        file = getIntent().getStringExtra(MainActivity.ID_EXTRA);
+        fName = "ecgFiles/" + file;
+
         try {
             ReadValues();
             PlotValues();
@@ -49,6 +82,14 @@ public class PlotActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method tries to read the values of the selected ECG file and saves the values to an
+     * ArrayList.
+     * It was developed based on the hint provided by the professors of the class.
+     * It also establish a baseline array also to be plotted and help the analyses of the ECG plot.
+     * The points added to the baseline array are based on the PERIOD specified.
+     * @throws IOException class for exceptions thrown while accessing information using streams, files and directories.
+     */
     public void ReadValues() throws IOException {
         String line;
         asMan = getAssets();
@@ -70,6 +111,19 @@ public class PlotActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * This method plots both ECG and baseline values saved in ArrayLists.
+     * It uses XYSeries to create the series and LineAndPointFormatter to format each series. The ECG
+     * is plotted in color and the baseline in red.
+     * The title for the plot is defined based on the file name, deleting the '.txt.' extension of the
+     * name.
+     * The axis is defined based on the maximum an minimum of the ECG values, for both x and y.
+     * A PanZoom object is also attach to the plot, so that the user can manipulate it (zoom in and
+     * out or move left, right, up and down)
+     * @throws InterruptedException thrown when a thread is waiting, sleeping, or otherwise occupied,
+     *         and the thread is interrupted, either before or during the activity.
+     */
     public void PlotValues() throws InterruptedException {
         XYSeries seriesECG = new SimpleXYSeries(xTime, values, "ECG data");
         XYSeries seriesBL = new SimpleXYSeries(xTime, baseLine, "Base Line");
@@ -78,6 +132,7 @@ public class PlotActivity extends AppCompatActivity {
         LineAndPointFormatter seriesFormatBL = new LineAndPointFormatter(Color.RED, null, null, null);
 
         plot = (com.androidplot.xy.XYPlot)findViewById(R.id.plot);
+        plot.setTitle(file.toUpperCase().replace(".TXT","") + " plot");
 
         //Range = y ___ Domain = x
         double xMin = Collections.min(xTime);
@@ -91,7 +146,7 @@ public class PlotActivity extends AppCompatActivity {
         plot.addSeries(seriesECG,seriesFormatECG);
         plot.addSeries(seriesBL, seriesFormatBL);
 
-        plot.getGraph().setMarginLeft((float)75);
+        //plot.getGraph().setMarginLeft((float)75);
 
         PanZoom.attach(plot);
     }

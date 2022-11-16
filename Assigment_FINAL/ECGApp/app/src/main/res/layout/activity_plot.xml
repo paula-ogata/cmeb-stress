@@ -8,6 +8,7 @@
     tools:context=".MainActivity"
     xmlns:ap = "http://schemas.android.com/apk/res-auto">
 
+
     <com.androidplot.xy.XYPlot
         android:id="@+id/plot"
         style="@style/APDefacto.Light"
@@ -16,8 +17,9 @@
         app:title="@string/plot_title"
         app:rangeTitle="@string/Y_title"
         app:domainTitle="@string/X_title"
-        ap:lineLabelInsetLeft="15dp">
+        ap:lineLabelInsetLeft="20dp"
+        app:paddingTop="10dp"
+        app:paddingBottom="10dp"
+        app:paddingLeft="10dp">
     </com.androidplot.xy.XYPlot>
-
-
 </LinearLayout>
