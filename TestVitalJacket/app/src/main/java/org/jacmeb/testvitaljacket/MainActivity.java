@@ -9,19 +9,19 @@ import android.bluetooth.BluetoothDevice;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Date;
-import java.util.Set;
 
 import Bio.Library.namespace.BioLib;
 
 
 public class MainActivity extends AppCompatActivity {
-    private BluetoothAdapter btAdapter;
-    String macAddress = "00:23:FE:00:0B:59";  //MUDAR
+    BluetoothAdapter btAdapter;
+    String macAddress;  //MUDAR
     BioLib lib;
     private BluetoothDevice deviceToConnect;
     Button btConnect, btDisconnect, rtcBt, getRtcBt, requestBt;
@@ -35,12 +35,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        macAddress = getIntent().getStringExtra("device_address");
         btConnect = (Button) findViewById(R.id.connectBt);
         btConnect.setOnClickListener(view -> {
             try {
+                Looper.prepare();
                 lib = new BioLib(this, mHandler);
-                //deviceToConnect = lib.btAdapter.getRemoteDevice(macAddress);
+                deviceToConnect = btAdapter.getRemoteDevice(macAddress);
                 lib.Connect(macAddress, 5);
+                Looper.loop();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         textDeviceId = (TextView) findViewById(R.id.textDeviceId);
     }
 
-    private final Handler mHandler = new Handler() {
+    Handler mHandler = new Handler(Looper.getMainLooper()) {
 
         @Override
         public void handleMessage(Message msg) {

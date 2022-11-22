@@ -1,5 +1,5 @@
 package org.jacmeb.testvitaljacket;
-
+//...
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -33,12 +33,9 @@ public class ChooseDevice extends AppCompatActivity {
 
         Button buttonOK = (Button) findViewById(R.id.cmdOK);
         buttonOK.setOnClickListener(view -> {
-            Intent intent = new Intent();
+            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(SELECT_DEVICE_ADDRESS, selectedValue);
-
-            // Set result and finish this Activity
-            setResult(CHANGE_MACADDRESS, intent);
-            finish();
+            startActivity(intent);
         });
 
         try {
@@ -52,17 +49,6 @@ public class ChooseDevice extends AppCompatActivity {
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (mBluetoothAdapter != null) {
                 if (mBluetoothAdapter.isEnabled()) {
-                    // Listing paired devices
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
                     Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
                     for (BluetoothDevice device : devices)
                     {
@@ -84,9 +70,9 @@ public class ChooseDevice extends AppCompatActivity {
                 }
             });
         }
-        catch (Exception ignored)
+        catch (SecurityException exception)
         {
-
+            buttonOK.setText("N/A");
         }
 
     }
