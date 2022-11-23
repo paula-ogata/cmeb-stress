@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setData();
     }
 
-    private void setData() {
+    private void setPieChartData() {
         // Set the percentage of language used
         tvRelaxado.setText(Integer.toString(40));
         tvLeve.setText(Integer.toString(30));
