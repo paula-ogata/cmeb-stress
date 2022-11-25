@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+//comment
 public class MainActivity extends AppCompatActivity {
     private String username = "";
     ViewPager viewPager;
