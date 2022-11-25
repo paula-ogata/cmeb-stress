@@ -1,18 +1,22 @@
-package org.jacmeb.cmebprojecttest;
+package org.caipivinhos.appproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    private String username = "";
     ViewPager viewPager;
     LinearLayout sliderDotspanel;
+    TextView tvMessage;
     private int dotscount;
     private ImageView[] dots;
 
@@ -20,6 +24,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences prefs = getSharedPreferences("MyApp", MODE_PRIVATE);
+        username = prefs.getString("username", "UNKNOWN");
+
+        tvMessage = findViewById(R.id.helloUser);
+        tvMessage.setTextSize(30f);
+        tvMessage.setText("Bem-vinda " + username);
+
+        // Set the text view as the activity layout
+        // setContentView(tvMessage);
 
         viewPager =(ViewPager) findViewById(R.id.recomendations);
         sliderDotspanel = (LinearLayout)findViewById(R.id.SliderDots);
@@ -58,5 +72,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        new MenuInflater(this).inflate(R.menu.main, menu);
+        return (super.onCreateOptionsMenu(menu));
     }
 }
