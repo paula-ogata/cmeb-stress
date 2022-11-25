@@ -4,15 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-//comment
 public class MainActivity extends AppCompatActivity {
     private String username = "";
     ViewPager viewPager;
@@ -20,14 +23,42 @@ public class MainActivity extends AppCompatActivity {
     TextView tvMessage;
     private int dotscount;
     private ImageView[] dots;
+    Button btstart;
+    String prevStarted = "prevStarted";
+    public final static String EXTRA_MESSAGE = "oi";
+    SharedPreferences sharedpreferences;
+
+    /*
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }*/
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String returnValue = data.getStringExtra(EXTRA_MESSAGE);
+        System.out.println(returnValue);
+        sharedpreferences = getSharedPreferences("MyApp", MODE_PRIVATE);
+        sharedpreferences.edit().putString("username", returnValue).commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences prefs = getSharedPreferences("MyApp", MODE_PRIVATE);
-        username = prefs.getString("username", "UNKNOWN");
+        sharedpreferences = getSharedPreferences("MyApp", MODE_PRIVATE);
+        if (sharedpreferences.getBoolean(prevStarted, false)) {
+            moveToSecondary();
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(prevStarted, Boolean.TRUE);
+            editor.apply();
+        }
+        else {
+            username = sharedpreferences.getString("username", "Unknown");
+        }
 
         tvMessage = findViewById(R.id.helloUser);
         tvMessage.setTextSize(30f);
@@ -73,11 +104,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
+
+        btstart = (Button) findViewById(R.id.btStart);
+        btstart.setOnClickListener(view -> onBtStartClick());
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        new MenuInflater(this).inflate(R.menu.main, menu);
-        return (super.onCreateOptionsMenu(menu));
+
+    void onBtStartClick() {
+        Intent i = new Intent(this, PieChartActivity.class);
+        startActivity(i);
+
+    }
+    public void moveToSecondary(){
+        // use an intent to travel from one activity to another.
+        Intent intent = new Intent(this,NamePrompt.class);
+        startActivity(intent);
     }
 }

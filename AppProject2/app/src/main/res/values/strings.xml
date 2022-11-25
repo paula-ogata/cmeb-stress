@@ -2,4 +2,5 @@
     <string name="app_name">AppProject</string>
     <string name="menu_toast">Raise Toast</string>
     <string name="mn_it_add">Pie</string>
+    <string name="btStartText">Start</string>
 </resources>
