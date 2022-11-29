@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +21,9 @@ public class PieChartActivity extends AppCompatActivity {
     // Create the object of TextView and PieChart class
     TextView tvRelaxado, tvLeve, tvAlto, tvModerado;
     PieChart pieChart;
+    Button bt;
+    ProgressBar spinner;
+    boolean isRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,25 @@ public class PieChartActivity extends AppCompatActivity {
         // Creating a method setData()
         // to set the text in text view and pie chart
         setPieChartData();
+
+        bt = (Button)findViewById(R.id.button);
+        spinner = (ProgressBar)findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
+        spinner.isIndeterminate();
+
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isRunning) {
+                    spinner.setVisibility(View.GONE);
+                    isRunning = false;
+                }
+                else {
+                    spinner.setVisibility(View.VISIBLE);
+                    isRunning = true;
+                }
+            }
+        });
     }
 
     private void setPieChartData() {
