@@ -7,7 +7,10 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
+    android:background="@drawable/background"
     tools:context=".MainActivity">
+
+
 
     <TextView
         android:id="@+id/helloUser"
@@ -17,9 +20,18 @@
         android:textSize="40sp"
         android:layout_marginTop="150dp"/>
 
+    <TextView
+        android:id="@+id/textTips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Anti-stress tips:"
+        android:textSize="25sp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="0dp"/>
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/recomendations"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="10dp"
         android:layout_width="300dp"
         android:layout_height="190dp"
         android:layout_marginBottom="4dp" />
