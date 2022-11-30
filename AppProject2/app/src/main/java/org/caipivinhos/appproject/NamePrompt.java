@@ -22,9 +22,9 @@ public class NamePrompt extends AppCompatActivity {
 
     public void btSendOnClick(View view){
         EditText editText = findViewById(R.id.txtUsername);
-        String message = editText.getText().toString();
-        Intent i = new Intent(this, MainActivity.class);
-        i.putExtra(MainActivity.EXTRA_MESSAGE, message);
+        String username = editText.getText().toString();
+        Intent i = getIntent();
+        i.putExtra(MainActivity.EXTRA_MESSAGE, username);
         setResult(Activity.RESULT_OK, i);
         finish();
     }

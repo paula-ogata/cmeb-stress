@@ -15,9 +15,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-    private String username = "";
+    private String username;
     ViewPager viewPager;
     LinearLayout sliderDotspanel;
     TextView tvMessage;
@@ -25,23 +28,24 @@ public class MainActivity extends AppCompatActivity {
     private ImageView[] dots;
     Button btstart;
     String prevStarted = "prevStarted";
-    public final static String EXTRA_MESSAGE = "oi";
+    public final static String EXTRA_MESSAGE = "userName";
+    public static final int REQUEST_CODE = 1;
     SharedPreferences sharedpreferences;
-
-    /*
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String returnValue = data.getStringExtra(EXTRA_MESSAGE);
-        System.out.println(returnValue);
-        sharedpreferences = getSharedPreferences("MyApp", MODE_PRIVATE);
-        sharedpreferences.edit().putString("username", returnValue).commit();
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == REQUEST_CODE  && resultCode  == RESULT_OK) {
+                username = data.getStringExtra(EXTRA_MESSAGE);
+                sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
+                sharedpreferences.edit().putString("username", username).apply();
+                recreate();
+            }
+        } catch (Exception ex) {
+            Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -49,15 +53,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedpreferences = getSharedPreferences("MyApp", MODE_PRIVATE);
-        if (sharedpreferences.getBoolean(prevStarted, false)) {
-            moveToSecondary();
+        sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
+        if (!sharedpreferences.getBoolean(prevStarted, false)) {
+            Intent intent = new Intent(this,NamePrompt.class);
+            startActivityForResult(intent, REQUEST_CODE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putBoolean(prevStarted, Boolean.TRUE);
             editor.apply();
-        }
-        else {
-            username = sharedpreferences.getString("username", "Unknown");
+            recreate();
+        } else {
+            username = sharedpreferences.getString("username", "NO_NAME_AVAILABLE");
         }
 
         tvMessage = findViewById(R.id.helloUser);
@@ -115,9 +120,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
 
     }
+
     public void moveToSecondary(){
         // use an intent to travel from one activity to another.
-        Intent intent = new Intent(this,NamePrompt.class);
-        startActivity(intent);
+
     }
 }

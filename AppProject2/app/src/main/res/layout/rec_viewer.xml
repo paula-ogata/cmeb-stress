@@ -2,17 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
+    android:layout_width="400dp"
     android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/textViewer"
-        android:textSize="50dp"
+        android:textSize="30sp"
         android:textAlignment="center"
+        android:gravity="center"
         android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds='true'
         android:scaleType = 'fitXY'
-        android:background="@drawable/rounded_layout_cards" />
+        android:background="@drawable/rounded_layout_cards"
+        android:layout_marginRight="10px"/>
 </LinearLayout>
