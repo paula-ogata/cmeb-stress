@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+    public static int userId;
     private String username;
     ViewPager viewPager;
     LinearLayout sliderDotspanel;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
                 username = data.getStringExtra(EXTRA_MESSAGE);
                 sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
                 sharedpreferences.edit().putString("username", username).apply();
+                DatabaseManager db = new DatabaseManager(this);
+                userId = db.GetUserId(username);
                 recreate();
             }
         } catch (Exception ex) {
@@ -121,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void moveToSecondary(){
+    public void getUserID(){
         // use an intent to travel from one activity to another.
 
     }
