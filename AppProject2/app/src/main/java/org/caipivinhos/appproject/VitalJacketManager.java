@@ -2,11 +2,15 @@ package org.caipivinhos.appproject;
 
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import Bio.Library.namespace.BioLib;
 
@@ -14,6 +18,7 @@ public class VitalJacketManager {
     private String macAddress;
     BioLib lib;
     ArrayList<Integer> rrValues;
+    int nQRS = 5;
 
     public boolean connectToVJ(Context context, String macAddress) throws Exception {
         this.macAddress = macAddress;
@@ -25,15 +30,71 @@ public class VitalJacketManager {
         return true;
     }
 
-    public boolean startAcquisition(int nQRS) {
+    private void startAcquisition() {
         try{
             Looper.prepare();
             lib.Connect(macAddress,nQRS);
             Looper.loop();
         } catch (Exception e) {
-            return false;
+            // TO DO
         }
-        return true;
+    }
+
+    private void stopAcquisition() throws Exception {
+        lib.Disconnect();
+    }
+
+    public boolean longSession(Context context) {
+        rrValues = new ArrayList<>();
+        startAcquisition();
+        new CountDownTimer(300000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                // TO DO If necessary
+            }
+
+            public void onFinish() {
+                try {
+                    stopAcquisition();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+        // CALCULOS COM O RRVALUES ......................
+
+        int stressLevel = 1;
+        Date time = new Date();
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(time);
+        String hourBegin = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) +":"+String.valueOf(Calendar.MINUTE);
+        Double duration = 1.0;
+        String date = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "/" + String.valueOf(calendar.get(Calendar.MONTH));
+        DatabaseManager db = new DatabaseManager(context);
+
+        return db.AddSession(stressLevel, hourBegin, duration, date);
+    }
+
+    public int instantSession() {
+        rrValues = new ArrayList<>();
+        startAcquisition();
+        new CountDownTimer(15000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                // TO DO If necessary
+            }
+
+            public void onFinish() {
+                try {
+                    stopAcquisition();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+        // CALCULOS COM RRVALUES
+
+        return 1;
     }
 
     Handler mHandler = new Handler(Looper.getMainLooper()) {
