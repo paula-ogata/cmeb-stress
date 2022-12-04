@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 
 public class NamePrompt extends AppCompatActivity {
 
@@ -21,13 +22,24 @@ public class NamePrompt extends AppCompatActivity {
     }
 
     public void btSendOnClick(View view){
-        EditText editText = findViewById(R.id.txtUsername);
-        String username = editText.getText().toString();
+        EditText nameET = findViewById(R.id.txtUsername);
+        EditText ageET = findViewById(R.id.txtAge);
+        RadioGroup rg = findViewById(R.id.rg_types);
+        String username = nameET.getText().toString();
+        Integer age = Integer.valueOf(ageET.getText().toString());
+        int genderId = rg.getCheckedRadioButtonId();
+        String gender;
+        if(genderId == 0)
+            gender = "Male";
+        else
+            gender = "Female";
+
+        DatabaseManager db = new DatabaseManager(this);
+        boolean bool = db.AddUser(username,gender,age);
+
         Intent i = getIntent();
         i.putExtra(MainActivity.EXTRA_MESSAGE, username);
         setResult(Activity.RESULT_OK, i);
         finish();
     }
-
-
 }
