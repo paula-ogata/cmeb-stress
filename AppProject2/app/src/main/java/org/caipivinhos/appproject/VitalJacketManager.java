@@ -67,6 +67,7 @@ public class VitalJacketManager {
         // HRVMethods.sdann
 
         // CALCULO AVG
+
         // int avg = HRVMethods.avgCalculation(rrVector)
         int stressLevel = 1;
         Date time = new Date();
