@@ -61,8 +61,13 @@ public class VitalJacketManager {
             }
         }.start();
 
-        // CALCULOS COM O RRVALUES ......................
+        // CALCULOS COM O RRVALUES .....................
+        // int[] rrVector = rrValues.toArray;
+        // HRVMethods.rmssdCalculation(rrVector) // Calcula RMSSD para o intervalo definido (10s ou 5min, etc)
+        // HRVMethods.sdann
 
+        // CALCULO AVG
+        // int avg = HRVMethods.avgCalculation(rrVector)
         int stressLevel = 1;
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
@@ -78,7 +83,7 @@ public class VitalJacketManager {
     public int instantSession() {
         rrValues = new ArrayList<>();
         startAcquisition();
-        new CountDownTimer(15000, 1000) {
+        new CountDownTimer(10000, 1000) {
             public void onTick(long millisUntilFinished) {
                 // TO DO If necessary
             }
