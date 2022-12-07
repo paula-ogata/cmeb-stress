@@ -33,6 +33,10 @@ public class AboutActivity extends AppCompatActivity {
             startActivity(new Intent(this, BarChartActivity.class));
             return(true);
         }
+        else if(item.getItemId()==R.id.chooseBt) {
+            startActivity(new Intent(this, ChooseBTDevice.class));
+            return(true);
+        }
         else if (item.getItemId()==R.id.about){
             String message = "Already in home - FOLEIRO MUDAR";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();

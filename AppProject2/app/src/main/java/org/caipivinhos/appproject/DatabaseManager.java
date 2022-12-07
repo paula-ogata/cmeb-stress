@@ -1,15 +1,10 @@
 package org.caipivinhos.appproject;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -198,11 +193,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public HashMap<String, Integer> getStressLevelsReport (String date) {
         HashMap<String, Integer> values = new HashMap<String, Integer>();
         SQLiteDatabase db = this.getWritableDatabase();
-        String SELECT_QUERY = String.format("SELECT %s, %s FROM %s, %s WHERE date = %s ORDER BY %s %s",
+        String SELECT_QUERY = String.format("SELECT %s, %s FROM %s JOIN %s ON %s = %s WHERE date = %s ORDER BY %s %s",
                 "stressLevel",
                 "hourBegin",
                 TABLE_REPORT,
                 TABLE_SESSION,
+                TABLE_REPORT+".idReport",
+                TABLE_SESSION+".idReport",
                 date,
                 "idSession",
                 "ASC");
@@ -219,5 +216,31 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
 
         return values;
+    }
+
+    public ArrayList<Integer> getSessionsAvgByDate(String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Integer> rrValues = new ArrayList<>();
+
+        String SELECT_QUERY = String.format("SELECT %s FROM %s JOIN %s ON %s = %s WHERE date = %s ORDER BY %s %s",
+                "rrAvg",
+                TABLE_REPORT,
+                TABLE_SESSION,
+                TABLE_REPORT+".idReport",
+                TABLE_SESSION+".idReport",
+                date,
+                "idSession",
+                "ASC");
+
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+        if(cursor.getCount()==0){
+            return rrValues;
+        }
+
+        while(cursor.moveToNext()) {
+            int rrAvg = cursor.getInt(cursor.getColumnIndexOrThrow("rrAvg"));
+            rrValues.add(rrAvg);
+        }
+        return rrValues;
     }
 }

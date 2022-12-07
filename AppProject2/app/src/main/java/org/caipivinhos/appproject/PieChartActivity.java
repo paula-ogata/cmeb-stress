@@ -111,6 +111,10 @@ public class PieChartActivity extends AppCompatActivity {
             startActivity(new Intent(this, BarChartActivity.class));
             return(true);
         }
+        else if(item.getItemId()==R.id.chooseBt) {
+            startActivity(new Intent(this, ChooseBTDevice.class));
+            return(true);
+        }
         else if (item.getItemId()==R.id.about){
             startActivity(new Intent(this, AboutActivity.class));
             return(true);

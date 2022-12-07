@@ -11,6 +11,10 @@
         android:title="Bar Chart">
     </item>
     <item
+        android:id="@+id/chooseBt"
+        android:title="Choose Device">
+    </item>
+    <item
         android:id="@+id/about"
         android:title="About">
     </item>
