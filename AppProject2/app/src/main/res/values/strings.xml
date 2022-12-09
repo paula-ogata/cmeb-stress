@@ -3,4 +3,11 @@
     <string name="menu_toast">Raise Toast</string>
     <string name="mn_it_add">Pie</string>
     <string name="btStartText">Start</string>
+    <string name="welcome">Welcome to BeCalm!</string>
+    <string name="welcome_st">Your first step to a stress-free life</string>
+    <string name="welcome_info">Please insert your info for a more personalized experience:</string>
+    <string name="welcome_name">Name:</string>
+    <string name="welcome_age">Age:</string>
+    <string name="welcome_sex">Sex:</string>
+    <string name="welcome_bt">Start</string>
 </resources>
