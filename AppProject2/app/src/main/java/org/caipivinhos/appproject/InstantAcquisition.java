@@ -3,7 +3,9 @@ package org.caipivinhos.appproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,37 +20,59 @@ public class InstantAcquisition extends AppCompatActivity {
     ProgressBar spinner;
     boolean isRunning = false;
     TextView stressValue;
-
+    double value;
+    VitalJacketManager vj;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instant_acquisition);
 
+        vj = new VitalJacketManager();
+        try {
+            vj.connectToVJ(this);
+            Toast.makeText(this, "Ligado", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Erro", Toast.LENGTH_LONG).show();
+        }
         stressValue = findViewById(R.id.stressValue);
         bt = (Button)findViewById(R.id.button);
         spinner = (ProgressBar)findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
         spinner.isIndeterminate();
 
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                spinner.setVisibility(View.VISIBLE);
-                double value = (new VitalJacketManager()).instantSession();
-                stressValue.setText(String.valueOf(value));
-                spinner.setVisibility(View.GONE);
+        bt.setOnClickListener(v -> {
+            spinner.setVisibility(View.VISIBLE);
 
-                /*
-                if(isRunning) {
-                    spinner.setVisibility(View.GONE);
-                    isRunning = false;
+            //Thread thread = new Thread(vj);
+            //thread.start();
+            AsyncTask<Void, Void, Double> test = new InstantTest().execute();
+
+            new CountDownTimer(10000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    // TO DO If necessary
                 }
-                else {
-                    spinner.setVisibility(View.VISIBLE);
-                    isRunning = true;
+
+                public void onFinish() {
+                    try {
+                        value = (double) test.get();
+                        stressValue.setText(String.valueOf(value));
+                        spinner.setVisibility(View.GONE);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                */
+            }.start();
+            /*
+            if(isRunning) {
+                spinner.setVisibility(View.GONE);
+                isRunning = false;
             }
+            else {
+                spinner.setVisibility(View.VISIBLE);
+                isRunning = true;
+            }
+            */
+
         });
     }
 
@@ -84,5 +108,14 @@ public class InstantAcquisition extends AppCompatActivity {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         return (super.onOptionsItemSelected(item));
+    }
+
+    private class InstantTest extends AsyncTask<Void, Void, Double> {
+        @Override
+        protected Double doInBackground(Void... voids) {
+            Thread thread = new Thread(vj);
+            thread.start();
+            return vj.getInstantValue();
+        }
     }
 }

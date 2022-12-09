@@ -2,6 +2,7 @@ package org.caipivinhos.appproject;
 
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,12 +15,14 @@ import java.util.GregorianCalendar;
 
 import Bio.Library.namespace.BioLib;
 
-public class VitalJacketManager {
+public class VitalJacketManager implements Runnable {
     static private String macAddress;
     BioLib lib;
     ArrayList<Integer> rrValues;
     int nQRS = 5;
     static boolean isConnected = false;
+    boolean isFinished = false;
+    double instantValue;
 
     public void setMacAddress(String value) {
         macAddress = value;
@@ -86,9 +89,11 @@ public class VitalJacketManager {
         return true;
     }
 
-    public double instantSession() {
+    public void instantSession() throws Exception {
         rrValues = new ArrayList<>();
-        /*startAcquisition();
+        startAcquisition();
+        isFinished = false;
+        /*
         new CountDownTimer(10000, 1000) {
             public void onTick(long millisUntilFinished) {
                 // TO DO If necessary
@@ -97,19 +102,25 @@ public class VitalJacketManager {
             public void onFinish() {
                 try {
                     stopAcquisition();
+                    instantValue = HRVMethods.rmssdCalculation(rrValues);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    instantValue = 5.0;
                 }
+
+                isFinished = true;
             }
         }.start(); */
 
-        for(int i= 0; i<900; i++) {
-            rrValues.add(i);
-        }
-        return HRVMethods.rmssdCalculation(rrValues);
+
+        while(rrValues.size() < 20);
+        stopAcquisition();
+        instantValue = HRVMethods.rmssdCalculation(rrValues);
     }
 
-
+    public double getInstantValue() {
+        return instantValue;
+    }
 
     Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -120,4 +131,11 @@ public class VitalJacketManager {
             }
         }
     };
+
+    @Override
+    public void run() {
+        instantValue = 5.0;
+        //instantSession();
+    }
+
 }

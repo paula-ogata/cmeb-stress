@@ -30,7 +30,14 @@ public class ChooseBTDevice extends AppCompatActivity {
 
         Button buttonOK = findViewById(R.id.cmdOK);
         buttonOK.setOnClickListener(view -> {
-            (new VitalJacketManager()).setMacAddress(macAddress);
+            VitalJacketManager vj = (new VitalJacketManager());
+            vj.setMacAddress(macAddress);
+            try {
+                vj.connectToVJ(this);
+                Toast.makeText(this, "Connect", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(this, "Erro", Toast.LENGTH_LONG).show();
+            }
         });
 
         try {

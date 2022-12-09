@@ -75,6 +75,14 @@
             android:padding="10dp"
             android:layout_marginTop="50px">
 
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="run"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp" />
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleLarge"
@@ -84,13 +92,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="100px" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="run"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp" />
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
