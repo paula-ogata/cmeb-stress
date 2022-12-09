@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,6 +11,12 @@
 
     <!-- Card view for displaying the -->
     <!-- Pie chart and details of pie chart -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewGraph"
         android:layout_width="match_parent"
@@ -67,40 +73,19 @@
                     <View
                         android:layout_width="15dp"
                         android:layout_height="match_parent"
-                        android:background="@color/Relaxado"/>
+                        android:background="@color/Moderado"/>
 
-                    <!--Text view to display Relaxado -->
+                    <!--Text view to display Moderado -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Relaxado"
+                        android:text="Moderado"
                         android:paddingLeft="10dp"/>
 
                 </LinearLayout>
 
-                <!--Linear layout to display Leve-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="15dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="5dp">
 
-                    <!--View to display the green color icon-->
-                    <View
-                        android:layout_width="15dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/Leve"/>
-
-                    <!--Text view to display Leve text -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Leve"
-                        android:paddingLeft="10dp"/>
-
-                </LinearLayout>
-
-                <!--Linear layout to display Moderado-->
+                <!--Linear layout to display Alto-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="15dp"
@@ -111,18 +96,18 @@
                     <View
                         android:layout_width="15dp"
                         android:layout_height="match_parent"
-                        android:background="@color/Moderado"/>
+                        android:background="@color/Alto"/>
 
-                    <!--Text view to display Moderado text -->
+                    <!--Text view to display Alto text -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Moderado"
+                        android:text="Alto"
                         android:paddingLeft="10dp"/>
 
                 </LinearLayout>
 
-                <!--Linear layout to display Alto-->
+                <!--Linear layout to display Severo-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="15dp"
@@ -133,13 +118,13 @@
                     <View
                         android:layout_width="15dp"
                         android:layout_height="match_parent"
-                        android:background="@color/Alto"/>
+                        android:background="@color/Severo"/>
 
                     <!--Text view to display Alto text -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Alto"
+                        android:text="Severo"
                         android:paddingLeft="10dp"/>
 
                 </LinearLayout>
@@ -200,85 +185,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp">
 
-                <!--Text view to display R -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Relaxado"
-                    android:textSize="18sp"/>
-
-                <!--Text view to display the -->
-                <!-- percentage of programming language -->
-                <!-- used. For now default set to 0-->
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:id="@+id/tvRelaxado"
-                    android:textAlignment="textEnd"
-                    android:textSize="18sp"
-                    android:textColor="@color/color_one"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-light"
-                    android:layout_alignParentRight="true"/>
-            </RelativeLayout>
-
-            <!--View to display the line-->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/color_two"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="25dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Leve"
-                    android:textSize="18sp"/>
-
-                <!--Text view to display the percentage -->
-                <!-- of programming language used. -->
-                <!-- For now default set to 0-->
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:id="@+id/tvLeve"
-                    android:textAlignment="textEnd"
-                    android:textSize="18sp"
-                    android:textColor="@color/color_one"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-light"
-                    android:layout_alignParentRight="true"/>
-
-            </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/color_two"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="25dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -289,6 +195,7 @@
                 <!--Text view to display the percentage -->
                 <!-- of programming language used. -->
                 <!-- For now default set to 0-->
+
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -340,6 +247,44 @@
                     android:layout_alignParentRight="true"/>
 
             </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_two"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Severo"
+                    android:textSize="18sp"/>
+
+                <!--Text view to display the percentage -->
+                <!-- of programming language used. -->
+                <!-- For now default set to 0-->
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:id="@+id/tvSevero"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    android:textColor="@color/color_one"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-light"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -348,7 +293,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="200dp"
         android:layout_below="@+id/details"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -362,23 +307,43 @@
             android:orientation="vertical"
             android:padding="10dp">
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="300px"
+                android:hint="Add Comment..."
+                android:gravity="top"/>
+
             <Button
-                android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="run"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:progressDrawable="@drawable/circule_progress_bar"
-                android:layout_gravity="center"/>
+                android:text="Submit" />
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
-</RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/details"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:elevation="10dp"
+        app:cardCornerRadius="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/startAcquisition"
+                android:text="Start Acquisition"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>
 

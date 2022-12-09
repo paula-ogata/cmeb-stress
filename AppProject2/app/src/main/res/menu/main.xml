@@ -22,4 +22,8 @@
         android:id="@+id/hiw"
         android:title="How it works">
     </item>
+    <item
+        android:id="@+id/instant"
+        android:title="Instant Measurement">
+    </item>
 </menu>

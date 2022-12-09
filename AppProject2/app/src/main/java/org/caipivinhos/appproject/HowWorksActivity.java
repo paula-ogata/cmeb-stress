@@ -44,6 +44,9 @@ public class HowWorksActivity extends AppCompatActivity {
         else if (item.getItemId()==R.id.hiw) {
             String message = "Already in home - FOLEIRO MUDAR";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        } else if (item.getItemId() == R.id.instant) {
+            startActivity(new Intent(this, InstantAcquisition.class));
+            return(true);
         }
         return (super.onOptionsItemSelected(item));
     }

@@ -1,13 +1,15 @@
 package org.caipivinhos.appproject;
 
+import java.util.ArrayList;
+
 public class HRVMethods {
 
     //Melhor para 10s
-    static double rmssdCalculation(int[] myRR){
-        double[] dif = new double[myRR.length-1];
+    static double rmssdCalculation(ArrayList<Integer> myRR){
+        double[] dif = new double[myRR.size()-1];
 
-        for (int i = 0; i < myRR.length-1; i++) {
-            dif[i] = Math.pow((myRR[i]-myRR[i+1]),2);
+        for (int i = 0; i < myRR.size()-1; i++) {
+            dif[i] = Math.pow((myRR.get(i)-myRR.get(i+1)),2);
 
             //System.out.println(dif[i]);
         }

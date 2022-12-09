@@ -209,6 +209,9 @@ public class BarChartActivity extends AppCompatActivity {
         else if (item.getItemId()==R.id.hiw) {
             startActivity(new Intent(this, HowWorksActivity.class));
             return(true);
+        } else if (item.getItemId() == R.id.instant) {
+            startActivity(new Intent(this, InstantAcquisition.class));
+            return(true);
         }
         return (super.onOptionsItemSelected(item));
     }

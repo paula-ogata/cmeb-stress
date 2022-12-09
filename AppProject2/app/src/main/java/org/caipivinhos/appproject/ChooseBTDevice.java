@@ -21,7 +21,7 @@ public class ChooseBTDevice extends AppCompatActivity {
 
     public static String SELECT_DEVICE_ADDRESS = "device_address";
     private ArrayAdapter<String> listAdapter;
-    private String selectedValue = "";
+    private String macAddress = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,9 +30,14 @@ public class ChooseBTDevice extends AppCompatActivity {
 
         Button buttonOK = findViewById(R.id.cmdOK);
         buttonOK.setOnClickListener(view -> {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(SELECT_DEVICE_ADDRESS, selectedValue);
-            startActivity(intent);
+            VitalJacketManager vj = (new VitalJacketManager());
+            vj.setMacAddress(macAddress);
+            try {
+                vj.connectToVJ(this);
+                Toast.makeText(this, "Connect", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(this, "Erro", Toast.LENGTH_LONG).show();
+            }
         });
 
         try {
@@ -57,9 +62,9 @@ public class ChooseBTDevice extends AppCompatActivity {
 
             mainListView.setOnItemClickListener((parent, item, position, id) -> {
                 mainListView.setSelected(true);
-                selectedValue = (String) listAdapter.getItem(position);
-                String[] aux = selectedValue.split("   ");
-                selectedValue = aux[0];
+                macAddress = (String) listAdapter.getItem(position);
+                String[] aux = macAddress.split("   ");
+                macAddress = aux[0];
             });
         }
         catch (SecurityException exception)
@@ -87,6 +92,9 @@ public class ChooseBTDevice extends AppCompatActivity {
         }
         else if (item.getItemId()==R.id.hiw) {
             startActivity(new Intent(this, HowWorksActivity.class));
+            return(true);
+        } else if (item.getItemId() == R.id.instant) {
+            startActivity(new Intent(this, InstantAcquisition.class));
             return(true);
         }
         return (super.onOptionsItemSelected(item));

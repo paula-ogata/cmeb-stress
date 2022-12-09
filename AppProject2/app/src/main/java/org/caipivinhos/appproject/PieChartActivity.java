@@ -19,11 +19,8 @@ import org.eazegraph.lib.models.PieModel;
 
 public class PieChartActivity extends AppCompatActivity {
     // Create the object of TextView and PieChart class
-    TextView tvRelaxado, tvLeve, tvAlto, tvModerado;
+    TextView tvModerado, tvAlto, tvSevero;
     PieChart pieChart;
-    Button bt;
-    ProgressBar spinner;
-    boolean isRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,34 +29,14 @@ public class PieChartActivity extends AppCompatActivity {
 
         // Link those objects with their respective
         // id's that we have given in .XML file
-        tvRelaxado = findViewById(R.id.tvRelaxado);
-        tvLeve = findViewById(R.id.tvLeve);
-        tvAlto = findViewById(R.id.tvAlto);
         tvModerado = findViewById(R.id.tvModerado);
+        tvAlto = findViewById(R.id.tvAlto);
+        tvSevero = findViewById(R.id.tvSevero);
         pieChart = findViewById(R.id.piechart);
 
         // Creating a method setData()
         // to set the text in text view and pie chart
         setPieChartData();
-
-        bt = (Button)findViewById(R.id.button);
-        spinner = (ProgressBar)findViewById(R.id.progressBar);
-        spinner.setVisibility(View.GONE);
-        spinner.isIndeterminate();
-
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isRunning) {
-                    spinner.setVisibility(View.GONE);
-                    isRunning = false;
-                }
-                else {
-                    spinner.setVisibility(View.VISIBLE);
-                    isRunning = true;
-                }
-            }
-        });
     }
 
     private void setPieChartData() {
@@ -68,31 +45,25 @@ public class PieChartActivity extends AppCompatActivity {
         db.simulateData();
         int[] stressLevels = db.getStressLevelsPieChart("8/12");
 
-        tvRelaxado.setText(String.valueOf(stressLevels[0]));
-        tvLeve.setText(String.valueOf(stressLevels[1]));
-        tvModerado.setText(String.valueOf(stressLevels[2]));
-        tvAlto.setText(String.valueOf(stressLevels[3]));
+        tvModerado.setText(String.valueOf(stressLevels[0]));
+        tvAlto.setText(String.valueOf(stressLevels[1]));
+        tvSevero.setText(String.valueOf(stressLevels[2]));
 
         // Set the data and color to the pie chart
         pieChart.addPieSlice(
                 new PieModel(
-                        "Relaxado",
-                        Integer.parseInt(tvRelaxado.getText().toString()),
-                        Color.parseColor("#29B6F6")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Leve",
-                        Integer.parseInt(tvLeve.getText().toString()),
-                        Color.parseColor("#66BB6A")));
-        pieChart.addPieSlice(
-                new PieModel(
                         "Moderado",
                         Integer.parseInt(tvModerado.getText().toString()),
-                        Color.parseColor("#FFA726")));
+                        Color.parseColor("#29B6F6")));
         pieChart.addPieSlice(
                 new PieModel(
                         "Alto",
                         Integer.parseInt(tvAlto.getText().toString()),
+                        Color.parseColor("#FFA726")));
+        pieChart.addPieSlice(
+                new PieModel(
+                        "Severo",
+                        Integer.parseInt(tvSevero.getText().toString()),
                         Color.parseColor("#EF5350")));
 
         // To animate the pie chart
@@ -125,6 +96,9 @@ public class PieChartActivity extends AppCompatActivity {
         }
         else if (item.getItemId()==R.id.hiw) {
             startActivity(new Intent(this, HowWorksActivity.class));
+            return(true);
+        } else if (item.getItemId() == R.id.instant) {
+            startActivity(new Intent(this, InstantAcquisition.class));
             return(true);
         }
         return (super.onOptionsItemSelected(item));

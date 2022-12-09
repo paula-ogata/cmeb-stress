@@ -16,9 +16,8 @@
     <color name="color_two">#E3E0E0</color>
 
 
-    <color name="Relaxado">#29B6F6</color>
-    <color name="Leve">#66BB6A</color>
-    <color name="Moderado">#FFA726</color>
-    <color name="Alto">#EF5350</color>
+    <color name="Moderado">#29B6F6</color>
+    <color name="Alto">#FFA726</color>
+    <color name="Severo">#EF5350</color>
 
 </resources>
