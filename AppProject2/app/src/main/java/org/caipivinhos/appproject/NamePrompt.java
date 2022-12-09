@@ -3,13 +3,16 @@ package org.caipivinhos.appproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 public class NamePrompt extends AppCompatActivity {
 
@@ -35,11 +38,9 @@ public class NamePrompt extends AppCompatActivity {
             gender = "Female";
 
         DatabaseManager db = new DatabaseManager(this);
-        boolean bool = db.AddUser(username,gender,age);
+        db.AddUser(username,gender,age);
 
-        Intent i = getIntent();
-        i.putExtra(MainActivity.EXTRA_MESSAGE, username);
-        setResult(Activity.RESULT_OK, i);
-        finish();
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 }

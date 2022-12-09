@@ -10,29 +10,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DatabaseManager extends SQLiteOpenHelper {
+public class DatabaseManager {
     private static final String DATABASE_NAME = "db";
 
     private static final String TABLE_USER = "User";
-    private static final String TABLE_SESSION = "SESSION";
-    private static final String TABLE_REPORT = "REPORT";
+    private static final String TABLE_SESSION = "Session";
+    private static final String TABLE_REPORT = "Report";
 
     public static final String TITLE = "title";
     public static final String VALUE = "value";
-
-    public DatabaseManager( Context context) {
-        super(context, DATABASE_NAME, null, 1);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion != newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_SESSION);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_REPORT);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
-            onCreate(db);
-        }
-    }
+    private SQLiteDatabase db = null;
 
     /*
     public static synchronized DatabaseManager getInstance(Context context) {
@@ -46,87 +33,60 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
     */
 
-    @Override
-    public void onConfigure(SQLiteDatabase db) {
-        super.onConfigure(db);
-        db.setForeignKeyConstraintsEnabled(true);
+
+    public DatabaseManager(Context context) {
+        db = (new DatabaseCreator(context)).getWritableDatabase();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE User (idUser INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, pin INTEGER, gender TEXT NOT NULL CHECK(gender=='Female' OR gender=='Male'), age INTEGER NOT NULL);");
-        db.execSQL("CREATE TABLE Report (idReport INTEGER PRIMARY KEY AUTOINCREMENT, stressAvg INTEGER, sessionCount INTEGER DEFAULT 0, comment TEXT, date TEXT NOT NULL, idUser INTEGER NOT NULL REFERENCES User);");
-        db.execSQL("CREATE TABLE Session (idSession INTEGER PRIMARY KEY AUTOINCREMENT, rrAvg INTEGER NOT NULL, stressLevel INTEGER NOT NULL, hourBegin TEXT NOT NULL, duration DOUBLE NOT NULL, idReport INTEGER NOT NULL REFERENCES Report);");
-    }
-
-    public boolean AddUser(String name, String gender, Integer age){
-        SQLiteDatabase db = this.getWritableDatabase();
-
+    public void AddUser(String name, String gender, Integer age){
         ContentValues cv = new ContentValues();
 
         cv.put("name", name);
         cv.put("gender", gender);
         cv.put("age",age);
-        db.beginTransaction();
-        try{
-            db.insertOrThrow("User", null, cv);
-            return true;
-        } catch(android.database.SQLException sqlException) {
-            return false;
-        } finally {
-            db.endTransaction();
-        }
+
+        db.insertOrThrow("User", null, cv);
     }
 
-    public boolean AddSession(Integer stressLevel, String hourBegin, Double duration, String date){
-        SQLiteDatabase db = this.getWritableDatabase();
-
+    public void AddSession(Integer stressLevel, String hourBegin, Double duration, String date){
         ContentValues cv = new ContentValues();
 
+        cv.put("rrAvg", 0);
         cv.put("stressLevel", stressLevel);
         cv.put("hourBegin",hourBegin);
         cv.put("duration", duration);
         int idReport = GetIdReport(date);
         cv.put("idReport", idReport);
-        UpdateSessionCount(idReport);
+        //UpdateSessionCount(idReport);
 
-        db.beginTransaction();
-        try{
-            db.insertOrThrow("Session", null, cv);
-            return true;
-        } catch(android.database.SQLException sqlException) {
-            return false;
-        } finally {
-            db.endTransaction();
-        }
+        db.insertOrThrow("Session", null, cv);
     }
 
     public Integer GetIdReport(String date) {
-        List<Integer> idReports = new ArrayList<>();
-        Integer idReport;
-        SQLiteDatabase db = this.getWritableDatabase();
-        String SELECT_QUERY = String.format("SELECT idReport FROM %s WHERE date = %s",
+        Integer idReport = null;
+        String SELECT_QUERY = String.format("SELECT idReport FROM %s WHERE date = '%s'",
                 TABLE_REPORT,
                 date);
         Cursor cursor = db.rawQuery(SELECT_QUERY, null);
         if(cursor.getCount()!=0){
+            cursor.moveToNext();
             idReport = cursor.getInt(cursor.getColumnIndexOrThrow("idReport"));
         } else {
             CreateReport(date);
+            //idReport = 1;
             idReport = GetIdReport(date);
         }
         return idReport;
     }
 
     private void CreateReport(String date) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put("date", date);
-        values.put("userID", MainActivity.userId);
-        db.replace(DATABASE_NAME, null, values);
+        values.put("idUser", MainActivity.userId);
+        db.replace(TABLE_REPORT, null, values);
     }
 
+    /*
     public Integer GetUserId(String username) {
         int idUser = 1;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -139,9 +99,37 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
         return idUser;
     }
+    */
+
+    public Integer GetUserId() {
+        int idUser = 5;
+        String SELECT_QUERY = String.format("SELECT idUser FROM %s",
+                TABLE_USER);
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+        cursor.moveToNext();
+        if(cursor.getCount()!=0){
+            idUser = cursor.getInt(cursor.getColumnIndexOrThrow("idUser"));
+        }
+
+        cursor.close();
+        return idUser;
+    }
+
+    public String GetUserName() {
+        String user =  "";
+        String SELECT_QUERY = String.format("SELECT name FROM %s",
+                TABLE_USER);
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+        if(cursor.getCount()!=0){
+            cursor.moveToNext();
+            user = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+        }
+
+        cursor.close();
+        return user;
+    }
 
     public void AddComment(String comment, String date) {
-        SQLiteDatabase db = this.getWritableDatabase();
         String UPDATE_QUERY = String.format("UPDATE %s SET comment=%s WHERE idUser = %s AND date = %s" ,
                 TABLE_REPORT,
                 comment,
@@ -152,7 +140,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     private void UpdateSessionCount(int idReport) {
-        SQLiteDatabase db = this.getWritableDatabase();
         String UPDATE_QUERY = String.format("UPDATE %s SET sessionCount = sessionCount + 1 WHERE idReport = %s",
                 TABLE_REPORT,
                 idReport);
@@ -161,7 +148,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public void UpdateStressAvg(int idReport) {
         List<Integer> sessions = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase();
         String SELECT_QUERY = String.format("SELECT %s FROM %s WHERE idReport = %s",
                 "stressLevel",
                 TABLE_USER,
@@ -192,7 +178,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public HashMap<String, Integer> getStressLevelsReport (String date) {
         HashMap<String, Integer> values = new HashMap<String, Integer>();
-        SQLiteDatabase db = this.getWritableDatabase();
         String SELECT_QUERY = String.format("SELECT %s, %s FROM %s JOIN %s ON %s = %s WHERE date = %s ORDER BY %s %s",
                 "stressLevel",
                 "hourBegin",
@@ -219,7 +204,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public ArrayList<Integer> getSessionsAvgByDate(String date) {
-        SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<Integer> rrValues = new ArrayList<>();
 
         String SELECT_QUERY = String.format("SELECT %s FROM %s JOIN %s ON %s = %s WHERE date = %s ORDER BY %s %s",
@@ -242,5 +226,42 @@ public class DatabaseManager extends SQLiteOpenHelper {
             rrValues.add(rrAvg);
         }
         return rrValues;
+    }
+
+    public int[] getStressLevelsPieChart(String date) {
+        int[] stressLevels = new int[4];
+        String SELECT_QUERY ="SELECT stressLevel FROM Session JOIN Report ON Session.idReport = Report.idReport WHERE date = '" + date + "'";
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+
+        if(cursor.getCount()!=0){
+            while(cursor.moveToNext()) {
+                int sL = cursor.getInt(cursor.getColumnIndexOrThrow("stressLevel"));
+                switch (sL) {
+                    case 1:
+                       stressLevels[0] += 1;
+                       break;
+                    case 2:
+                        stressLevels[1] += 1;
+                        break;
+                    case 3:
+                        stressLevels[2] += 1;
+                        break;
+                    case 4:
+                        stressLevels[3] += 1;
+                        break;
+                }
+            }
+        }
+        cursor.close();
+        return stressLevels;
+    }
+
+    public void simulateData() {
+        AddSession(1,"00:00",1.0,"8/12");
+        AddSession(2,"00:00",1.0,"8/12");
+        AddSession(3,"00:00",1.0,"8/12");
+        AddSession(4,"00:00",1.0,"8/12");
+        AddSession(1,"00:00",1.0,"8/12");
+        AddSession(1,"00:00",1.0,"8/12");
     }
 }

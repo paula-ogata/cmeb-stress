@@ -76,9 +76,10 @@ public class VitalJacketManager {
         String hourBegin = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) +":"+String.valueOf(Calendar.MINUTE);
         Double duration = 1.0;
         String date = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "/" + String.valueOf(calendar.get(Calendar.MONTH));
-        DatabaseManager db = new DatabaseManager(context);
+        //DatabaseManager db = new DatabaseManager(context);
 
-        return db.AddSession(stressLevel, hourBegin, duration, date);
+        //return db.AddSession(stressLevel, hourBegin, duration, date);
+        return true;
     }
 
     public int instantSession() {

@@ -64,10 +64,14 @@ public class PieChartActivity extends AppCompatActivity {
 
     private void setPieChartData() {
         // Set the percentage of language used
-        tvRelaxado.setText(Integer.toString(40));
-        tvLeve.setText(Integer.toString(30));
-        tvModerado.setText(Integer.toString(5));
-        tvAlto.setText(Integer.toString(25));
+        DatabaseManager db = new DatabaseManager(this);
+        db.simulateData();
+        int[] stressLevels = db.getStressLevelsPieChart("8/12");
+
+        tvRelaxado.setText(String.valueOf(stressLevels[0]));
+        tvLeve.setText(String.valueOf(stressLevels[1]));
+        tvModerado.setText(String.valueOf(stressLevels[2]));
+        tvAlto.setText(String.valueOf(stressLevels[3]));
 
         // Set the data and color to the pie chart
         pieChart.addPieSlice(

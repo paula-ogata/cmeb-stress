@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "userName";
     public static final int REQUEST_CODE = 1;
     SharedPreferences sharedpreferences;
+    SQLiteDatabase db = null;
 
+    /*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -43,13 +47,15 @@ public class MainActivity extends AppCompatActivity {
                 sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
                 sharedpreferences.edit().putString("username", username).apply();
                 DatabaseManager db = new DatabaseManager(this);
+                boolean bool = db.AddUser(username,"Male",21);
                 userId = db.GetUserId(username);
-                recreate();
+                //recreate();
             }
         } catch (Exception ex) {
             Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
         }
     }
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +65,15 @@ public class MainActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
         if (!sharedpreferences.getBoolean(prevStarted, false)) {
             Intent intent = new Intent(this,NamePrompt.class);
-            startActivityForResult(intent, REQUEST_CODE);
+            startActivity(intent);
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putBoolean(prevStarted, Boolean.TRUE);
             editor.apply();
-            recreate();
-        } else {
-            username = sharedpreferences.getString("username", "NO_NAME_AVAILABLE");
         }
 
+        db = (new DatabaseCreator(this)).getReadableDatabase();
+        userId = (new DatabaseManager(this)).GetUserId();
+        username = (new DatabaseManager(this)).GetUserName();
         tvMessage = findViewById(R.id.helloUser);
         tvMessage.setTextSize(30f);
         tvMessage.setText("Bem-vinda " + username);
@@ -124,8 +130,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void getUserID(){
-        // use an intent to travel from one activity to another.
+    public int getUserId(){
+        int idUser = 5;
 
+        String SELECT_QUERY = ("SELECT idUser FROM User");
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+        cursor.moveToNext();
+        if(cursor.getCount()!=0){
+            idUser = cursor.getInt(cursor.getColumnIndexOrThrow("idUser"));
+        }
+
+        cursor.close();
+        return idUser;
+    }
+
+    public String getUsername() {
+        String user =  "";
+        String SELECT_QUERY = ("SELECT name FROM User");
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+        if(cursor.getCount()!=0){
+            cursor.moveToNext();
+            user = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+        }
+
+        cursor.close();
+        return user;
     }
 }
