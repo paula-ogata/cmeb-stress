@@ -15,18 +15,22 @@ import java.util.GregorianCalendar;
 import Bio.Library.namespace.BioLib;
 
 public class VitalJacketManager {
-    private String macAddress;
+    static private String macAddress;
     BioLib lib;
     ArrayList<Integer> rrValues;
     int nQRS = 5;
+    static boolean isConnected = false;
 
-    public boolean connectToVJ(Context context, String macAddress) throws Exception {
-        this.macAddress = macAddress;
+    public void setMacAddress(String value) {
+        macAddress = value;
+    }
+    public boolean connectToVJ(Context context) throws Exception {
         try {
             lib = new BioLib(context, mHandler);
         } catch (Exception e){
             return false;
         }
+        isConnected = true;
         return true;
     }
 
@@ -82,9 +86,9 @@ public class VitalJacketManager {
         return true;
     }
 
-    public int instantSession() {
+    public double instantSession() {
         rrValues = new ArrayList<>();
-        startAcquisition();
+        /*startAcquisition();
         new CountDownTimer(10000, 1000) {
             public void onTick(long millisUntilFinished) {
                 // TO DO If necessary
@@ -97,11 +101,12 @@ public class VitalJacketManager {
                     e.printStackTrace();
                 }
             }
-        }.start();
+        }.start(); */
 
-        // CALCULOS COM RRVALUES
-
-        return 1;
+        for(int i= 0; i<900; i++) {
+            rrValues.add(i);
+        }
+        return HRVMethods.rmssdCalculation(rrValues);
     }
 
 

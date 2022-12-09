@@ -7,14 +7,49 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class HowWorksActivity extends AppCompatActivity {
+public class InstantAcquisition extends AppCompatActivity {
+    Button bt;
+    ProgressBar spinner;
+    boolean isRunning = false;
+    TextView stressValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_how_works);
+        setContentView(R.layout.activity_instant_acquisition);
+
+        stressValue = findViewById(R.id.stressValue);
+        bt = (Button)findViewById(R.id.button);
+        spinner = (ProgressBar)findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
+        spinner.isIndeterminate();
+
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                spinner.setVisibility(View.VISIBLE);
+                double value = (new VitalJacketManager()).instantSession();
+                stressValue.setText(String.valueOf(value));
+                spinner.setVisibility(View.GONE);
+
+                /*
+                if(isRunning) {
+                    spinner.setVisibility(View.GONE);
+                    isRunning = false;
+                }
+                else {
+                    spinner.setVisibility(View.VISIBLE);
+                    isRunning = true;
+                }
+                */
+            }
+        });
     }
 
     @Override
@@ -42,11 +77,11 @@ public class HowWorksActivity extends AppCompatActivity {
             return(true);
         }
         else if (item.getItemId()==R.id.hiw) {
+            startActivity(new Intent(this, HowWorksActivity.class));
+            return(true);
+        } else if (item.getItemId() == R.id.instant) {
             String message = "Already in home - FOLEIRO MUDAR";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        } else if (item.getItemId() == R.id.instant) {
-            startActivity(new Intent(this, InstantAcquisition.class));
-            return(true);
         }
         return (super.onOptionsItemSelected(item));
     }
