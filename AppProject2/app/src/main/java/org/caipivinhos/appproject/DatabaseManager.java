@@ -76,6 +76,8 @@ public class DatabaseManager {
             //idReport = 1;
             idReport = GetIdReport(date);
         }
+
+        cursor.close();
         return idReport;
     }
 
@@ -130,13 +132,33 @@ public class DatabaseManager {
     }
 
     public void AddComment(String comment, String date) {
-        String UPDATE_QUERY = String.format("UPDATE %s SET comment=%s WHERE idUser = %s AND date = %s" ,
+        String UPDATE_QUERY = String.format("UPDATE %s SET comment=%s WHERE idUser = %s AND date = '%s'" ,
                 TABLE_REPORT,
                 comment,
                 MainActivity.userId,
                 date);
 
         db.execSQL(UPDATE_QUERY);
+    }
+
+    public String GetComment(String date) {
+        String comment;
+        String SELECT_QUERY = String.format("SELECT %s FROM %s WHERE %s = '%s'",
+                "comment",
+                TABLE_REPORT,
+                "date",
+                date);
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+        if(cursor.getCount()==0){
+            cursor.close();
+            return null;
+        }
+
+        cursor.moveToNext();
+        comment = cursor.getString(cursor.getColumnIndexOrThrow("comment"));
+
+        cursor.close();
+        return comment;
     }
 
     private void UpdateSessionCount(int idReport) {
@@ -146,6 +168,8 @@ public class DatabaseManager {
         db.execSQL(UPDATE_QUERY);
     }
 
+
+    // VER MELHOR------------------------------------------------ >
     public void UpdateStressAvg(int idReport) {
         List<Integer> sessions = new ArrayList<>();
         String SELECT_QUERY = String.format("SELECT %s FROM %s WHERE idReport = %s",
@@ -154,6 +178,7 @@ public class DatabaseManager {
                 idReport);
         Cursor cursor = db.rawQuery(SELECT_QUERY, null);
         if(cursor.getCount()==0){
+            cursor.close();
             return;
         }
 
@@ -167,6 +192,7 @@ public class DatabaseManager {
         }
 
         int average = aux/sessions.size();
+        cursor.close();
 
         String UPDATE_QUERY = String.format("UPDATE %s SET %s = %s WHERE idReport = %s",
                 TABLE_REPORT,
@@ -178,7 +204,7 @@ public class DatabaseManager {
 
     public HashMap<String, Integer> getStressLevelsReport (String date) {
         HashMap<String, Integer> values = new HashMap<String, Integer>();
-        String SELECT_QUERY = String.format("SELECT %s, %s FROM %s JOIN %s ON %s = %s WHERE date = %s ORDER BY %s %s",
+        String SELECT_QUERY = String.format("SELECT %s, %s FROM %s JOIN %s ON %s = %s WHERE date = '%s' ORDER BY %s %s",
                 "stressLevel",
                 "hourBegin",
                 TABLE_REPORT,
@@ -191,6 +217,7 @@ public class DatabaseManager {
 
         Cursor cursor = db.rawQuery(SELECT_QUERY, null);
         if(cursor.getCount()==0){
+            cursor.close();
             return values;
         }
 
@@ -200,13 +227,14 @@ public class DatabaseManager {
             values.put(hourBegin, stressLevel);
         }
 
+        cursor.close();
         return values;
     }
 
     public ArrayList<Integer> getSessionsAvgByDate(String date) {
         ArrayList<Integer> rrValues = new ArrayList<>();
 
-        String SELECT_QUERY = String.format("SELECT %s FROM %s JOIN %s ON %s = %s WHERE date = %s ORDER BY %s %s",
+        String SELECT_QUERY = String.format("SELECT %s FROM %s JOIN %s ON %s = %s WHERE date = '%s' ORDER BY %s %s",
                 "rrAvg",
                 TABLE_REPORT,
                 TABLE_SESSION,
@@ -218,6 +246,7 @@ public class DatabaseManager {
 
         Cursor cursor = db.rawQuery(SELECT_QUERY, null);
         if(cursor.getCount()==0){
+            cursor.close();
             return rrValues;
         }
 
@@ -225,6 +254,8 @@ public class DatabaseManager {
             int rrAvg = cursor.getInt(cursor.getColumnIndexOrThrow("rrAvg"));
             rrValues.add(rrAvg);
         }
+
+        cursor.close();
         return rrValues;
     }
 

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,61 +20,37 @@ import android.widget.Toast;
 public class InstantAcquisition extends AppCompatActivity {
     Button bt;
     ProgressBar spinner;
-    boolean isRunning = false;
     TextView stressValue;
-    double value;
     VitalJacketManager vj;
+    Handler mainHandler = new Handler();
+    private static final String TAG = "InstantAcquisition";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instant_acquisition);
 
         vj = new VitalJacketManager();
+        stressValue = findViewById(R.id.stressValue);
+
         try {
             vj.connectToVJ(this);
-            Toast.makeText(this, "Ligado", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Toast.makeText(this, "Erro", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "InstantAcquisition: Unable to Connect to VitalJacket");
         }
-        stressValue = findViewById(R.id.stressValue);
-        bt = (Button)findViewById(R.id.button);
-        spinner = (ProgressBar)findViewById(R.id.progressBar);
+
+        bt = findViewById(R.id.button);
+        spinner = findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
         spinner.isIndeterminate();
 
         bt.setOnClickListener(v -> {
             spinner.setVisibility(View.VISIBLE);
-
-            //Thread thread = new Thread(vj);
-            //thread.start();
-            AsyncTask<Void, Void, Double> test = new InstantTest().execute();
-
-            new CountDownTimer(10000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    // TO DO If necessary
-                }
-
-                public void onFinish() {
-                    try {
-                        value = (double) test.get();
-                        stressValue.setText(String.valueOf(value));
-                        spinner.setVisibility(View.GONE);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-            /*
-            if(isRunning) {
-                spinner.setVisibility(View.GONE);
-                isRunning = false;
-            }
-            else {
-                spinner.setVisibility(View.VISIBLE);
-                isRunning = true;
-            }
-            */
-
+            InstantTest runnable = new InstantTest();
+            new Thread(runnable).start();
         });
     }
 
@@ -110,12 +88,25 @@ public class InstantAcquisition extends AppCompatActivity {
         return (super.onOptionsItemSelected(item));
     }
 
-    private class InstantTest extends AsyncTask<Void, Void, Double> {
+    private class InstantTest implements Runnable {
+
         @Override
-        protected Double doInBackground(Void... voids) {
-            Thread thread = new Thread(vj);
-            thread.start();
-            return vj.getInstantValue();
+        public void run() {
+            VitalJacketManager vjRun = new VitalJacketManager();
+            double valueR = 0;
+            try {
+                valueR = vjRun.instantSession();
+            } catch (Exception e) {
+                Log.d(TAG, "Runnable: Caught Error");
+            }
+            double finalValueR = valueR;
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    stressValue.setText(String.valueOf(finalValueR));
+                    spinner.setVisibility(View.GONE);
+                }
+            });
         }
     }
 }

@@ -2,11 +2,11 @@ package org.caipivinhos.appproject;
 
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,26 +15,21 @@ import java.util.GregorianCalendar;
 
 import Bio.Library.namespace.BioLib;
 
-public class VitalJacketManager implements Runnable {
+public class VitalJacketManager {
     static private String macAddress;
     BioLib lib;
     ArrayList<Integer> rrValues;
     int nQRS = 5;
     static boolean isConnected = false;
-    boolean isFinished = false;
-    double instantValue;
+    private static final String TAG = "VitalJacketManager";
 
     public void setMacAddress(String value) {
         macAddress = value;
     }
-    public boolean connectToVJ(Context context) throws Exception {
-        try {
-            lib = new BioLib(context, mHandler);
-        } catch (Exception e){
-            return false;
-        }
+
+    public void connectToVJ(Context context) throws Exception {
+        lib = new BioLib(context, mHandler);
         isConnected = true;
-        return true;
     }
 
     private void startAcquisition() {
@@ -43,7 +38,7 @@ public class VitalJacketManager implements Runnable {
             lib.Connect(macAddress,nQRS);
             Looper.loop();
         } catch (Exception e) {
-            // TO DO
+            Log.d(TAG, "VitalJacket: Error Connecting to VitalJacket");
         }
     }
 
@@ -89,36 +84,15 @@ public class VitalJacketManager implements Runnable {
         return true;
     }
 
-    public void instantSession() throws Exception {
+    public double instantSession() throws Exception {
         rrValues = new ArrayList<>();
+        double instantValue;
         startAcquisition();
-        isFinished = false;
-        /*
-        new CountDownTimer(10000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                // TO DO If necessary
-            }
-
-            public void onFinish() {
-                try {
-                    stopAcquisition();
-                    instantValue = HRVMethods.rmssdCalculation(rrValues);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    instantValue = 5.0;
-                }
-
-                isFinished = true;
-            }
-        }.start(); */
-
-
+        Log.d(TAG, "instantSession: Started Acquisition");
         while(rrValues.size() < 20);
         stopAcquisition();
+        Log.d(TAG, "instantSession: Stopped Acquisition");
         instantValue = HRVMethods.rmssdCalculation(rrValues);
-    }
-
-    public double getInstantValue() {
         return instantValue;
     }
 
@@ -127,15 +101,9 @@ public class VitalJacketManager implements Runnable {
         public void handleMessage(Message msg) {
             if (msg.what == BioLib.MESSAGE_PEAK_DETECTION) {
                 BioLib.QRS qrs = (BioLib.QRS) msg.obj;
+                Log.d(TAG, "VitalJacket: received rr value "+ qrs.rr);
                 rrValues.add(qrs.rr);
             }
         }
     };
-
-    @Override
-    public void run() {
-        instantValue = 5.0;
-        //instantSession();
-    }
-
 }
