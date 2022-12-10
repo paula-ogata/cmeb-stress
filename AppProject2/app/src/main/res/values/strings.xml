@@ -10,4 +10,7 @@
     <string name="welcome_age">Age:</string>
     <string name="welcome_sex">Sex:</string>
     <string name="welcome_bt">Start</string>
+    <string name="welcome_years">years</string>
+    <string name="welcome_male">Male</string>
+    <string name="welcome_female">Female</string>
 </resources>

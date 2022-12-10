@@ -4,20 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/color_white"
+    android:backgroundTint="#CFE3E2"
+    android:orientation="vertical"
     tools:context=".InstantAcquisition">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50px"
+        android:layout_marginBottom="50px"
+        android:fontFamily="monospace"
         android:text="Instant Stress Measurement"
         android:textAlignment="center"
-        android:textSize="100px"
-        android:layout_marginTop="50px"
-        android:layout_marginBottom="50px"/>
+        android:textSize="100px" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/measure1"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_below="@+id/details"
@@ -25,33 +28,34 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
         android:elevation="10dp"
-        app:cardCornerRadius="10dp"
-        android:id="@+id/measure1">
+        app:cardCornerRadius="10dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="10dp"
             android:layout_marginTop="50px"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10px"
+                android:layout_marginBottom="50px"
+                android:fontFamily="monospace"
                 android:text="Level"
                 android:textAlignment="center"
-                android:textSize="75px"
-                android:layout_marginTop="10px"
-                android:layout_marginBottom="50px"/>
+                android:textSize="75px" />
 
             <TextView
+                android:id="@+id/stressValue"
                 android:layout_width="250px"
                 android:layout_height="250px"
-                android:textSize="90px"
-                android:text="10"
+                android:background="@drawable/show_stress_layout"
                 android:gravity="center"
-                android:id="@+id/stressValue"
-                android:background="@drawable/show_stress_layout" />
+                android:text="10"
+                android:textSize="90px" />
 
         </LinearLayout>
 
@@ -59,6 +63,7 @@
 
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/measure"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_below="@+id/details"
@@ -66,31 +71,33 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
         android:elevation="10dp"
-        app:cardCornerRadius="10dp"
-        android:id="@+id/measure">
+        app:cardCornerRadius="10dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="50px"
             android:orientation="vertical"
-            android:padding="10dp"
-            android:layout_marginTop="50px">
+            android:padding="10dp">
 
             <Button
                 android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="run"
+                android:layout_width="100dp"
+                android:layout_height="58dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="#A3B3BF"
+                android:text="run"
+                app:cornerRadius="40dp" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:progressDrawable="@drawable/circule_progress_bar"
                 android:layout_gravity="center"
-                android:layout_marginBottom="100px" />
+                android:layout_marginBottom="100px"
+                android:progressDrawable="@drawable/circule_progress_bar" />
 
 
         </LinearLayout>
