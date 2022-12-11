@@ -36,7 +36,7 @@ public class ChooseBTDevice extends AppCompatActivity {
                 vj.connectToVJ(this);
                 Toast.makeText(this, "Connect", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                Toast.makeText(this, "Erro", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
             }
         });
 
