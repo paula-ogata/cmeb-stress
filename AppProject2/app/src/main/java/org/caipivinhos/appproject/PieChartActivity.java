@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,11 @@ public class PieChartActivity extends AppCompatActivity {
     // Create the object of TextView and PieChart class
     TextView tvModerado, tvAlto, tvSevero;
     PieChart pieChart;
+    EditText commentReport;
+    String date = "8/12";
+    Button submitComment;
+    DatabaseManager db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +35,27 @@ public class PieChartActivity extends AppCompatActivity {
 
         // Link those objects with their respective
         // id's that we have given in .XML file
+        db = new DatabaseManager(this);
         tvModerado = findViewById(R.id.tvModerado);
         tvAlto = findViewById(R.id.tvAlto);
         tvSevero = findViewById(R.id.tvSevero);
         pieChart = findViewById(R.id.piechart);
+        commentReport = findViewById(R.id.commentReport);
+        submitComment = findViewById(R.id.submitComment);
 
         // Creating a method setData()
         // to set the text in text view and pie chart
+        getReportComment(date);
         setPieChartData();
+
+        submitComment.setOnClickListener(view -> {
+            String comment = commentReport.getText().toString();
+            if(!comment.equals("")){
+                db.AddComment(comment, date);
+            } else {
+                Toast.makeText(this, "Please add a comment first", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void setPieChartData() {
@@ -102,5 +121,12 @@ public class PieChartActivity extends AppCompatActivity {
             return(true);
         }
         return (super.onOptionsItemSelected(item));
+    }
+
+    public void getReportComment(String date) {
+        String comment = db.GetComment(date);
+        if(comment != null) {
+            commentReport.setText(comment);
+        }
     }
 }
