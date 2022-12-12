@@ -1,6 +1,6 @@
 package org.caipivinhos.appproject;
 
-import androidx.appcompat.app.AppCompatActivity;
+
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,7 +18,14 @@ import android.widget.Toast;
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
 
-public class PieChartActivity extends AppCompatActivity {
+import android.app.DatePickerDialog;
+import android.widget.DatePicker;
+import java.text.DateFormat;
+import java.util.Calendar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+
+public class PieChartActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     // Create the object of TextView and PieChart class
     TextView tvModerado, tvAlto, tvSevero;
     PieChart pieChart;
@@ -26,7 +33,6 @@ public class PieChartActivity extends AppCompatActivity {
     String date = "8/12";
     Button submitComment;
     DatabaseManager db;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +58,19 @@ public class PieChartActivity extends AppCompatActivity {
             String comment = commentReport.getText().toString();
             if(!comment.equals("")){
                 db.AddComment(comment, date);
+                Toast.makeText(this, "Comment registered.", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Please add a comment first", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //method for Date selection
+        Button button = (Button) findViewById(R.id.buttonDate);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment datePicker = new DatePickerFragment();
+                datePicker.show(getSupportFragmentManager(), "date picker");
             }
         });
     }
@@ -128,5 +145,18 @@ public class PieChartActivity extends AppCompatActivity {
         if(comment != null) {
             commentReport.setText(comment);
         }
+    }
+
+    //method for Date pick
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR,year);
+        //c.get(Calendar.YEAR)
+        c.set(Calendar.MONTH,month);
+        c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+        //String currentDateString = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
+        String currentDateString = c.get(Calendar.DAY_OF_MONTH) + "/" + c.get(Calendar.MONTH) + "/" + c.get(Calendar.YEAR);
+        TextView textView = (TextView) findViewById(R.id.textViewDate);
+        textView.setText(currentDateString);
     }
 }

@@ -15,6 +15,45 @@
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewDate"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:elevation="10dp"
+            app:cardCornerRadius="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/textViewDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date"
+                    android:layout_above="@id/buttonDate"
+                    android:textSize="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="28dp"
+                    android:fontFamily="sans-serif-condensed"/>
+                <Button
+                    android:id="@+id/buttonDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set Date"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Another Card view for displaying -->
+        <!-- Stress levels in the piechart -->
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardViewGraph"
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -35,17 +74,16 @@
 
                 <!--Pie chart to display the data-->
 
-                <org.eazegraph.lib.charts.PieChart
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <org.eazegraph.lib.charts.PieChart xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/piechart"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:padding="6dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="15dp"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
                     android:layout_marginRight="0dp"
-                    android:layout_marginBottom="15dp" />
+                    android:layout_marginBottom="15dp"
+                    android:layout_weight="1"
+                    android:padding="6dp" />
 
                 <!--Creating another linear layout -->
                 <!-- to display pie chart details -->
@@ -72,8 +110,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Moderado"
-                            android:paddingLeft="10dp"/>
+                            android:paddingLeft="10dp"
+                            android:text="Moderado" />
 
                     </LinearLayout>
 
@@ -127,8 +165,7 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-        <!-- Another Card view for displaying -->
-        <!-- Stress levels in the piechart -->
+
         <androidx.cardview.widget.CardView
             android:id="@+id/details"
             android:layout_width="match_parent"
