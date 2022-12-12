@@ -132,7 +132,7 @@ public class DatabaseManager {
     }
 
     public void AddComment(String comment, String date) {
-        String UPDATE_QUERY = String.format("UPDATE %s SET comment=%s WHERE idUser = %s AND date = '%s'" ,
+        String UPDATE_QUERY = String.format("UPDATE %s SET comment='%s' WHERE idUser = %s AND date = '%s'" ,
                 TABLE_REPORT,
                 comment,
                 MainActivity.userId,

@@ -101,12 +101,12 @@ public class VitalJacketManager {
 
         context = c;
         ConnectVJ runnable = new ConnectVJ();
-        new Thread(runnable).start();
+        Thread th = new Thread(runnable);
+        th.start();
         Log.d(TAG, "instantSession: Started Acquisition");
         while(rrValues.size() < 20){
             Log.d(TAG, "handleMessage: rrValues " + rrValues.size());
         }
-
         try {
             stopAcquisition();
         }
@@ -115,6 +115,7 @@ public class VitalJacketManager {
         }
         Log.d(TAG, "instantSession: Stopped Acquisition");
         instantValue = HRVMethods.rmssdCalculation(rrValues);
+        th.stop();
         return instantValue;
     }
 
@@ -134,7 +135,6 @@ public class VitalJacketManager {
             }
             Looper.loop();
         }
-
 
         static Handler mHandler = new Handler(Looper.getMainLooper()) {
             @Override
