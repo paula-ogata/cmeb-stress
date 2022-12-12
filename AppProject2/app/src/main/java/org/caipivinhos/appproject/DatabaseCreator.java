@@ -26,14 +26,6 @@ public class DatabaseCreator extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE User (idUser INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, pin INTEGER, gender TEXT NOT NULL CHECK(gender=='Female' OR gender=='Male'), age INTEGER NOT NULL);");
         db.execSQL("CREATE TABLE Report (idReport INTEGER PRIMARY KEY AUTOINCREMENT, stressAvg INTEGER, sessionCount INTEGER DEFAULT 0, comment TEXT, date TEXT NOT NULL, idUser INTEGER NOT NULL REFERENCES User);");
         db.execSQL("CREATE TABLE Session (idSession INTEGER PRIMARY KEY AUTOINCREMENT, rrAvg INTEGER NOT NULL, stressLevel INTEGER NOT NULL, hourBegin TEXT NOT NULL, duration DOUBLE NOT NULL, idReport INTEGER NOT NULL REFERENCES Report);");
-
-        /*
-        ContentValues cv = new ContentValues();
-
-        cv.put("name", "ze");
-        cv.put("gender", "Male");
-        cv.put("age", 21);
-        db.insertOrThrow("User", null, cv);*/
     }
 
     @Override

@@ -18,30 +18,17 @@ import java.util.GregorianCalendar;
 import Bio.Library.namespace.BioLib;
 
 public class VitalJacketManager {
-    static BluetoothAdapter btAdapter;
-    private static BluetoothDevice deviceToConnect;
     static private String macAddress;
     static BioLib lib;
     static ArrayList<Integer> rrValues;
     static int nQRS = 5;
-    static boolean isConnected = false;
     private static final String TAG = "VitalJacketManager";
     static Context context;
-    Handler VJMHandler = new Handler();
 
     public static void setMacAddress(String value) {
         macAddress = value;
         Log.d(TAG, "setMacAddress: " + macAddress);
     }
-
-    /*public static void connectToVJ(Context context) throws Exception {
-        Looper.prepare();
-        lib = new BioLib(context, mHandler);
-        //deviceToConnect = btAdapter.getRemoteDevice(macAddress);
-        lib.Connect(macAddress ,nQRS);
-        Looper.loop();
-        isConnected = true;
-    }*/
 
     private void startAcquisition() {
         try{
@@ -57,22 +44,25 @@ public class VitalJacketManager {
         lib.Disconnect();
     }
 
-    public boolean longSession(Context context) {
+    public boolean longSession(Context c) {
         rrValues = new ArrayList<>();
-        startAcquisition();
-        new CountDownTimer(300000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                // TO DO If necessary
-            }
 
-            public void onFinish() {
-                try {
-                    stopAcquisition();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+        context = c;
+        ConnectVJ runnable = new ConnectVJ();
+        Thread th = new Thread(runnable);
+        th.start();
+        Log.d(TAG, "longSession: Started Acquisition");
+        while(rrValues.size() < 300) {
+            Log.d(TAG, "longSession: rrValues size" + rrValues.size());
+        }
+
+        try{
+            stopAcquisition();
+            Log.d(TAG, "longSession: Stopped Acquisition");
+        }
+        catch (Exception e) {
+            Log.d(TAG, "longSession: Error Stopping " + e.getMessage());
+        }
 
         // CALCULOS COM O RRVALUES .....................
         // int[] rrVector = rrValues.toArray;
@@ -86,9 +76,9 @@ public class VitalJacketManager {
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(time);
-        String hourBegin = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) +":"+String.valueOf(Calendar.MINUTE);
+        String hourBegin = calendar.get(Calendar.HOUR_OF_DAY) +":"+ Calendar.MINUTE;
         Double duration = 1.0;
-        String date = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "/" + String.valueOf(calendar.get(Calendar.MONTH));
+        String date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
         //DatabaseManager db = new DatabaseManager(context);
 
         //return db.AddSession(stressLevel, hourBegin, duration, date);
@@ -105,17 +95,17 @@ public class VitalJacketManager {
         th.start();
         Log.d(TAG, "instantSession: Started Acquisition");
         while(rrValues.size() < 20){
-            Log.d(TAG, "handleMessage: rrValues " + rrValues.size());
+            Log.d(TAG, "instantSession: rrValues size" + rrValues.size());
         }
         try {
             stopAcquisition();
+            Log.d(TAG, "instantSession: Stopped Acquisition");
         }
         catch (Exception e) {
-            Log.d(TAG, "onFinish: " + e.getMessage());
+            Log.d(TAG, "instantSession: Error Stopping " + e.getMessage());
         }
-        Log.d(TAG, "instantSession: Stopped Acquisition");
+
         instantValue = HRVMethods.rmssdCalculation(rrValues);
-        th.stop();
         return instantValue;
     }
 
