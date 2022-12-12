@@ -11,28 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DatabaseManager {
-    private static final String DATABASE_NAME = "db";
 
     private static final String TABLE_USER = "User";
     private static final String TABLE_SESSION = "Session";
     private static final String TABLE_REPORT = "Report";
-
-    public static final String TITLE = "title";
-    public static final String VALUE = "value";
-    private SQLiteDatabase db = null;
-
-    /*
-    public static synchronized DatabaseManager getInstance(Context context) {
-        // Use the application context, which will ensure that you
-        // don't accidentally leak an Activity's context.
-        // See this article for more information: http://bit.ly/6LRzfx
-        if (sInstance == null) {
-            sInstance = new DatabaseManager(context.getApplicationContext());
-        }
-        return sInstance;
-    }
-    */
-
+    private SQLiteDatabase db;
 
     public DatabaseManager(Context context) {
         db = (new DatabaseCreator(context)).getWritableDatabase();
@@ -57,7 +40,7 @@ public class DatabaseManager {
         cv.put("duration", duration);
         int idReport = GetIdReport(date);
         cv.put("idReport", idReport);
-        //UpdateSessionCount(idReport);
+        UpdateSessionCount(idReport);
 
         db.insertOrThrow("Session", null, cv);
     }
@@ -87,21 +70,6 @@ public class DatabaseManager {
         values.put("idUser", MainActivity.userId);
         db.replace(TABLE_REPORT, null, values);
     }
-
-    /*
-    public Integer GetUserId(String username) {
-        int idUser = 1;
-        SQLiteDatabase db = this.getWritableDatabase();
-        String SELECT_QUERY = String.format("SELECT idUser FROM %s WHERE name = %s",
-                TABLE_USER,
-                username);
-        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
-        if(cursor.getCount()!=0){
-            idUser = cursor.getInt(cursor.getColumnIndexOrThrow("idReport"));
-        }
-        return idUser;
-    }
-    */
 
     public Integer GetUserId() {
         int idUser = 5;
@@ -288,11 +256,11 @@ public class DatabaseManager {
     }
 
     public void simulateData() {
-        AddSession(1,"00:00",1.0,"8/12");
-        AddSession(2,"00:00",1.0,"8/12");
-        AddSession(3,"00:00",1.0,"8/12");
-        AddSession(4,"00:00",1.0,"8/12");
-        AddSession(1,"00:00",1.0,"8/12");
-        AddSession(1,"00:00",1.0,"8/12");
+        AddSession(1,"00:00",1.0,"8/12/2022");
+        AddSession(2,"00:00",1.0,"8/12/2022");
+        AddSession(3,"00:00",1.0,"8/12/2022");
+        AddSession(4,"00:00",1.0,"8/12/2022");
+        AddSession(1,"00:00",1.0,"8/12/2022");
+        AddSession(1,"00:00",1.0,"8/12/2022");
     }
 }

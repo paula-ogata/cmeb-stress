@@ -36,7 +36,6 @@ public class InstantAcquisition extends AppCompatActivity {
         stressValue = findViewById(R.id.stressValue);
 
         try {
-            //vj.connectToVJ(this);
             Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
@@ -93,10 +92,8 @@ public class InstantAcquisition extends AppCompatActivity {
 
         @Override
         public void run() {
-            //VitalJacketManager vjRun = new VitalJacketManager();
             double valueR = 0;
             try {
-                //VitalJacketManager.connectToVJ(context);
                 Log.d(TAG, "run: Connected to VJ");
                 valueR = VitalJacketManager.instantSession(context);
             } catch (Exception e) {
