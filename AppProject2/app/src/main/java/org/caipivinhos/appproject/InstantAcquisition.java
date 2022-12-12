@@ -2,6 +2,7 @@ package org.caipivinhos.appproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,21 +22,21 @@ public class InstantAcquisition extends AppCompatActivity {
     Button bt;
     ProgressBar spinner;
     TextView stressValue;
-    VitalJacketManager vj;
     Handler mainHandler = new Handler();
     private static final String TAG = "InstantAcquisition";
+    Context context;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instant_acquisition);
+        context = this;
 
-        vj = new VitalJacketManager();
         stressValue = findViewById(R.id.stressValue);
 
         try {
-            vj.connectToVJ(this);
+            //vj.connectToVJ(this);
             Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
@@ -92,18 +93,20 @@ public class InstantAcquisition extends AppCompatActivity {
 
         @Override
         public void run() {
-            VitalJacketManager vjRun = new VitalJacketManager();
+            //VitalJacketManager vjRun = new VitalJacketManager();
             double valueR = 0;
             try {
-                valueR = vjRun.instantSession();
+                //VitalJacketManager.connectToVJ(context);
+                Log.d(TAG, "run: Connected to VJ");
+                valueR = VitalJacketManager.instantSession(context);
             } catch (Exception e) {
-                Log.d(TAG, "Runnable: Caught Error");
+                Log.d(TAG, "Runnable: Caught Error " + e.getMessage());
             }
             double finalValueR = valueR;
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    stressValue.setText(String.valueOf(finalValueR));
+                    stressValue.setText(String.valueOf(Math.round(finalValueR)));
                     spinner.setVisibility(View.GONE);
                 }
             });
