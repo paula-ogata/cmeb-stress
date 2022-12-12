@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">AppProject</string>
+    <string name="menu_toast">Raise Toast</string>
+    <string name="mn_it_add">Pie</string>
+    <string name="btStartText">Start</string>
+    <string name="welcome">Welcome to BeCalm!</string>
+    <string name="welcome_st">Your first step to a stress-free life</string>
+    <string name="welcome_info">Please insert your info for a more personalized experience:</string>
+    <string name="welcome_name">Name:</string>
+    <string name="welcome_age">Age:</string>
+    <string name="welcome_sex">Sex:</string>
+    <string name="welcome_bt">Start</string>
+    <string name="welcome_years">years</string>
+    <string name="welcome_male">Male</string>
+    <string name="welcome_female">Female</string>
+    <string name="hiwTitle">How it Works?</string>
+    <string name="hiw_st">A simple way to improve your Day</string>
+    <string name="hiw_info">Just follow this steps to start improving your daily mood</string>
+    <string name="hiw_step1">Step 1: </string>
+    <string name="hiw_step1_msg">In the "Choose Device" page, select your Vital Jacket and hit the "Select" button. A message saying "Connected" should appear.</string>
+    <string name="hiw_step2">Step 2: </string>
+    <string name="hiw_step2_msg">On the start of your day, press the "Start" button on your main page to start monitoring your stress</string>
+    <string name="hiw_step3">Step 3: </string>
+    <string name="hiw_step3_msg">At the end of your day, press "Stop" in the same location</string>
+    <string name="hiw_step4">Step 4: </string>
+    <string name="hiw_step4_msg">Evaluate your stress levels and leave a comment about what made you feel that way</string>
+    <string name="hiw_end_msg1">Doing this on a constant bases will help you to better understand your thoughts and emotions throughout the day</string>
+    <string name="hiw_end_msg2">With that, you will be able to control your stress when subjected to different everyday scenarios</string>
+    <string name="hiw_end_msg3">You can also do a quick measure of your stress levels whenever you feel like it in the "Instant Measurement" page</string>
+    <string name="hiw_end_msg4">The comments that you leave everyday will be stored in the "Log Book" page as well as the stress levels of that day, so that you can review them whenever you want</string>
+    <string name="hiw_end_msg5">Welcome to Your better Future :)</string>
+
+</resources>

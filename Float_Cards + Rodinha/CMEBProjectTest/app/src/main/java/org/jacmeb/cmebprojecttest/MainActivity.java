@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         sliderDotspanel = (LinearLayout)findViewById(R.id.SliderDots);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
-
         viewPager.setAdapter(viewPagerAdapter);
 
         dotscount = viewPagerAdapter.getCount();
