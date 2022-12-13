@@ -35,8 +35,9 @@ public class BarChartActivity extends AppCompatActivity {
     // array list for storing entries.
     ArrayList barEntries;
 
-    // creating a string array for displaying intervals.
-    String[] intervals = new String[]{"","8:30 - 9:00","9:00 - 9:30","9:30 - 10:00", "10:00 - 10:30", "10:30 - 11:00", "11:00 - 11:30", "11:30 - 12:00", "12:00 - 12:30","12:30 - 13:00","13:00 - 13:30","13:30 - 14:00", "14:00 - 14:30", "14:30 - 15:00", "15:00 - 15:30", "15:30 - 16:00", "16:00 - 16:30"};
+    float[] stress_levels = new float[]{0.2f, 0.3f, 0.6f, 0.8f}; // Enviado da database: stress level de cada session do dia
+    int numSessions = stress_levels.length; // Número de sessions no dia
+    int startTime = 9; // Start time da primeira sessão do dia (start time do dia)
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,12 +48,14 @@ public class BarChartActivity extends AppCompatActivity {
         // initializing variable for bar chart.
         barChart = findViewById(R.id.idBarChart);
 
-        float [] stress_levels = new float[] {4.0f,6.0f,9.0f,2.0f,4.0f,1.0f,9.0f,4.0f,6.0f,1.0f,1.0f,2.0f};
-
         int [] colorLabels = colorLabels(stress_levels);
 
+        // creating a string array for displaying intervals.
+        //String[] intervals = new String[]{"","8:30 - 9:00","9:00 - 9:30","9:30 - 10:00", "10:00 - 10:30", "10:30 - 11:00", "11:00 - 11:30", "11:30 - 12:00", "12:00 - 12:30","12:30 - 13:00","13:00 - 13:30","13:30 - 14:00", "14:00 - 14:30", "14:30 - 15:00", "15:00 - 15:30", "15:30 - 16:00", "16:00 - 16:30"};
+        String[] intervals = timeIntervals(numSessions, startTime);
+
         // creating a new bar data set.
-        barDataSet1 = new BarDataSet(getBarEntriesOne(), "Stress Levels");
+        barDataSet1 = new BarDataSet(getBarEntries(numSessions, stress_levels), "Stress Levels");
         barDataSet1.setColor(getApplicationContext().getResources().getColor(R.color.purple_200)); // APLICAR TONS DE ACORDO COM VALOR
         barDataSet1.setValueTextSize(12f);
         barDataSet1.setColors(colorLabels);
@@ -139,26 +142,33 @@ public class BarChartActivity extends AppCompatActivity {
     }
 
     // array list for first set
-    private ArrayList<BarEntry> getBarEntriesOne() {
+    private ArrayList<BarEntry> getBarEntries(int numSessions, float[] stress_levels) {
 
         // creating a new array list
         barEntries = new ArrayList<>();
 
         // adding new entry to our array list with bar
         // entry and passing x and y axis value to it.
-        barEntries.add(new BarEntry(1f, 4.0f));
-        barEntries.add(new BarEntry(2f, 6.0f));
-        barEntries.add(new BarEntry(3f, 9.0f));
-        barEntries.add(new BarEntry(4f, 2.0f));
-        barEntries.add(new BarEntry(5f, 4.0f));
-        barEntries.add(new BarEntry(6f, 1.0f));
-        barEntries.add(new BarEntry(7f, 9.0f));
-        barEntries.add(new BarEntry(8f, 4.0f));
-        barEntries.add(new BarEntry(9f, 6.0f));
-        barEntries.add(new BarEntry(10f, 1.0f));
-        barEntries.add(new BarEntry(11f, 1.0f));
-        barEntries.add(new BarEntry(12f, 2.0f));
+        for (int i = 0; i < numSessions; i++) {
+            float f = i+1;
+            barEntries.add(new BarEntry(f, stress_levels[i])); //Começa em 1f
+        }
+
         return barEntries;
+    }
+
+    // Retorna intervalos de tempo de medição (duração de 5min traduzidos para 2h)
+    // Se a hora de início de medição foi 9h e o dia teve duas sessões, a função retorna 9:00 - 11:00 e 11:00 - 13:00
+    private String[] timeIntervals(int numSessions, int startTime){
+        //ArrayList<String> timeIntervals = new ArrayList<String>();
+        String[] timeIntervals = new String[numSessions+1];
+
+        timeIntervals[0]="";
+        for (int i = 1; i <= numSessions; i++) {
+            timeIntervals[i] = String.join("",String.valueOf(new Integer(startTime+2*(i-1))),":00 - ",String.valueOf(new Integer(startTime+2*i)),":00");
+        }
+
+        return timeIntervals;
     }
 
     private int[] colorLabels(float[] stress_levels){
@@ -171,16 +181,16 @@ public class BarChartActivity extends AppCompatActivity {
     }
 
     private int getColorLabel(float stress_level) {
-        if (stress_level > 8){
-            return Color.rgb(179, 48, 80);
-        } else if (stress_level <=8 & stress_level > 5) {
-            return Color.rgb(191, 134, 134);
-        } else if (stress_level <= 5 & stress_level > 3) {
-            return Color.rgb(217, 184, 162);
-        } else {
-            return Color.rgb(149, 165, 124);
+        // 100% - 70% (severe) 70% - 40% (high) 40% - 0% (moderate)
+        if (stress_level > 0.7f){
+            return Color.parseColor("#EF5350");
+        } else if (stress_level <=0.7f & stress_level > 0.4f) {
+            return Color.parseColor("#FFA726");
+        } else{
+            return Color.parseColor("#29B6F6");
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

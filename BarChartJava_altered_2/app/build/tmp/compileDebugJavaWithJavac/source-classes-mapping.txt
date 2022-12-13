@@ -1,0 +1,4 @@
+com/cambotutorial/sovary/chartjava/BuildConfig.java
+ com.cambotutorial.sovary.chartjava.BuildConfig
+com/cambotutorial/sovary/chartjava/MainActivity.java
+ com.cambotutorial.sovary.chartjava.MainActivity

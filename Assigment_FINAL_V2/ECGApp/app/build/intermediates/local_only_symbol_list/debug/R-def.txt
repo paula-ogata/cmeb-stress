@@ -1,0 +1,35 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color purple_200
+color purple_500
+color purple_700
+color teal_200
+color teal_700
+color white
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+drawable img_491388
+id LinearLayout1
+id ecg1_bt
+id ecg2_bt
+id plot
+id start_bt
+id textView2
+id textView3
+layout activity_main
+layout activity_plot
+mipmap ic_launcher
+mipmap ic_launcher_round
+string X_title
+string Y_title
+string app_name
+string ecg1_bt_text
+string ecg2_bt_text
+string plot_title
+string select
+string start_bt
+string welcome
+style Theme.EcgApp
+xml backup_rules
+xml data_extraction_rules
