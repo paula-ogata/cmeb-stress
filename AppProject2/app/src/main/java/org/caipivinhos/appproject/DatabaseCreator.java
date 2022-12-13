@@ -23,17 +23,12 @@ public class DatabaseCreator extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE User (idUser INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, pin INTEGER, gender TEXT NOT NULL CHECK(gender=='Female' OR gender=='Male'), age INTEGER NOT NULL);");
-        db.execSQL("CREATE TABLE Report (idReport INTEGER PRIMARY KEY AUTOINCREMENT, stressAvg INTEGER, sessionCount INTEGER DEFAULT 0, comment TEXT, date TEXT NOT NULL, idUser INTEGER NOT NULL REFERENCES User);");
-        db.execSQL("CREATE TABLE Session (idSession INTEGER PRIMARY KEY AUTOINCREMENT, rrAvg INTEGER NOT NULL, stressLevel INTEGER NOT NULL, hourBegin TEXT NOT NULL, duration DOUBLE NOT NULL, idReport INTEGER NOT NULL REFERENCES Report);");
+        db.execSQL("CREATE TABLE User (idUser INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, pin INTEGER, gender TEXT NOT NULL CHECK(gender=='female' OR gender=='male'), age INTEGER NOT NULL);");
+        db.execSQL("CREATE TABLE Report (idReport INTEGER PRIMARY KEY AUTOINCREMENT, stressAvg DOUBLE, sessionCount INTEGER DEFAULT 0, hourBegin INTEGER NOT NULL, comment TEXT, date TEXT NOT NULL, idUser INTEGER NOT NULL REFERENCES User);");
+        db.execSQL("CREATE TABLE Session (idSession INTEGER PRIMARY KEY AUTOINCREMENT, rrAvg INTEGER NOT NULL, stressLevel INTEGER NOT NULL, hourBegin TEXT NOT NULL, idReport INTEGER NOT NULL REFERENCES Report);");
+        db.execSQL("CREATE TABLE MediumValues (id INTEGER PRIMARY KEY AUTOINCREMENT, value DOUBLE NOT NULL, gender TEXT NOT NULL CHECK(gender=='female' OR gender=='male'), ageMin INTEGER NOT NULL, ageMax INTEGER NOT NULL);");
 
-        /*
-        ContentValues cv = new ContentValues();
-
-        cv.put("name", "ze");
-        cv.put("gender", "Male");
-        cv.put("age", 21);
-        db.insertOrThrow("User", null, cv);*/
+        setMediumValues(db);
     }
 
     @Override
@@ -42,5 +37,81 @@ public class DatabaseCreator extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REPORT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         onCreate(db);
+    }
+
+    private void setMediumValues(SQLiteDatabase db) {
+        ContentValues cv = new ContentValues();
+
+        cv.put("value", 39.7);
+        cv.put("gender", "male");
+        cv.put("ageMin", 15);
+        cv.put("ageMax", 34);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 32.0);
+        cv.put("gender", "male");
+        cv.put("ageMin", 35);
+        cv.put("ageMax", 44);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 23.0);
+        cv.put("gender", "male");
+        cv.put("ageMin", 45);
+        cv.put("ageMax", 54);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 19.9);
+        cv.put("gender", "male");
+        cv.put("ageMin", 55);
+        cv.put("ageMax", 64);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 19.1);
+        cv.put("gender", "male");
+        cv.put("ageMin", 65);
+        cv.put("ageMax", 74);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 42.9);
+        cv.put("gender", "female");
+        cv.put("ageMin", 15);
+        cv.put("ageMax", 34);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 35.4);
+        cv.put("gender", "female");
+        cv.put("ageMin", 35);
+        cv.put("ageMax", 44);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 26.3);
+        cv.put("gender", "female");
+        cv.put("ageMin", 45);
+        cv.put("ageMax", 54);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 21.4);
+        cv.put("gender", "female");
+        cv.put("ageMin", 55);
+        cv.put("ageMax", 64);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 19.1);
+        cv.put("gender", "female");
+        cv.put("ageMin", 65);
+        cv.put("ageMax", 74);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 0.0);
+        cv.put("gender", "female");
+        cv.put("ageMin", 10);
+        cv.put("ageMax", 20);
+        db.insertOrThrow("MediumValues", null, cv);
+
+        cv.put("value", 0.0);
+        cv.put("gender", "female");
+        cv.put("ageMin", 10);
+        cv.put("ageMax", 20);
+        db.insertOrThrow("MediumValues", null, cv);
     }
 }

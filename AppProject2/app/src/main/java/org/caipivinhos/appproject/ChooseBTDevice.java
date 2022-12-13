@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,9 +20,9 @@ import java.util.Set;
 
 public class ChooseBTDevice extends AppCompatActivity {
 
-    public static String SELECT_DEVICE_ADDRESS = "device_address";
     private ArrayAdapter<String> listAdapter;
     private String macAddress = "";
+    private static final String TAG = "ChooseBTDevice";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,12 +31,12 @@ public class ChooseBTDevice extends AppCompatActivity {
 
         Button buttonOK = findViewById(R.id.cmdOK);
         buttonOK.setOnClickListener(view -> {
-            VitalJacketManager vj = (new VitalJacketManager());
-            vj.setMacAddress(macAddress);
+            VitalJacketManager.setMacAddress(macAddress);
             try {
-                vj.connectToVJ(this);
+                //VitalJacketManager.connectToVJ(this);
                 Toast.makeText(this, "Connect", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
+                Log.d(TAG, "onCreate: " + e.getMessage());
                 Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
             }
         });

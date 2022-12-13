@@ -4,35 +4,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class DatabaseManager {
-    private static final String DATABASE_NAME = "db";
 
     private static final String TABLE_USER = "User";
     private static final String TABLE_SESSION = "Session";
     private static final String TABLE_REPORT = "Report";
-
-    public static final String TITLE = "title";
-    public static final String VALUE = "value";
-    private SQLiteDatabase db = null;
-
-    /*
-    public static synchronized DatabaseManager getInstance(Context context) {
-        // Use the application context, which will ensure that you
-        // don't accidentally leak an Activity's context.
-        // See this article for more information: http://bit.ly/6LRzfx
-        if (sInstance == null) {
-            sInstance = new DatabaseManager(context.getApplicationContext());
-        }
-        return sInstance;
-    }
-    */
-
+    private final SQLiteDatabase db;
 
     public DatabaseManager(Context context) {
         db = (new DatabaseCreator(context)).getWritableDatabase();
@@ -57,13 +41,13 @@ public class DatabaseManager {
         cv.put("duration", duration);
         int idReport = GetIdReport(date);
         cv.put("idReport", idReport);
-        //UpdateSessionCount(idReport);
+        UpdateSessionCount(idReport);
 
         db.insertOrThrow("Session", null, cv);
     }
 
-    public Integer GetIdReport(String date) {
-        Integer idReport = null;
+    private Integer GetIdReport(String date) {
+        Integer idReport;
         String SELECT_QUERY = String.format("SELECT idReport FROM %s WHERE date = '%s'",
                 TABLE_REPORT,
                 date);
@@ -72,8 +56,15 @@ public class DatabaseManager {
             cursor.moveToNext();
             idReport = cursor.getInt(cursor.getColumnIndexOrThrow("idReport"));
         } else {
-            CreateReport(date);
-            //idReport = 1;
+            Date time = new Date();
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.setTime(time);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if(calendar.get(Calendar.MINUTE) >= 30) {
+                hour += 1;
+            }
+
+            CreateReport(date, hour);
             idReport = GetIdReport(date);
         }
 
@@ -81,27 +72,14 @@ public class DatabaseManager {
         return idReport;
     }
 
-    private void CreateReport(String date) {
+    private void CreateReport(String date, int hour) {
         ContentValues values = new ContentValues();
         values.put("date", date);
         values.put("idUser", MainActivity.userId);
+        //hour = ----------------------------------> Definir várias horas quando for para simular dados
+        values.put("hourBegin", hour);
         db.replace(TABLE_REPORT, null, values);
     }
-
-    /*
-    public Integer GetUserId(String username) {
-        int idUser = 1;
-        SQLiteDatabase db = this.getWritableDatabase();
-        String SELECT_QUERY = String.format("SELECT idUser FROM %s WHERE name = %s",
-                TABLE_USER,
-                username);
-        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
-        if(cursor.getCount()!=0){
-            idUser = cursor.getInt(cursor.getColumnIndexOrThrow("idReport"));
-        }
-        return idUser;
-    }
-    */
 
     public Integer GetUserId() {
         int idUser = 5;
@@ -132,7 +110,7 @@ public class DatabaseManager {
     }
 
     public void AddComment(String comment, String date) {
-        String UPDATE_QUERY = String.format("UPDATE %s SET comment=%s WHERE idUser = %s AND date = '%s'" ,
+        String UPDATE_QUERY = String.format("UPDATE %s SET comment='%s' WHERE idUser = %s AND date = '%s'" ,
                 TABLE_REPORT,
                 comment,
                 MainActivity.userId,
@@ -202,35 +180,6 @@ public class DatabaseManager {
         db.execSQL(UPDATE_QUERY);
     }
 
-    public HashMap<String, Integer> getStressLevelsReport (String date) {
-        HashMap<String, Integer> values = new HashMap<String, Integer>();
-        String SELECT_QUERY = String.format("SELECT %s, %s FROM %s JOIN %s ON %s = %s WHERE date = '%s' ORDER BY %s %s",
-                "stressLevel",
-                "hourBegin",
-                TABLE_REPORT,
-                TABLE_SESSION,
-                TABLE_REPORT+".idReport",
-                TABLE_SESSION+".idReport",
-                date,
-                "idSession",
-                "ASC");
-
-        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
-        if(cursor.getCount()==0){
-            cursor.close();
-            return values;
-        }
-
-        while(cursor.moveToNext()) {
-            int stressLevel = cursor.getInt(cursor.getColumnIndexOrThrow("stressLevel"));
-            String hourBegin = cursor.getString(cursor.getColumnIndexOrThrow("hourBegin"));
-            values.put(hourBegin, stressLevel);
-        }
-
-        cursor.close();
-        return values;
-    }
-
     public ArrayList<Integer> getSessionsAvgByDate(String date) {
         ArrayList<Integer> rrValues = new ArrayList<>();
 
@@ -259,6 +208,22 @@ public class DatabaseManager {
         return rrValues;
     }
 
+    public int getHourBeginReport(String date) {
+        int hour;
+        String SELECT_QUERY ="SELECT hourBegin FROM Report WHERE date = '" + date + "'";
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+
+        if(cursor.getCount()!=0){
+            cursor.moveToNext();
+            hour = cursor.getInt(cursor.getColumnIndexOrThrow("hourBegin"));
+        } else {
+            hour = -1;
+        }
+
+        cursor.close();
+        return hour;
+    }
+
     public int[] getStressLevelsPieChart(String date) {
         int[] stressLevels = new int[4];
         String SELECT_QUERY ="SELECT stressLevel FROM Session JOIN Report ON Session.idReport = Report.idReport WHERE date = '" + date + "'";
@@ -277,9 +242,6 @@ public class DatabaseManager {
                     case 3:
                         stressLevels[2] += 1;
                         break;
-                    case 4:
-                        stressLevels[3] += 1;
-                        break;
                 }
             }
         }
@@ -288,11 +250,10 @@ public class DatabaseManager {
     }
 
     public void simulateData() {
-        AddSession(1,"00:00",1.0,"8/12");
-        AddSession(2,"00:00",1.0,"8/12");
-        AddSession(3,"00:00",1.0,"8/12");
-        AddSession(4,"00:00",1.0,"8/12");
-        AddSession(1,"00:00",1.0,"8/12");
-        AddSession(1,"00:00",1.0,"8/12");
+        AddSession(1,"00:00",1.0,"8/12/2022");
+        AddSession(2,"00:00",1.0,"8/12/2022");
+        AddSession(3,"00:00",1.0,"8/12/2022");
+        AddSession(1,"00:00",1.0,"8/12/2022");
+        AddSession(1,"00:00",1.0,"8/12/2022");
     }
 }
