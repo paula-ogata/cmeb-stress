@@ -25,6 +25,22 @@ public class HRVMethods {
         return Math.sqrt(average);
     }
 
+    static double rmssdLabeling(Double rmssd){
+        int stressLevel = -1;
+
+        if (rmssd<=29.08 && rmssd>0){
+            stressLevel = 2; //Severe
+        } else if (rmssd>29.08 && rmssd<=46.53){
+            stressLevel = 1; //High
+        } else if (rmssd>46.53){
+            stressLevel = 0; //Moderate
+        } else{
+            stressLevel = -1;  //Error
+        }
+
+        return stressLevel;
+    }
+
 
     static double avgCalculation(int[] myRR) {
         double average;
