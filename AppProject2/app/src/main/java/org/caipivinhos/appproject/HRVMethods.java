@@ -10,14 +10,10 @@ public class HRVMethods {
 
         for (int i = 0; i < myRR.size()-1; i++) {
             dif[i] = Math.pow((myRR.get(i)-myRR.get(i+1)),2);
-
-            //System.out.println(dif[i]);
         }
         double sum = 0;
         for (int i = 0; i < dif.length-1; i++) {
             sum += dif[i];
-
-            //System.out.println(dif[i]);
         }
 
         double average = sum / dif.length;
@@ -25,7 +21,7 @@ public class HRVMethods {
         return Math.sqrt(average);
     }
 
-    static double stressPercentage(ArrayList<Integer> myRR, double median_level){
+    static double getStressPercentage(ArrayList<Integer> myRR, double median_level){
         double rmssd = rmssdCalculation(myRR);
         double stressPc = -1;
 
@@ -34,7 +30,7 @@ public class HRVMethods {
         return stressPc;
     }
 
-    static double percLabeling(double stressPc){
+    static int percLabeling(double stressPc){
         int stressLevel = -1;
 
         if (stressPc > 70){
@@ -47,6 +43,8 @@ public class HRVMethods {
 
         return stressLevel;
     }
+
+
 
 
     static double avgCalculation(int[] myRR) {

@@ -30,21 +30,7 @@ public class VitalJacketManager {
         Log.d(TAG, "setMacAddress: " + macAddress);
     }
 
-    private void startAcquisition() {
-        try{
-            Looper.prepare();
-            lib.Connect(macAddress,nQRS);
-            Looper.loop();
-        } catch (Exception e) {
-            Log.d(TAG, "VitalJacket: Error Connecting to VitalJacket");
-        }
-    }
-
-    private static void stopAcquisition() throws Exception {
-        lib.Disconnect();
-    }
-
-    public boolean longSession(Context c) {
+    public void longSession(Context c) {
         rrValues = new ArrayList<>();
 
         context = c;
@@ -57,7 +43,7 @@ public class VitalJacketManager {
         }
 
         try{
-            stopAcquisition();
+            lib.Disconnect();
             Log.d(TAG, "longSession: Stopped Acquisition");
         }
         catch (Exception e) {
@@ -65,24 +51,21 @@ public class VitalJacketManager {
         }
 
         // CALCULOS COM O RRVALUES .....................
-        // int[] rrVector = rrValues.toArray;
-        // HRVMethods.rmssdCalculation(rrVector) // Calcula RMSSD para o intervalo definido (10s ou 5min, etc)
-        // HRVMethods.sdann
 
-        // CALCULO AVG
+        DatabaseManager db = new DatabaseManager(context);
+        double rrAvg = HRVMethods.rmssdCalculation(rrValues);
+        double mediumLevel = db.getMediumLevel();
+        double stressPercentage = HRVMethods.getStressPercentage(rrValues, mediumLevel);
+        int stressLabel = HRVMethods.percLabeling(stressPercentage);
 
-        // int avg = HRVMethods.avgCalculation(rrVector)
-        int stressLevel = 1;
+
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(time);
         String hourBegin = calendar.get(Calendar.HOUR_OF_DAY) +":"+ Calendar.MINUTE;
-        Double duration = 1.0;
         String date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
-        //DatabaseManager db = new DatabaseManager(context);
 
-        //return db.AddSession(stressLevel, hourBegin, duration, date);
-        return true;
+        db.AddSession(stressLabel, rrAvg, stressPercentage, hourBegin, date);
     }
 
     public static double instantSession(Context c) throws Exception {
@@ -98,7 +81,7 @@ public class VitalJacketManager {
             Log.d(TAG, "instantSession: rrValues size" + rrValues.size());
         }
         try {
-            stopAcquisition();
+            lib.Disconnect();
             Log.d(TAG, "instantSession: Stopped Acquisition");
         }
         catch (Exception e) {

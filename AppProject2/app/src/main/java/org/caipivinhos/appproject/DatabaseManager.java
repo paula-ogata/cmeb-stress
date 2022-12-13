@@ -16,6 +16,7 @@ public class DatabaseManager {
     private static final String TABLE_USER = "User";
     private static final String TABLE_SESSION = "Session";
     private static final String TABLE_REPORT = "Report";
+    private static final String TABLE_MEDIUM = "MediumValues";
     private final SQLiteDatabase db;
 
     public DatabaseManager(Context context) {
@@ -32,18 +33,53 @@ public class DatabaseManager {
         db.insertOrThrow("User", null, cv);
     }
 
-    public void AddSession(Integer stressLevel, String hourBegin, Double duration, String date){
+    public void AddSession(Integer stressLevel, double rrAvg, double stressPercentage, String hourBegin, String date){
         ContentValues cv = new ContentValues();
 
-        cv.put("rrAvg", 0);
+        cv.put("rrAvg", rrAvg);
         cv.put("stressLevel", stressLevel);
         cv.put("hourBegin",hourBegin);
-        cv.put("duration", duration);
+        cv.put("stressPercentage", stressPercentage);
         int idReport = GetIdReport(date);
         cv.put("idReport", idReport);
         UpdateSessionCount(idReport);
 
         db.insertOrThrow("Session", null, cv);
+    }
+
+    public double getMediumLevel() {
+        double mediumLevel = 0;
+        String gender = "";
+        int age = 0;
+        String SELECT_1 = String.format("SELECT %s, %s FROM %s",
+                "gender",
+                "age",
+                TABLE_USER);
+        Cursor cursor1 = db.rawQuery(SELECT_1, null);
+        if(cursor1.getCount()!=0){
+            cursor1.moveToNext();
+            gender = cursor1.getString(cursor1.getColumnIndexOrThrow("gender"));
+            age = cursor1.getInt(cursor1.getColumnIndexOrThrow("age"));
+        }
+        cursor1.close();
+
+        String SELECT_2 = String.format("SELECT %s FROM %s WHERE %s = '%s' AND %s = %s",
+                "value",
+                TABLE_MEDIUM,
+                "gender",
+                gender,
+                "age",
+                age
+                );
+        Cursor cursor2 = db.rawQuery(SELECT_2, null);
+        if(cursor2.getCount()!=0){
+            cursor2.moveToNext();
+            mediumLevel = cursor2.getDouble(cursor2.getColumnIndexOrThrow("value"));
+        }
+        cursor2.close();
+
+        return mediumLevel;
+
     }
 
     private Integer GetIdReport(String date) {
@@ -249,11 +285,13 @@ public class DatabaseManager {
         return stressLevels;
     }
 
+
+
     public void simulateData() {
-        AddSession(1,"00:00",1.0,"8/12/2022");
-        AddSession(2,"00:00",1.0,"8/12/2022");
-        AddSession(3,"00:00",1.0,"8/12/2022");
-        AddSession(1,"00:00",1.0,"8/12/2022");
-        AddSession(1,"00:00",1.0,"8/12/2022");
+        //AddSession(1,"00:00",1.0,"8/12/2022");
+        //AddSession(2,"00:00",1.0,"8/12/2022");
+        //AddSession(3,"00:00",1.0,"8/12/2022");
+        //AddSession(1,"00:00",1.0,"8/12/2022");
+        //AddSession(1,"00:00",1.0,"8/12/2022");
     }
 }
