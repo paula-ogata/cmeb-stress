@@ -33,9 +33,9 @@ public class DatabaseManager {
         db.insertOrThrow("User", null, cv);
     }
 
-    public void AddSession(Integer stressLevel, double rrAvg, double stressPercentage, String hourBegin, String date){
+    public void AddSession(double rrAvg, int stressPercentage, String hourBegin, String date){
         ContentValues cv = new ContentValues();
-
+        int stressLevel = HRVMethods.percLabeling(stressPercentage);
         cv.put("rrAvg", rrAvg);
         cv.put("stressLevel", stressLevel);
         cv.put("hourBegin",hourBegin);
@@ -92,15 +92,7 @@ public class DatabaseManager {
             cursor.moveToNext();
             idReport = cursor.getInt(cursor.getColumnIndexOrThrow("idReport"));
         } else {
-            Date time = new Date();
-            Calendar calendar = GregorianCalendar.getInstance();
-            calendar.setTime(time);
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if(calendar.get(Calendar.MINUTE) >= 30) {
-                hour += 1;
-            }
-
-            CreateReport(date, hour);
+            CreateReport(date);
             idReport = GetIdReport(date);
         }
 
@@ -108,7 +100,15 @@ public class DatabaseManager {
         return idReport;
     }
 
-    private void CreateReport(String date, int hour) {
+    private void CreateReport(String date) {
+        Date time = new Date();
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if(calendar.get(Calendar.MINUTE) >= 30) {
+            hour += 1;
+        }
+
         ContentValues values = new ContentValues();
         values.put("date", date);
         values.put("idUser", MainActivity.userId);
@@ -285,13 +285,23 @@ public class DatabaseManager {
         return stressLevels;
     }
 
-
-
     public void simulateData() {
-        //AddSession(1,"00:00",1.0,"8/12/2022");
-        //AddSession(2,"00:00",1.0,"8/12/2022");
-        //AddSession(3,"00:00",1.0,"8/12/2022");
-        //AddSession(1,"00:00",1.0,"8/12/2022");
-        //AddSession(1,"00:00",1.0,"8/12/2022");
+        AddSession(0.0,20, "00:00", "13/12/2022");
+        AddSession(0.0,20, "00:00", "13/12/2022");
+        AddSession(0.0,35, "00:00", "13/12/2022");
+        AddSession(0.0,99, "00:00", "13/12/2022");
+        AddSession(0.0,10, "00:00", "13/12/2022");
+        AddSession(0.0,87, "00:00", "13/12/2022");
+        AddSession(0.0,90, "00:00", "13/12/2022");
+        AddSession(0.0,56, "00:00", "13/12/2022");
+        AddSession(0.0,42, "00:00", "13/12/2022");
+        AddSession(0.0,75, "00:00", "13/12/2022");
+        AddSession(0.0,38, "00:00", "13/12/2022");
+        AddSession(0.0,93, "00:00", "13/12/2022");
+        AddSession(0.0,63, "00:00","13/12/2022");
+        AddSession(0.0,89, "00:00", "13/12/2022");
+        AddSession(0.0,59, "00:00", "13/12/2022");
+
+
     }
 }

@@ -55,8 +55,7 @@ public class VitalJacketManager {
         DatabaseManager db = new DatabaseManager(context);
         double rrAvg = HRVMethods.rmssdCalculation(rrValues);
         double mediumLevel = db.getMediumLevel();
-        double stressPercentage = HRVMethods.getStressPercentage(rrValues, mediumLevel);
-        int stressLabel = HRVMethods.percLabeling(stressPercentage);
+        int stressPercentage = HRVMethods.getStressPercentage(rrValues, mediumLevel);
 
 
         Date time = new Date();
@@ -65,7 +64,7 @@ public class VitalJacketManager {
         String hourBegin = calendar.get(Calendar.HOUR_OF_DAY) +":"+ Calendar.MINUTE;
         String date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
 
-        db.AddSession(stressLabel, rrAvg, stressPercentage, hourBegin, date);
+        db.AddSession(rrAvg, stressPercentage, hourBegin, date);
     }
 
     public static double instantSession(Context c) throws Exception {

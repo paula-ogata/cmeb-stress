@@ -21,23 +21,23 @@ public class HRVMethods {
         return Math.sqrt(average);
     }
 
-    static double getStressPercentage(ArrayList<Integer> myRR, double median_level){
+    static int getStressPercentage(ArrayList<Integer> myRR, double median_level){
         double rmssd = rmssdCalculation(myRR);
-        double stressPc = -1;
+        int stressPc = -1;
 
-        stressPc = 50 + ((median_level-rmssd)/median_level)*50;
+        stressPc = (int) (50 + ((median_level-rmssd)/median_level)*50);
 
         return stressPc;
     }
 
-    static int percLabeling(double stressPc){
+    static int percLabeling(int stressPc){
         int stressLevel = -1;
 
         if (stressPc > 70){
             stressLevel = 2; //Severe
         } else if (stressPc > 40){
             stressLevel = 1; //High
-        } else if (stressPc <= 40){
+        } else {
             stressLevel = 0; //Moderate
         }
 
