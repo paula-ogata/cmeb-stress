@@ -35,15 +35,26 @@ public class BarChartActivity extends AppCompatActivity {
     // array list for storing entries.
     ArrayList barEntries;
 
-    int[] stress_levels = new int[]{20, 30, 60, 80}; // Enviado da database: stress level de cada session do dia
-    int numSessions = stress_levels.length; // Número de sessions no dia
-    int startTime = 9; // Start time da primeira sessão do dia (start time do dia)
+    int[] stress_levels = null;
+    int numSessions;
+    int startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bar_chart);
+
+        DatabaseManager db = new DatabaseManager(this);
+
+        ArrayList<Integer> stress_levels_arraylist = db.getSessionsPercentageByDate("13/12/2022"); // Enviado da database: stress level de cada session do dia
+        stress_levels = new int[stress_levels_arraylist.size()];
+        for (int i = 0; i < stress_levels_arraylist.size(); i++){
+            stress_levels[i] = stress_levels_arraylist.get(i);
+        }
+
+        numSessions = stress_levels.length; // Número de sessions no dia
+        startTime = db.getHourBeginReport("13/12/2022"); // Start time da primeira sessão do dia (start time do dia
 
         // initializing variable for bar chart.
         barChart = findViewById(R.id.idBarChart);
