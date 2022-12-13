@@ -78,7 +78,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     private void setPieChartData() {
         // Set the percentage of language used
         DatabaseManager db = new DatabaseManager(this);
-        db.simulateData();
+        //db.simulateData();
         int[] stressLevels = db.getStressLevelsPieChart(date);
 
         tvModerado.setText(String.valueOf(stressLevels[0]));
