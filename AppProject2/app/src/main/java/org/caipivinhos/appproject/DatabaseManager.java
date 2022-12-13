@@ -216,11 +216,11 @@ public class DatabaseManager {
         db.execSQL(UPDATE_QUERY);
     }
 
-    public ArrayList<Integer> getSessionsAvgByDate(String date) {
-        ArrayList<Integer> rrValues = new ArrayList<>();
+    public ArrayList<Integer> getSessionsPercentageByDate(String date) {
+        ArrayList<Integer> percentageValues = new ArrayList<>();
 
         String SELECT_QUERY = String.format("SELECT %s FROM %s JOIN %s ON %s = %s WHERE date = '%s' ORDER BY %s %s",
-                "rrAvg",
+                "stressPercentage",
                 TABLE_REPORT,
                 TABLE_SESSION,
                 TABLE_REPORT+".idReport",
@@ -232,16 +232,16 @@ public class DatabaseManager {
         Cursor cursor = db.rawQuery(SELECT_QUERY, null);
         if(cursor.getCount()==0){
             cursor.close();
-            return rrValues;
+            return percentageValues;
         }
 
         while(cursor.moveToNext()) {
-            int rrAvg = cursor.getInt(cursor.getColumnIndexOrThrow("rrAvg"));
-            rrValues.add(rrAvg);
+            int rrAvg = cursor.getInt(cursor.getColumnIndexOrThrow("stressPercentage"));
+            percentageValues.add(rrAvg);
         }
 
         cursor.close();
-        return rrValues;
+        return percentageValues;
     }
 
     public int getHourBeginReport(String date) {
@@ -298,7 +298,7 @@ public class DatabaseManager {
         AddSession(0.0,75, "00:00", "13/12/2022");
         AddSession(0.0,38, "00:00", "13/12/2022");
         AddSession(0.0,93, "00:00", "13/12/2022");
-        AddSession(0.0,63, "00:00","13/12/2022");
+        AddSession(0.0,63, "00:00", "13/12/2022");
         AddSession(0.0,89, "00:00", "13/12/2022");
         AddSession(0.0,59, "00:00", "13/12/2022");
 
