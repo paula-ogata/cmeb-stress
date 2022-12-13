@@ -35,7 +35,7 @@ public class BarChartActivity extends AppCompatActivity {
     // array list for storing entries.
     ArrayList barEntries;
 
-    float[] stress_levels = new float[]{0.2f, 0.3f, 0.6f, 0.8f}; // Enviado da database: stress level de cada session do dia
+    int[] stress_levels = new int[]{20, 30, 60, 80}; // Enviado da database: stress level de cada session do dia
     int numSessions = stress_levels.length; // Número de sessions no dia
     int startTime = 9; // Start time da primeira sessão do dia (start time do dia)
 
@@ -142,7 +142,7 @@ public class BarChartActivity extends AppCompatActivity {
     }
 
     // array list for first set
-    private ArrayList<BarEntry> getBarEntries(int numSessions, float[] stress_levels) {
+    private ArrayList<BarEntry> getBarEntries(int numSessions, int[] stress_levels) {
 
         // creating a new array list
         barEntries = new ArrayList<>();
@@ -171,7 +171,7 @@ public class BarChartActivity extends AppCompatActivity {
         return timeIntervals;
     }
 
-    private int[] colorLabels(float[] stress_levels){
+    private int[] colorLabels(int[] stress_levels){
         int[] color_labels = new int[stress_levels.length];
 
         for (int i = 0; i < stress_levels.length; i++)
@@ -180,11 +180,11 @@ public class BarChartActivity extends AppCompatActivity {
         return color_labels;
     }
 
-    private int getColorLabel(float stress_level) {
+    private int getColorLabel(int stress_level) {
         // 100% - 70% (severe) 70% - 40% (high) 40% - 0% (moderate)
-        if (stress_level > 0.7f){
+        if (stress_level > 70){
             return Color.parseColor("#EF5350");
-        } else if (stress_level <=0.7f & stress_level > 0.4f) {
+        } else if (stress_level <=70 & stress_level > 40) {
             return Color.parseColor("#FFA726");
         } else{
             return Color.parseColor("#29B6F6");
