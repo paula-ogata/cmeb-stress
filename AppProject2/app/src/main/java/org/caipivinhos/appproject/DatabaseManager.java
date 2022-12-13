@@ -269,13 +269,13 @@ public class DatabaseManager {
             while(cursor.moveToNext()) {
                 int sL = cursor.getInt(cursor.getColumnIndexOrThrow("stressLevel"));
                 switch (sL) {
-                    case 1:
+                    case 0:
                        stressLevels[0] += 1;
                        break;
-                    case 2:
+                    case 1:
                         stressLevels[1] += 1;
                         break;
-                    case 3:
+                    case 2:
                         stressLevels[2] += 1;
                         break;
                 }

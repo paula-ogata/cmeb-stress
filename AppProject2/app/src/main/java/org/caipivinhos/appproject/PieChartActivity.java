@@ -30,7 +30,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     TextView tvModerado, tvAlto, tvSevero;
     PieChart pieChart;
     EditText commentReport;
-    String date = "8/12";
+    String date = "13/12/2022";
     Button submitComment;
     DatabaseManager db;
 
@@ -79,7 +79,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         // Set the percentage of language used
         DatabaseManager db = new DatabaseManager(this);
         db.simulateData();
-        int[] stressLevels = db.getStressLevelsPieChart("8/12");
+        int[] stressLevels = db.getStressLevelsPieChart(date);
 
         tvModerado.setText(String.valueOf(stressLevels[0]));
         tvAlto.setText(String.valueOf(stressLevels[1]));

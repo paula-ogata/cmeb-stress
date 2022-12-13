@@ -33,9 +33,9 @@ public class NamePrompt extends AppCompatActivity {
         int genderId = rg.getCheckedRadioButtonId();
         String gender;
         if(genderId == 0)
-            gender = "Male";
+            gender = "male";
         else
-            gender = "Female";
+            gender = "female";
 
         DatabaseManager db = new DatabaseManager(this);
         db.AddUser(username,gender,age);
