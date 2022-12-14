@@ -1,13 +1,19 @@
 package org.caipivinhos.appproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -24,8 +30,23 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
+// From PieChart
+import android.app.DatePickerDialog;
+import android.widget.DatePicker;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+//
 
-public class BarChartActivity extends AppCompatActivity {
+public class BarChartActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+
+    // From PieChart
+    String date;
+    Button dateBt;
+    private static final String TAG = "BarChartActivity";
+    //
+
     // variable for our bar chart
     BarChart barChart;
 
@@ -45,17 +66,34 @@ public class BarChartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bar_chart);
 
-        DatabaseManager db = new DatabaseManager(this);
+        //From PieChart
+        Date time = new Date();
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(time);
+        date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
 
-        ArrayList<Integer> stress_levels_arraylist = db.getSessionsPercentageByDate("13/12/2022"); // Enviado da database: stress level de cada session do dia
+        dateBt = findViewById(R.id.buttonDate);
+
+        dateBt.setText(date);
+
+            //method for Date selection
+        dateBt.setOnClickListener(v -> {
+            DialogFragment datePicker = new DatePickerFragment();
+            datePicker.show(getSupportFragmentManager(), "date picker");
+        });
+        //
+
+        DatabaseManager db = new DatabaseManager(this);
+        db.simulateData();
+
+        ArrayList<Integer> stress_levels_arraylist = db.getSessionsPercentageByDate(date); // Enviado da database: stress level de cada session do dia
         stress_levels = new int[stress_levels_arraylist.size()];
         for (int i = 0; i < stress_levels_arraylist.size(); i++){
             stress_levels[i] = stress_levels_arraylist.get(i);
         }
 
         numSessions = stress_levels.length; // Número de sessions no dia
-        //startTime = db.getHourBeginReport("13/12/2022"); // Start time da primeira sessão do dia (start time do dia
-        startTime = 21;
+        startTime = db.getHourBeginReport(date); // Start time da primeira sessão do dia (start time do dia
 
         // initializing variable for bar chart.
         barChart = findViewById(R.id.idBarChart);
@@ -68,8 +106,7 @@ public class BarChartActivity extends AppCompatActivity {
 
         // creating a new bar data set.
         barDataSet1 = new BarDataSet(getBarEntries(numSessions, stress_levels), "Stress Levels");
-        barDataSet1.setColor(getApplicationContext().getResources().getColor(R.color.purple_200)); // APLICAR TONS DE ACORDO COM VALOR
-        barDataSet1.setValueTextSize(12f);
+        barDataSet1.setValueTextSize(14f);
         barDataSet1.setColors(colorLabels);
 
         // below line hides the legend (stress level)
@@ -248,5 +285,16 @@ public class BarChartActivity extends AppCompatActivity {
             return(true);
         }
         return (super.onOptionsItemSelected(item));
+    }
+
+    //method for Date pick
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
+        Calendar c = GregorianCalendar.getInstance();
+        c.set(Calendar.YEAR,year);
+        c.set(Calendar.MONTH,month);
+        c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+        date = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
+        Log.d(TAG, "onDateSet: date " + date);
+        dateBt.setText(date);
     }
 }
