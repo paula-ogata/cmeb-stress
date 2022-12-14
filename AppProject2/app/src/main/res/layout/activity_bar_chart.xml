@@ -34,7 +34,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewGraph"
         android:layout_width="match_parent"
-        android:layout_height="538dp"
+        android:layout_height="558dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginRight="20dp"
@@ -42,10 +42,88 @@
         app:cardCornerRadius="10dp">
 
         <!--Ui component for the bar chart-->
+
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/idBarChart"
             android:layout_width="match_parent"
-            android:layout_height="518dp" />
+            android:layout_height="518dp"
+            android:layout_marginTop="20dp">
+
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <LinearLayout
+            android:layout_width="238dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="70dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical">
+
+                <!--View to display the yellow color icon-->
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/Moderado" />
+
+                <!--Text view to display Moderado -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Moderado" />
+
+            </LinearLayout>
+
+
+            <!--Linear layout to display Alto-->
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical">
+
+                <!--View to display the yellow color icon-->
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/Alto" />
+
+                <!--Text view to display Alto text -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Alto" />
+
+            </LinearLayout>
+
+            <!--Linear layout to display Severo-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical">
+
+                <!--View to display the red color icon-->
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/Severo" />
+
+                <!--Text view to display Alto text -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Severo" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>
