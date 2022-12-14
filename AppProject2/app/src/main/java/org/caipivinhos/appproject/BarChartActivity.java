@@ -54,7 +54,8 @@ public class BarChartActivity extends AppCompatActivity {
         }
 
         numSessions = stress_levels.length; // Número de sessions no dia
-        startTime = db.getHourBeginReport("13/12/2022"); // Start time da primeira sessão do dia (start time do dia
+        //startTime = db.getHourBeginReport("13/12/2022"); // Start time da primeira sessão do dia (start time do dia
+        startTime = 21;
 
         // initializing variable for bar chart.
         barChart = findViewById(R.id.idBarChart);
@@ -173,10 +174,22 @@ public class BarChartActivity extends AppCompatActivity {
     private String[] timeIntervals(int numSessions, int startTime){
         //ArrayList<String> timeIntervals = new ArrayList<String>();
         String[] timeIntervals = new String[numSessions+1];
+        int intervalBegin = startTime - 2;
+        int intervalEnd = intervalBegin + 2;
 
         timeIntervals[0]="";
         for (int i = 1; i <= numSessions; i++) {
-            timeIntervals[i] = String.join("",String.valueOf(new Integer(startTime+2*(i-1))),":00 - ",String.valueOf(new Integer(startTime+2*i)),":00");
+            intervalBegin = intervalBegin + 2;
+            intervalEnd = intervalEnd + 2;
+
+            if(intervalBegin >= 24){
+                intervalBegin = intervalBegin - 24;
+            }
+            if(intervalEnd >= 24){
+                intervalEnd = intervalEnd - 24;
+            }
+
+            timeIntervals[i] = String.join("",String.valueOf(new Integer(intervalBegin)),":00 - ",String.valueOf(new Integer(intervalEnd)),":00");
         }
 
         return timeIntervals;
