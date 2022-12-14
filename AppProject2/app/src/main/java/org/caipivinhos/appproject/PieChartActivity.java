@@ -84,7 +84,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     private void setPieChartData() {
         // Set the percentage of language used
         DatabaseManager db = new DatabaseManager(this);
-        //db.simulateData();
+        db.simulateData();
         int[] stressLevels = db.getStressLevelsPieChart(date);
 
         double sumValues = 0;
@@ -160,9 +160,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
     public void getReportComment(String date) {
         String comment = db.GetComment(date);
-        if(comment != null) {
-            commentReport.setText(comment);
-        }
+        commentReport.setText(comment);
     }
 
     //method for Date pick

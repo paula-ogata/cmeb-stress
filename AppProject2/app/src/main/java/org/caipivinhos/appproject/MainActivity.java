@@ -34,28 +34,6 @@ public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "userName";
     public static final int REQUEST_CODE = 1;
     SharedPreferences sharedpreferences;
-    SQLiteDatabase db = null;
-
-    /*
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == REQUEST_CODE  && resultCode  == RESULT_OK) {
-                username = data.getStringExtra(EXTRA_MESSAGE);
-                sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
-                sharedpreferences.edit().putString("username", username).apply();
-                DatabaseManager db = new DatabaseManager(this);
-                boolean bool = db.AddUser(username,"Male",21);
-                userId = db.GetUserId(username);
-                //recreate();
-            }
-        } catch (Exception ex) {
-            Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +44,8 @@ public class MainActivity extends AppCompatActivity {
         if (!sharedpreferences.getBoolean(prevStarted, false)) {
             Intent intent = new Intent(this,NamePrompt.class);
             startActivity(intent);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putBoolean(prevStarted, Boolean.TRUE);
-            editor.apply();
         }
 
-        db = (new DatabaseCreator(this)).getReadableDatabase();
         userId = (new DatabaseManager(this)).GetUserId();
         username = (new DatabaseManager(this)).GetUserName();
         tvMessage = findViewById(R.id.helloUser);
@@ -128,32 +102,5 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, PieChartActivity.class);
         startActivity(i);
 
-    }
-
-    public int getUserId(){
-        int idUser = 5;
-
-        String SELECT_QUERY = ("SELECT idUser FROM User");
-        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
-        cursor.moveToNext();
-        if(cursor.getCount()!=0){
-            idUser = cursor.getInt(cursor.getColumnIndexOrThrow("idUser"));
-        }
-
-        cursor.close();
-        return idUser;
-    }
-
-    public String getUsername() {
-        String user =  "";
-        String SELECT_QUERY = ("SELECT name FROM User");
-        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
-        if(cursor.getCount()!=0){
-            cursor.moveToNext();
-            user = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-        }
-
-        cursor.close();
-        return user;
     }
 }

@@ -15,7 +15,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class NamePrompt extends AppCompatActivity {
-
+    SharedPreferences sharedpreferences;
+    String prevStarted = "prevStarted";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,11 @@ public class NamePrompt extends AppCompatActivity {
 
         DatabaseManager db = new DatabaseManager(this);
         db.AddUser(username,gender,age);
+
+        sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putBoolean(prevStarted, Boolean.TRUE);
+        editor.apply();
 
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
