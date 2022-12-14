@@ -10,44 +10,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#FEDDD8"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewDate"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="70dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
             android:elevation="10dp"
-            app:cardCornerRadius="10dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+            app:cardCornerRadius="10dp"
+            android:layout_gravity="center">
 
 
-                <TextView
-                    android:id="@+id/textViewDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Date"
-                    android:layout_above="@id/buttonDate"
-                    android:textSize="20dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="28dp"
-                    android:fontFamily="sans-serif-condensed"/>
                 <Button
                     android:id="@+id/buttonDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Set Date"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"/>
-            </RelativeLayout>
+                    android:layout_width="300dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="#B9CBD9"
+                    app:cornerRadius="40dp"
+                    android:textSize="22sp"/>
 
         </androidx.cardview.widget.CardView>
 
@@ -193,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp"
                     android:layout_marginTop="20dp"
-                    android:text="Stress Level Time (In Percentage):"
+                    android:text="Stress Level (In Percentage):"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -359,7 +345,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:layout_below="@+id/details"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
@@ -376,10 +362,11 @@
 
                 <Button
                     android:id="@+id/startAcquisition"
-                    android:layout_width="wrap_content"
-                    android:layout_height="56dp"
-                    android:backgroundTint="#B1C2C1"
+                    android:layout_width="300dp"
+                    android:layout_height="55dp"
+                    android:backgroundTint="#B9CBD9"
                     android:text="Start Acquisition"
+                    android:textSize="20sp"
                     app:cornerRadius="40dp" />
 
             </LinearLayout>

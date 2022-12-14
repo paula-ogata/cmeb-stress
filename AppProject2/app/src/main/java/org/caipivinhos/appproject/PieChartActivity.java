@@ -5,6 +5,7 @@ package org.caipivinhos.appproject;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,22 +23,31 @@ import android.app.DatePickerDialog;
 import android.widget.DatePicker;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 public class PieChartActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
-    // Create the object of TextView and PieChart class
     TextView tvModerado, tvAlto, tvSevero;
     PieChart pieChart;
     EditText commentReport;
-    String date = "13/12/2022";
-    Button submitComment;
+    String date;
+    Button submitComment, dateBt;
     DatabaseManager db;
+    private static final String TAG = "PieChartActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pie_chart);
+
+        Date time = new Date();
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(time);
+        date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+
 
         // Link those objects with their respective
         // id's that we have given in .XML file
@@ -48,9 +58,9 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         pieChart = findViewById(R.id.piechart);
         commentReport = findViewById(R.id.commentReport);
         submitComment = findViewById(R.id.submitComment);
+        dateBt = findViewById(R.id.buttonDate);
 
-        // Creating a method setData()
-        // to set the text in text view and pie chart
+        dateBt.setText(date);
         getReportComment(date);
         setPieChartData();
 
@@ -65,13 +75,9 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         });
 
         //method for Date selection
-        Button button = (Button) findViewById(R.id.buttonDate);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment datePicker = new DatePickerFragment();
-                datePicker.show(getSupportFragmentManager(), "date picker");
-            }
+        dateBt.setOnClickListener(v -> {
+            DialogFragment datePicker = new DatePickerFragment();
+            datePicker.show(getSupportFragmentManager(), "date picker");
         });
     }
 
@@ -81,9 +87,21 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         //db.simulateData();
         int[] stressLevels = db.getStressLevelsPieChart(date);
 
-        tvModerado.setText(String.valueOf(stressLevels[0]));
-        tvAlto.setText(String.valueOf(stressLevels[1]));
-        tvSevero.setText(String.valueOf(stressLevels[2]));
+        double sumValues = 0;
+        for (int stressLevel : stressLevels) {
+            sumValues += stressLevel;
+        }
+
+        int[] percentages = new int[stressLevels.length];
+        if (sumValues != 0) {
+            for(int i = 0; i<stressLevels.length; i++) {
+                percentages[i] = (int) (((double) stressLevels[i] / sumValues) * 100);
+            }
+        }
+
+        tvModerado.setText(String.valueOf(percentages[0]));
+        tvAlto.setText(String.valueOf(percentages[1]));
+        tvSevero.setText(String.valueOf(percentages[2]));
 
         // Set the data and color to the pie chart
         pieChart.addPieSlice(
@@ -149,14 +167,14 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
     //method for Date pick
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
-        Calendar c = Calendar.getInstance();
+        Calendar c = GregorianCalendar.getInstance();
         c.set(Calendar.YEAR,year);
-        //c.get(Calendar.YEAR)
         c.set(Calendar.MONTH,month);
         c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-        //String currentDateString = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
-        String currentDateString = c.get(Calendar.DAY_OF_MONTH) + "/" + c.get(Calendar.MONTH) + "/" + c.get(Calendar.YEAR);
-        TextView textView = (TextView) findViewById(R.id.textViewDate);
-        textView.setText(currentDateString);
+        date = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
+        Log.d(TAG, "onDateSet: date " + date);
+        dateBt.setText(date);
+        getReportComment(date);
+        setPieChartData();
     }
 }

@@ -261,7 +261,7 @@ public class DatabaseManager {
     }
 
     public int[] getStressLevelsPieChart(String date) {
-        int[] stressLevels = new int[4];
+        int[] stressLevels = new int[3];
         String SELECT_QUERY ="SELECT stressLevel FROM Session JOIN Report ON Session.idReport = Report.idReport WHERE date = '" + date + "'";
         Cursor cursor = db.rawQuery(SELECT_QUERY, null);
 
