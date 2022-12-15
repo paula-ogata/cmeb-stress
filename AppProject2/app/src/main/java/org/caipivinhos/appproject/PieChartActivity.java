@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
@@ -42,6 +43,13 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pie_chart);
+
+        ActionBar bar = getSupportActionBar();
+
+        if (bar != null){
+            bar.setIcon(R.drawable.icon);
+            bar.setTitle("BeCalm");
+        }
 
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
@@ -134,7 +142,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
-            String message = "Already in home - FOLEIRO MUDAR";
+            String message = "You're already at Home Page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         else if (item.getItemId()==R.id.chart) {

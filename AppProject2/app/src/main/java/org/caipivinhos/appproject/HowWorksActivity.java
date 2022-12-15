@@ -1,5 +1,6 @@
 package org.caipivinhos.appproject;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,6 +16,13 @@ public class HowWorksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_how_works);
+
+        ActionBar bar = getSupportActionBar();
+
+        if (bar != null){
+            bar.setIcon(R.drawable.icon);
+            bar.setTitle("BeCalm");
+        }
     }
 
     @Override
@@ -42,7 +50,7 @@ public class HowWorksActivity extends AppCompatActivity {
             return(true);
         }
         else if (item.getItemId()==R.id.hiw) {
-            String message = "Already in home - FOLEIRO MUDAR";
+            String message = "You're already at the How it Works page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         } else if (item.getItemId() == R.id.instant) {
             startActivity(new Intent(this, InstantAcquisition.class));

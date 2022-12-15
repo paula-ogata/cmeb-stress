@@ -63,13 +63,15 @@ public class DatabaseManager {
         }
         cursor1.close();
 
-        String SELECT_2 = String.format("SELECT %s FROM %s WHERE %s = '%s' AND %s = %s",
+        String SELECT_2 = String.format("SELECT %s FROM %s WHERE %s = '%s' AND %s > %s AND %s < %s",
                 "value",
                 TABLE_MEDIUM,
                 "gender",
                 gender,
-                "age",
-                age
+                age,
+                "ageMin",
+                age,
+                "ageMax"
                 );
         Cursor cursor2 = db.rawQuery(SELECT_2, null);
         if(cursor2.getCount()!=0){

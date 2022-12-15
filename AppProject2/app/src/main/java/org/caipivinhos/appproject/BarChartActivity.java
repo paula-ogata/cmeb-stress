@@ -1,5 +1,6 @@
 package org.caipivinhos.appproject;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
@@ -66,6 +67,13 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bar_chart);
+
+        ActionBar bar = getSupportActionBar();
+
+        if (bar != null){
+            bar.setIcon(R.drawable.icon);
+            bar.setTitle("BeCalm");
+        }
         db = new DatabaseManager(this);
 
         Date time = new Date();

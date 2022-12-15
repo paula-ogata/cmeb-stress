@@ -1,5 +1,6 @@
 package org.caipivinhos.appproject;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -25,12 +26,23 @@ public class InstantAcquisition extends AppCompatActivity {
     Handler mainHandler = new Handler();
     private static final String TAG = "InstantAcquisition";
     Context context;
+    DatabaseManager db = null;
+    double mediumLevel;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instant_acquisition);
+
+        ActionBar bar = getSupportActionBar();
+        if (bar != null){
+            bar.setIcon(R.drawable.icon);
+            bar.setTitle("BeCalm");
+        }
+
+        db = new DatabaseManager(this);
+        mediumLevel = db.getMediumLevel();
         context = this;
 
         stressValue = findViewById(R.id.stressValue);
@@ -82,7 +94,7 @@ public class InstantAcquisition extends AppCompatActivity {
             startActivity(new Intent(this, HowWorksActivity.class));
             return(true);
         } else if (item.getItemId() == R.id.instant) {
-            String message = "Already in home - FOLEIRO MUDAR";
+            String message = "You're already in the Instant Measurement page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         return (super.onOptionsItemSelected(item));
@@ -95,7 +107,7 @@ public class InstantAcquisition extends AppCompatActivity {
             double valueR = 0;
             try {
                 Log.d(TAG, "run: Connected to VJ");
-                valueR = VitalJacketManager.instantSession(context);
+                valueR = VitalJacketManager.instantSession(context, mediumLevel);
             } catch (Exception e) {
                 Log.d(TAG, "Runnable: Caught Error " + e.getMessage());
             }
@@ -105,6 +117,13 @@ public class InstantAcquisition extends AppCompatActivity {
                 public void run() {
                     stressValue.setText(String.valueOf(Math.round(finalValueR)));
                     spinner.setVisibility(View.GONE);
+                    if (finalValueR <= 40) {
+                        stressValue.setBackground(getDrawable(R.drawable.show_stress_layout));
+                    } else if(finalValueR > 40 && finalValueR <= 70){
+                        stressValue.setBackground(getDrawable(R.drawable.show_stress_layout_2));
+                    } else {
+                        stressValue.setBackground(getDrawable(R.drawable.show_stress_layout_3));
+                    }
                 }
             });
         }

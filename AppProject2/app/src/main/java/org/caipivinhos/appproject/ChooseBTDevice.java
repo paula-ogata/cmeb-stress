@@ -1,5 +1,6 @@
 package org.caipivinhos.appproject;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
@@ -7,6 +8,8 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,6 +31,12 @@ public class ChooseBTDevice extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_btdevice);
+
+        ActionBar bar = getSupportActionBar();
+        if (bar != null){
+            bar.setIcon(R.drawable.icon);
+            bar.setTitle("BeCalm");
+        }
 
         Button buttonOK = findViewById(R.id.cmdOK);
         buttonOK.setOnClickListener(view -> {
@@ -74,17 +83,24 @@ public class ChooseBTDevice extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        new MenuInflater(this).inflate(R.menu.main, menu);
+        return (super.onCreateOptionsMenu(menu));
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
             startActivity(new Intent(this, PieChartActivity.class));
             return(true);
         }
         else if (item.getItemId()==R.id.chart) {
-            startActivity(new Intent(this, BarChartActivity.class));
+            startActivity(new Intent(this, ChooseBTDevice.class));
             return(true);
         }
         else if(item.getItemId()==R.id.chooseBt) {
-            String message = "Already in home - FOLEIRO MUDAR";
+            String message = "You're already at Choose Device page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         else if (item.getItemId()==R.id.about){
