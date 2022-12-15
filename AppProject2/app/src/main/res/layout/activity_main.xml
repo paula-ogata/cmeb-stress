@@ -11,23 +11,24 @@
     tools:context=".MainActivity">
 
 
-
     <TextView
         android:id="@+id/helloUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" 
-        android:textSize="40sp"
-        android:layout_marginTop="150dp"/>
+        android:layout_marginTop="150dp"
+        android:fontFamily="casual"
+        android:text="Hello World!"
+        android:textSize="40sp" />
 
     <TextView
         android:id="@+id/textTips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Anti-stress tips:"
-        android:textSize="25sp"
         android:layout_marginTop="100dp"
-        android:layout_marginBottom="0dp"/>
+        android:layout_marginBottom="0dp"
+        android:text="Anti-Stress Tips"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/recomendations"
@@ -52,10 +53,11 @@
 
         <Button
             android:id="@+id/btStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btStartText" />
-
+            android:layout_width="101dp"
+            android:layout_height="58dp"
+            android:backgroundTint="#FFB5AA"
+            android:text="@string/btStartText"
+            app:cornerRadius="40dp" />
     </LinearLayout>
 
 </LinearLayout>

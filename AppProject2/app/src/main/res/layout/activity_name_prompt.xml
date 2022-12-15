@@ -137,7 +137,6 @@
                     android:id="@+id/lbl_sex"
                     android:layout_width="wrap_content"
                     android:layout_height="31dp"
-                    android:gravity="center"
                     android:text="@string/welcome_sex"
                     android:textAlignment="textStart"
                     android:textSize="16sp" />

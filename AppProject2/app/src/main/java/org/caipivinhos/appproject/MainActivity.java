@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         username = (new DatabaseManager(this)).GetUserName();
         tvMessage = findViewById(R.id.helloUser);
         tvMessage.setTextSize(30f);
-        tvMessage.setText("Bem-vinda " + username);
+        tvMessage.setText("Welcome " + username);
 
         // Set the text view as the activity layout
         // setContentView(tvMessage);
