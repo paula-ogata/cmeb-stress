@@ -26,6 +26,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -41,11 +42,9 @@ import java.util.GregorianCalendar;
 
 public class BarChartActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
-    // From PieChart
     String date;
     Button dateBt;
     private static final String TAG = "BarChartActivity";
-    //
 
     // variable for our bar chart
     BarChart barChart;
@@ -66,7 +65,6 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bar_chart);
 
-        //From PieChart
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(time);
@@ -75,33 +73,44 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         dateBt = findViewById(R.id.buttonDate);
 
         dateBt.setText(date);
+        setBarChartData();
 
-            //method for Date selection
+        //method for Date selection
         dateBt.setOnClickListener(v -> {
             DialogFragment datePicker = new DatePickerFragment();
             datePicker.show(getSupportFragmentManager(), "date picker");
         });
-        //
 
+    }
+
+    private void setBarChartData(){
         DatabaseManager db = new DatabaseManager(this);
-        db.simulateData();
 
-        ArrayList<Integer> stress_levels_arraylist = db.getSessionsPercentageByDate(date); // Enviado da database: stress level de cada session do dia
+        // stress level (percentage) acquisition from database
+        ArrayList<Integer> stress_levels_arraylist = db.getSessionsPercentageByDate(date);
+
+        if(stress_levels_arraylist.size() == 0){
+            Toast.makeText(this, "There's no data available for that day yet :)", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         stress_levels = new int[stress_levels_arraylist.size()];
         for (int i = 0; i < stress_levels_arraylist.size(); i++){
             stress_levels[i] = stress_levels_arraylist.get(i);
         }
 
-        numSessions = stress_levels.length; // Número de sessions no dia
-        startTime = db.getHourBeginReport(date); // Start time da primeira sessão do dia (start time do dia
+        // number of sessions in the specified day
+        numSessions = stress_levels.length;
+        // start time of acquisition in the specified day (start time of the first session)
+        startTime = db.getHourBeginReport(date);
 
         // initializing variable for bar chart.
         barChart = findViewById(R.id.idBarChart);
 
+        // attributing colors to bars according to the stress level
         int [] colorLabels = colorLabels(stress_levels);
 
-        // creating a string array for displaying intervals.
-        //String[] intervals = new String[]{"","8:30 - 9:00","9:00 - 9:30","9:30 - 10:00", "10:00 - 10:30", "10:30 - 11:00", "11:00 - 11:30", "11:30 - 12:00", "12:00 - 12:30","12:30 - 13:00","13:00 - 13:30","13:30 - 14:00", "14:00 - 14:30", "14:30 - 15:00", "15:00 - 15:30", "15:30 - 16:00", "16:00 - 16:30"};
+        // creating a string array for displaying intervals. Intervals have a fixed duration of 2h
         String[] intervals = timeIntervals(numSessions, startTime);
 
         // creating a new bar data set.
@@ -123,6 +132,8 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         // label of our bar chart.
         barChart.getDescription().setEnabled(false);
 
+        barChart.setDrawGridBackground(false);
+
         // below line is to get x axis
         // of our bar chart.
         XAxis xAxis = barChart.getXAxis();
@@ -131,20 +142,11 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         // we are adding our intervals to our x axis.
         xAxis.setValueFormatter(new IndexAxisValueFormatter(intervals));
 
-        //TESTING
-        barChart.setDrawGridBackground(false);
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
         xAxis.setDrawLabels(true);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(intervals));
-
-        YAxis yAxis = barChart.getAxisRight();
-        yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        yAxis.setDrawGridLines(false);
-        yAxis.setDrawAxisLine(true);
-        yAxis.setEnabled(false);
+        xAxis.setDrawAxisLine(true);
 
         // below line is to set center axis
         // labels to our bar chart.
@@ -153,6 +155,17 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         // below line is to set position
         // to our x-axis to bottom.
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        YAxis yAxisRight = barChart.getAxisRight();
+        yAxisRight.setEnabled(false);
+
+        YAxis yAxisLeft = barChart.getAxisLeft();
+        yAxisLeft.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        yAxisLeft.setDrawGridLines(true);
+        yAxisLeft.setDrawAxisLine(true);
+        yAxisLeft.setAxisMinimum(100);
+        yAxisLeft.setAxisMinimum(0);
+        yAxisLeft.setLabelCount(6);
 
         // below line is to make our
         // bar chart as draggable
@@ -173,15 +186,15 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
 
         // we are setting width of
         // bar in below line.
-        data.setBarWidth(0.8f);
+        data.setBarWidth(0.6f);
 
         // below line is to set minimum
         // axis to our chart.
-        barChart.getXAxis().setAxisMinimum(0.3f);
+        barChart.getXAxis().setAxisMinimum(0.5f);
 
         // below line is to
         // animate our chart.
-        barChart.animateY(2000);
+        barChart.animateY(1500);
 
         barChart.setFitBars(false);
 
@@ -266,7 +279,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
             return(true);
         }
         else if (item.getItemId()==R.id.chart) {
-            String message = "Already in home - FOLEIRO MUDAR";
+            String message = "You're already at Bar Chart data";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         else if(item.getItemId()==R.id.chooseBt) {
@@ -287,7 +300,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         return (super.onOptionsItemSelected(item));
     }
 
-    //method for Date pick
+    //method for Date picking
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
         Calendar c = GregorianCalendar.getInstance();
         c.set(Calendar.YEAR,year);
@@ -296,5 +309,6 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         date = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
         Log.d(TAG, "onDateSet: date " + date);
         dateBt.setText(date);
+        setBarChartData();
     }
 }
