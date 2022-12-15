@@ -104,6 +104,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         tvSevero.setText(String.valueOf(percentages[2]));
 
         // Set the data and color to the pie chart
+        pieChart.clearChart();
         pieChart.addPieSlice(
                 new PieModel(
                         "Moderado",
