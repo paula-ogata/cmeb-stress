@@ -3,27 +3,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/home"
-        android:icon="@drawable/toast"
-        android:title="Home"
-        app:showAsAction="ifRoom" />
+        android:title="Home"/>
+    <item
+        android:id="@+id/instant"
+        android:title="Instant Measurement">
+    </item>
     <item
         android:id="@+id/chart"
-        android:title="Bar Chart">
+        android:title="Daily Report">
     </item>
     <item
         android:id="@+id/chooseBt"
-        android:title="Choose Device">
-    </item>
-    <item
-        android:id="@+id/about"
-        android:title="About">
+        android:title="Connect Device">
     </item>
     <item
         android:id="@+id/hiw"
         android:title="How it works">
     </item>
     <item
-        android:id="@+id/instant"
-        android:title="Instant Measurement">
+        android:id="@+id/about"
+        android:title="About">
     </item>
+
 </menu>

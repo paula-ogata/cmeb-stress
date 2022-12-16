@@ -1,5 +1,6 @@
 package org.caipivinhos.appproject;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -22,6 +23,13 @@ public class NamePrompt extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name_prompt);
+
+        ActionBar bar = getSupportActionBar();
+
+        if (bar != null){
+            bar.setIcon(R.drawable.icon);
+            bar.setTitle("BeCalm");
+        }
         findViewById(R.id.button).setOnClickListener(this::btSendOnClick);
     }
 

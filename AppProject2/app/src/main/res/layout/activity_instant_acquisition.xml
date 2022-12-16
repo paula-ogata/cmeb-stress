@@ -54,7 +54,7 @@
                 android:layout_height="250px"
                 android:background="@drawable/show_stress_layout"
                 android:gravity="center"
-                android:text="10"
+                android:text="0"
                 android:textSize="90px" />
 
         </LinearLayout>

@@ -1,5 +1,6 @@
 package org.caipivinhos.appproject;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
@@ -59,11 +60,21 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     int numSessions;
     int startTime;
 
+    DatabaseManager db = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bar_chart);
+
+        ActionBar bar = getSupportActionBar();
+
+        if (bar != null){
+            bar.setIcon(R.drawable.icon);
+            bar.setTitle("BeCalm");
+        }
+        db = new DatabaseManager(this);
 
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
@@ -84,8 +95,6 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void setBarChartData(){
-        DatabaseManager db = new DatabaseManager(this);
-
         // stress level (percentage) acquisition from database
         ArrayList<Integer> stress_levels_arraylist = db.getSessionsPercentageByDate(date);
 
@@ -306,9 +315,15 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         c.set(Calendar.YEAR,year);
         c.set(Calendar.MONTH,month);
         c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-        date = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
-        Log.d(TAG, "onDateSet: date " + date);
-        dateBt.setText(date);
-        setBarChartData();
+        String newDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
+        if(db.getSessionsPercentageByDate(newDate).size() == 0) {
+            Toast.makeText(this, "There's no data available for that day yet :)", Toast.LENGTH_LONG).show();
+        } else {
+            date = newDate;
+            Log.d(TAG, "onDateSet: date " + date);
+            dateBt.setText(date);
+            setBarChartData();
+        }
+
     }
 }

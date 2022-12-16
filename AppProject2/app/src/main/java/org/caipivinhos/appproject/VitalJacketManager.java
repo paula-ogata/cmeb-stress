@@ -67,7 +67,7 @@ public class VitalJacketManager {
         db.AddSession(rrAvg, stressPercentage, hourBegin, date);
     }
 
-    public static double instantSession(Context c) throws Exception {
+    public static double instantSession(Context c, double mediumLevel) throws Exception {
         rrValues = new ArrayList<>();
         double instantValue;
 
@@ -87,9 +87,11 @@ public class VitalJacketManager {
             Log.d(TAG, "instantSession: Error Stopping " + e.getMessage());
         }
 
-        instantValue = HRVMethods.rmssdCalculation(rrValues);
+        instantValue = HRVMethods.getStressPercentage(rrValues, mediumLevel);
         return instantValue;
     }
+
+
 
     private static class ConnectVJ implements Runnable {
         @Override

@@ -63,13 +63,15 @@ public class DatabaseManager {
         }
         cursor1.close();
 
-        String SELECT_2 = String.format("SELECT %s FROM %s WHERE %s = '%s' AND %s = %s",
+        String SELECT_2 = String.format("SELECT %s FROM %s WHERE %s = '%s' AND %s > %s AND %s < %s",
                 "value",
                 TABLE_MEDIUM,
                 "gender",
                 gender,
-                "age",
-                age
+                age,
+                "ageMin",
+                age,
+                "ageMax"
                 );
         Cursor cursor2 = db.rawQuery(SELECT_2, null);
         if(cursor2.getCount()!=0){
@@ -302,6 +304,36 @@ public class DatabaseManager {
         AddSession(0.0,89, "00:00", "13/12/2022");
         AddSession(0.0,59, "00:00", "13/12/2022");
 
+        AddSession(0.0,19, "00:00", "14/12/2022");
+        AddSession(0.0,45, "00:00", "14/12/2022");
+        AddSession(0.0,78, "00:00", "14/12/2022");
+        AddSession(0.0,34, "00:00", "14/12/2022");
+        AddSession(0.0,10, "00:00", "14/12/2022");
+        AddSession(0.0,65, "00:00", "14/12/2022");
+        AddSession(0.0,34, "00:00", "14/12/2022");
+        AddSession(0.0,79, "00:00", "14/12/2022");
+        AddSession(0.0,68, "00:00", "14/12/2022");
+        AddSession(0.0,80, "00:00", "14/12/2022");
+        AddSession(0.0,90, "00:00", "14/12/2022");
+        AddSession(0.0,95, "00:00", "14/12/2022");
+        AddSession(0.0,23, "00:00", "14/12/2022");
+        AddSession(0.0,65, "00:00", "14/12/2022");
+        AddSession(0.0,79, "00:00", "14/12/2022");
 
+        AddSession(0.0,14, "00:00", "15/12/2022");
+        AddSession(0.0,25, "00:00", "15/12/2022");
+        AddSession(0.0,78, "00:00", "15/12/2022");
+        AddSession(0.0,90, "00:00", "15/12/2022");
+        AddSession(0.0,34, "00:00", "15/12/2022");
+        AddSession(0.0,35, "00:00", "15/12/2022");
+        AddSession(0.0,88, "00:00", "15/12/2022");
+        AddSession(0.0,97, "00:00", "15/12/2022");
+        AddSession(0.0,79, "00:00", "15/12/2022");
+        AddSession(0.0,67, "00:00", "15/12/2022");
+        AddSession(0.0,67, "00:00", "15/12/2022");
+        AddSession(0.0,56, "00:00", "15/12/2022");
+        AddSession(0.0,45, "00:00", "15/12/2022");
+        AddSession(0.0,34, "00:00", "15/12/2022");
+        AddSession(0.0,22, "00:00", "15/12/2022");
     }
 }
