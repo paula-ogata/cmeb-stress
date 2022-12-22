@@ -115,14 +115,18 @@ public class InstantAcquisition extends AppCompatActivity {
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    stressValue.setText(String.valueOf(Math.round(finalValueR)));
-                    spinner.setVisibility(View.GONE);
-                    if (finalValueR <= 40) {
-                        stressValue.setBackground(getDrawable(R.drawable.show_stress_layout));
-                    } else if(finalValueR > 40 && finalValueR <= 70){
-                        stressValue.setBackground(getDrawable(R.drawable.show_stress_layout_2));
+                    if(finalValueR == -1) {
+                        Toast.makeText(context, "Please Choose de device first", Toast.LENGTH_LONG).show();
                     } else {
-                        stressValue.setBackground(getDrawable(R.drawable.show_stress_layout_3));
+                        stressValue.setText(String.valueOf(Math.round(finalValueR)));
+                        spinner.setVisibility(View.GONE);
+                        if (finalValueR <= 40) {
+                            stressValue.setBackground(getDrawable(R.drawable.show_stress_layout));
+                        } else if(finalValueR > 40 && finalValueR <= 70){
+                            stressValue.setBackground(getDrawable(R.drawable.show_stress_layout_2));
+                        } else {
+                            stressValue.setBackground(getDrawable(R.drawable.show_stress_layout_3));
+                        }
                     }
                 }
             });

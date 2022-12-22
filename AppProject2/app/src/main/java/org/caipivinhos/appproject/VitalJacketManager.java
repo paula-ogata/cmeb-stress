@@ -30,7 +30,12 @@ public class VitalJacketManager {
         Log.d(TAG, "setMacAddress: " + macAddress);
     }
 
-    public void longSession(Context c) {
+    public int longSession(Context c) {
+
+        if(macAddress==null) {
+            return -1;
+        }
+
         rrValues = new ArrayList<>();
 
         context = c;
@@ -65,12 +70,17 @@ public class VitalJacketManager {
         String date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
 
         db.AddSession(rrAvg, stressPercentage, hourBegin, date);
+        return 0;
     }
 
     public static double instantSession(Context c, double mediumLevel) throws Exception {
+
+        if(macAddress==null) {
+            return -1;
+        }
+
         rrValues = new ArrayList<>();
         double instantValue;
-
         context = c;
         ConnectVJ runnable = new ConnectVJ();
         Thread th = new Thread(runnable);
