@@ -46,6 +46,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     String date;
     Button dateBt;
     private static final String TAG = "BarChartActivity";
+    String GET_DATE = "Date_Intent_Info";
 
     // variable for our bar chart
     BarChart barChart;
@@ -76,10 +77,16 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         }
         db = new DatabaseManager(this);
 
-        Date time = new Date();
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(time);
-        date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+        if(getIntent()!= null && getIntent().getExtras()!=null) {
+            date = getIntent().getStringExtra(GET_DATE);
+        } else {
+            Date time = new Date();
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.setTime(time);
+            date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+        }
+
+
 
         dateBt = findViewById(R.id.buttonDate);
 
