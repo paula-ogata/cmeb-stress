@@ -148,6 +148,10 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             startActivity(new Intent(this, BarChartActivity.class));
             return(true);
         }
+        else if (item.getItemId()==R.id.chartWeek) {
+            startActivity(new Intent(this, BarChartActivityWeek.class));
+            return(true);
+        }
         else if(item.getItemId()==R.id.chooseBt) {
             startActivity(new Intent(this, ChooseBTDevice.class));
             return(true);

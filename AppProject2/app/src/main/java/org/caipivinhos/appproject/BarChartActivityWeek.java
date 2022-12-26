@@ -41,11 +41,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 //
 
-public class BarChartActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class BarChartActivityWeek extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     String date;
     Button dateBt;
-    private static final String TAG = "BarChartActivity";
+    private static final String TAG = "BarChartActivityWeek";
     String GET_DATE = "Date_Intent_Info";
 
     // variable for our bar chart
@@ -67,7 +67,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bar_chart);
+        setContentView(R.layout.activity_bar_chart_week);
 
         ActionBar bar = getSupportActionBar();
 
@@ -256,7 +256,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
                 intervalEnd = intervalEnd - 24;
             }
 
-            timeIntervals[i] = String.join("",String.valueOf(new Integer(intervalBegin)),":00 - ",String.valueOf(new Integer(intervalEnd)),":00");
+            timeIntervals[i] = String.join("","dia", String.valueOf(new Integer(i)));
         }
 
         return timeIntervals;
@@ -296,12 +296,12 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
             return(true);
         }
         else if (item.getItemId()==R.id.chart) {
-            String message = "You're already at Bar Chart data";
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, BarChartActivity.class));
+            return(true);
         }
         else if (item.getItemId()==R.id.chartWeek) {
-            startActivity(new Intent(this, BarChartActivityWeek.class));
-            return(true);
+            String message = "You're already at Bar Chart Week data";
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         else if(item.getItemId()==R.id.chooseBt) {
             startActivity(new Intent(this, ChooseBTDevice.class));

@@ -58,6 +58,14 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".BarChartActivityWeek"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".PieChartActivity"
             android:exported="false"
             android:screenOrientation="portrait">
