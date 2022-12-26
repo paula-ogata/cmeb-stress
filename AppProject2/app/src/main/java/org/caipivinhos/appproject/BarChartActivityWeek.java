@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -42,11 +44,28 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 //
 
+// For clicking on the BarChart
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.DataSet;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.listener.OnDrawListener;
+//
+
 import java.time.*;
+import java.util.Objects;
 
 public class BarChartActivityWeek extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     String date;
+    String selectedDate;
     boolean updateChart = true;
     Button dateBt;
     private static final String TAG = "BarChartActivityWeek";
@@ -220,6 +239,35 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         // below line is to invalidate
         // our bar chart.
         barChart.invalidate();
+
+        barChart.setHighlightPerTapEnabled(true);
+
+        // Methods for interacting wit the chart - João
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+           @Override
+           public void onValueSelected(Entry e, Highlight h) {
+               e.getData();
+               Log.d("VAL SELECTED","Value: " + e.getY() + ", xIndex: " + e.getX() + ", DataSet index: " + h.getDataSetIndex());
+               if (e.getY() != 0.0){
+                   int index = (int) e.getX();
+                   selectedDate = weekDays[index];
+                   Log.d("Selected Date",selectedDate);
+
+                   Intent i = new Intent(getApplicationContext(), BarChartActivity.class);
+                   i.putExtra(GET_DATE, selectedDate);
+                   startActivity(i);
+               }
+
+           }
+
+           @Override
+           public void onNothingSelected() {
+               Log.d("BAR_CHART_SAMPLE", "nothing selected X is ");
+
+           }
+
+       });
+        // Methods for interacting wit the chart - João
     }
 
     // array list for first set
@@ -310,6 +358,38 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         }
     }
 
+    //method for Date picking
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
+        Calendar c = GregorianCalendar.getInstance();
+        c.set(Calendar.YEAR,year);
+        c.set(Calendar.MONTH,month);
+        c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+
+        c.setMinimalDaysInFirstWeek(1);
+        c.setFirstDayOfWeek(Calendar.MONDAY);
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        String newDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
+
+        weekDays = getWeekDays(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        avg_stress_levels = getAvgStressLevelsWeek(weekDays);
+
+        if(Arrays.equals(avg_stress_levels,new int[7])) {
+            Toast.makeText(this, "There's no data available for that week yet :)", Toast.LENGTH_LONG).show();
+        } else  {
+            if (!Objects.equals(date, newDate)){
+                updateChart = true;
+                date = newDate;
+            } else {
+                updateChart = false;
+                Log.d(TAG, "onDateSet: date " + date);
+                dateBt.setText(date);
+                setBarChartData(updateChart);
+            }
+
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         new MenuInflater(this).inflate(R.menu.main, menu);
@@ -348,37 +428,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         return (super.onOptionsItemSelected(item));
     }
 
-    //method for Date picking
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
-        Calendar c = GregorianCalendar.getInstance();
-        c.set(Calendar.YEAR,year);
-        c.set(Calendar.MONTH,month);
-        c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-
-        c.setMinimalDaysInFirstWeek(1);
-        c.setFirstDayOfWeek(Calendar.MONDAY);
-
-        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        String newDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
-
-        weekDays = getWeekDays(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-        avg_stress_levels = getAvgStressLevelsWeek(weekDays);
-
-        if(Arrays.equals(avg_stress_levels,new int[7])) {
-            Toast.makeText(this, "There's no data available for that week yet :)", Toast.LENGTH_LONG).show();
-        } else  {
-            if (date!=newDate){
-                updateChart = true;
-                date = newDate;
-            } else {
-                updateChart = false;
-                Log.d(TAG, "onDateSet: date " + date);
-                dateBt.setText(date);
-                setBarChartData(updateChart);
-            }
-
-        }
-
-    }
+    // Methods for interacting wit the chart - Zé
+    // Methods for interacting wit the chart - Zé
 
 }
