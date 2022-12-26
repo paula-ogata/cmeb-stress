@@ -185,7 +185,6 @@ public class DatabaseManager {
         db.execSQL(UPDATE_QUERY);
     }
 
-
     // João: alterações
     public void UpdateStressAvg(int idReport) {
         List<Integer> sessions = new ArrayList<>();
@@ -240,13 +239,16 @@ public class DatabaseManager {
                 "ASC");
 
         Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+
         if(cursor.getCount()==0){
             cursor.close();
             return avgPercentageValue;
         }
 
+        cursor.moveToFirst();
+        avgPercentageValue = cursor.getInt(cursor.getColumnIndexOrThrow("stressAvg"));
         cursor.close();
-        return cursor.getInt(cursor.getColumnIndexOrThrow("stressAvg"));
+        return avgPercentageValue;
     }
 
     // Obter valores de stress para todas as sessões de um dado dia
