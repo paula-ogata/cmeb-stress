@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import android.app.DatePickerDialog;
 import android.widget.DatePicker;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -57,9 +58,8 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
     // array list for storing entries.
     ArrayList barEntries;
 
-    int[] stress_levels = null;
-    int numSessions;
-    int startTime;
+    int[] avg_stress_levels = null;
+    String startDate;
 
     DatabaseManager db = null;
 
@@ -102,35 +102,30 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
     }
 
     private void setBarChartData(){
-        // stress level (percentage) acquisition from database
-        ArrayList<Integer> stress_levels_arraylist = db.getSessionsPercentageByDate(date);
 
-        if(stress_levels_arraylist.size() == 0){
-            Toast.makeText(this, "There's no data available for that day yet :)", Toast.LENGTH_LONG).show();
+        // start time of acquisition in the specified day (start time of the first session)
+        startDate = date;
+
+        String[] weekDays = getWeekDays(startDate);
+        int[] avg_stress_levels = getAvgStressLevelsWeek(weekDays);
+
+        // Checks if no measurement has been acquired for any of that week's days
+        if(Arrays.equals(avg_stress_levels,new int[7])){
+            Toast.makeText(this, "There's no data available for that week yet :)", Toast.LENGTH_LONG).show();
             return;
         }
-
-        stress_levels = new int[stress_levels_arraylist.size()];
-        for (int i = 0; i < stress_levels_arraylist.size(); i++){
-            stress_levels[i] = stress_levels_arraylist.get(i);
-        }
-
-        // number of sessions in the specified day
-        numSessions = stress_levels.length;
-        // start time of acquisition in the specified day (start time of the first session)
-        startTime = db.getHourBeginReport(date);
 
         // initializing variable for bar chart.
         barChart = findViewById(R.id.idBarChart);
 
         // attributing colors to bars according to the stress level
-        int [] colorLabels = colorLabels(stress_levels);
+        int [] colorLabels = colorLabels(avg_stress_levels);
 
-        // creating a string array for displaying intervals. Intervals have a fixed duration of 2h
-        String[] intervals = timeIntervals(numSessions, startTime);
+        // creating a string array for displaying the days of the chosen week (7 days)
+        String[] dayLabels = weekDays;
 
         // creating a new bar data set.
-        barDataSet1 = new BarDataSet(getBarEntries(numSessions, stress_levels), "Stress Levels");
+        barDataSet1 = new BarDataSet(getBarEntries(avg_stress_levels), "Stress Levels");
         barDataSet1.setValueTextSize(14f);
         barDataSet1.setColors(colorLabels);
 
@@ -156,7 +151,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
 
         // below line is to set value formatter to our x-axis and
         // we are adding our intervals to our x axis.
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(intervals));
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(dayLabels));
 
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -220,53 +215,51 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
     }
 
     // array list for first set
-    private ArrayList<BarEntry> getBarEntries(int numSessions, int[] stress_levels) {
+    private ArrayList<BarEntry> getBarEntries(int[] avg_stress_levels) {
 
         // creating a new array list
         barEntries = new ArrayList<>();
 
         // adding new entry to our array list with bar
         // entry and passing x and y axis value to it.
-        for (int i = 0; i < numSessions; i++) {
+        for (int i = 0; i < 7; i++) {
             float f = i+1;
-            barEntries.add(new BarEntry(f, stress_levels[i])); //Começa em 1f
+            barEntries.add(new BarEntry(f, avg_stress_levels[i])); //Começa em 1f
         }
 
         return barEntries;
     }
 
-    // Returns adjacent intervals of measurement (actual duration of 5min, translated to 2h)
-    // A long-term measurement has around 30min, which represents a 12h period. 5-minute sessions thus represent 2h intervals
-    // If the measurement started at 9am and was comprised of two (5min) sessions, the function below returns "9:00 - 11:00 11:00 - 13:00"
-    private String[] timeIntervals(int numSessions, int startTime){
-        //ArrayList<String> timeIntervals = new ArrayList<String>();
-        String[] timeIntervals = new String[numSessions+1];
-        int intervalBegin = startTime - 2;
-        int intervalEnd = intervalBegin + 2;
+    private int[] getAvgStressLevelsWeek (String[] weekDays){
+        int[] AvgStressLevelsWeek = new int[7];
 
-        timeIntervals[0]="";
-        for (int i = 1; i <= numSessions; i++) {
-            intervalBegin = intervalBegin + 2;
-            intervalEnd = intervalEnd + 2;
-
-            if(intervalBegin >= 24){
-                intervalBegin = intervalBegin - 24;
+        for (int i = 0; i < 7; i++) {
+            if (db.getAvgPercentageByDate(weekDays[i+1]) == null){
+                AvgStressLevelsWeek[i] = 0;
+            } else {
+                AvgStressLevelsWeek[i] = db.getAvgPercentageByDate(weekDays[i + 1]);
             }
-            if(intervalEnd >= 24){
-                intervalEnd = intervalEnd - 24;
-            }
-
-            timeIntervals[i] = String.join("","dia", String.valueOf(new Integer(i)));
         }
 
-        return timeIntervals;
+        return AvgStressLevelsWeek;
     }
 
-    private int[] colorLabels(int[] stress_levels){
-        int[] color_labels = new int[stress_levels.length];
+    private String[] getWeekDays(String startDate){
+        String[] weekDays = new String[8];
 
-        for (int i = 0; i < stress_levels.length; i++)
-            color_labels[i] = getColorLabel(stress_levels[i]);
+        weekDays[0]="";
+        for (int i = 1; i <= 7; i++) {
+            weekDays[i] = String.join("","dia", String.valueOf(new Integer(i)));
+        }
+
+        return weekDays;
+    }
+
+    private int[] colorLabels(int[] avg_stress_levels){
+        int[] color_labels = new int[avg_stress_levels.length];
+
+        for (int i = 0; i < avg_stress_levels.length; i++)
+            color_labels[i] = getColorLabel(avg_stress_levels[i]);
 
         return color_labels;
     }
@@ -281,7 +274,6 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
             return Color.parseColor("#29B6F6");
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

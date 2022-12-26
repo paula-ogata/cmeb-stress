@@ -43,6 +43,7 @@ public class DatabaseManager {
         int idReport = GetIdReport(date);
         cv.put("idReport", idReport);
         UpdateSessionCount(idReport);
+        UpdateStressAvg(idReport);
 
         db.insertOrThrow("Session", null, cv);
     }
@@ -185,13 +186,19 @@ public class DatabaseManager {
     }
 
 
-    // VER MELHOR------------------------------------------------ >
+    // João: alterações
     public void UpdateStressAvg(int idReport) {
         List<Integer> sessions = new ArrayList<>();
-        String SELECT_QUERY = String.format("SELECT %s FROM %s WHERE idReport = %s",
-                "stressLevel",
-                TABLE_USER,
+
+        String SELECT_QUERY = String.format("SELECT %s FROM %s JOIN %s ON %s = %s WHERE %s = %s",
+                "stressPercentage",
+                TABLE_SESSION,
+                TABLE_REPORT,
+                TABLE_REPORT+".idReport",
+                TABLE_SESSION+".idReport",
+                TABLE_SESSION+".idReport",
                 idReport);
+
         Cursor cursor = db.rawQuery(SELECT_QUERY, null);
         if(cursor.getCount()==0){
             cursor.close();
@@ -199,7 +206,7 @@ public class DatabaseManager {
         }
 
         while(cursor.moveToNext()) {
-            sessions.add(cursor.getInt(cursor.getColumnIndexOrThrow("stressLevel")));
+            sessions.add(cursor.getInt(cursor.getColumnIndexOrThrow("stressPercentage")));
         }
 
         int aux = 0;
@@ -218,6 +225,31 @@ public class DatabaseManager {
         db.execSQL(UPDATE_QUERY);
     }
 
+    // Obter valor médio do stress em determinado dia (usado no Weekly Report)
+    public Integer getAvgPercentageByDate(String date) {
+        Integer avgPercentageValue = null;
+
+        String SELECT_QUERY = String.format("SELECT %s FROM %s JOIN %s ON %s = %s WHERE date = '%s' ORDER BY %s %s",
+                "stressAvg",
+                TABLE_REPORT,
+                TABLE_SESSION,
+                TABLE_REPORT+".idReport",
+                TABLE_SESSION+".idReport",
+                date,
+                "idSession",
+                "ASC");
+
+        Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+        if(cursor.getCount()==0){
+            cursor.close();
+            return avgPercentageValue;
+        }
+
+        cursor.close();
+        return cursor.getInt(cursor.getColumnIndexOrThrow("stressAvg"));
+    }
+
+    // Obter valores de stress para todas as sessões de um dado dia
     public ArrayList<Integer> getSessionsPercentageByDate(String date) {
         ArrayList<Integer> percentageValues = new ArrayList<>();
 
@@ -288,52 +320,52 @@ public class DatabaseManager {
     }
 
     public void simulateData() {
-        AddSession(0.0,20, "00:00", "13/12/2022");
-        AddSession(0.0,20, "00:00", "13/12/2022");
-        AddSession(0.0,35, "00:00", "13/12/2022");
-        AddSession(0.0,99, "00:00", "13/12/2022");
-        AddSession(0.0,10, "00:00", "13/12/2022");
-        AddSession(0.0,87, "00:00", "13/12/2022");
-        AddSession(0.0,90, "00:00", "13/12/2022");
-        AddSession(0.0,56, "00:00", "13/12/2022");
-        AddSession(0.0,42, "00:00", "13/12/2022");
-        AddSession(0.0,75, "00:00", "13/12/2022");
-        AddSession(0.0,38, "00:00", "13/12/2022");
-        AddSession(0.0,93, "00:00", "13/12/2022");
-        AddSession(0.0,63, "00:00", "13/12/2022");
-        AddSession(0.0,89, "00:00", "13/12/2022");
-        AddSession(0.0,59, "00:00", "13/12/2022");
+        AddSession(0.0,20, "00:00", "26/12/2022");
+        AddSession(0.0,20, "00:00", "26/12/2022");
+        AddSession(0.0,35, "00:00", "26/12/2022");
+        AddSession(0.0,99, "00:00", "26/12/2022");
+        AddSession(0.0,10, "00:00", "26/12/2022");
+        AddSession(0.0,87, "00:00", "26/12/2022");
+        AddSession(0.0,90, "00:00", "26/12/2022");
+        AddSession(0.0,56, "00:00", "26/12/2022");
+        AddSession(0.0,42, "00:00", "26/12/2022");
+        AddSession(0.0,75, "00:00", "26/12/2022");
+        AddSession(0.0,38, "00:00", "26/12/2022");
+        AddSession(0.0,93, "00:00", "26/12/2022");
+        AddSession(0.0,63, "00:00", "26/12/2022");
+        AddSession(0.0,89, "00:00", "26/12/2022");
+        AddSession(0.0,59, "00:00", "26/12/2022");
 
-        AddSession(0.0,19, "00:00", "14/12/2022");
-        AddSession(0.0,45, "00:00", "14/12/2022");
-        AddSession(0.0,78, "00:00", "14/12/2022");
-        AddSession(0.0,34, "00:00", "14/12/2022");
-        AddSession(0.0,10, "00:00", "14/12/2022");
-        AddSession(0.0,65, "00:00", "14/12/2022");
-        AddSession(0.0,34, "00:00", "14/12/2022");
-        AddSession(0.0,79, "00:00", "14/12/2022");
-        AddSession(0.0,68, "00:00", "14/12/2022");
-        AddSession(0.0,80, "00:00", "14/12/2022");
-        AddSession(0.0,90, "00:00", "14/12/2022");
-        AddSession(0.0,95, "00:00", "14/12/2022");
-        AddSession(0.0,23, "00:00", "14/12/2022");
-        AddSession(0.0,65, "00:00", "14/12/2022");
-        AddSession(0.0,79, "00:00", "14/12/2022");
+        AddSession(0.0,19, "00:00", "27/12/2022");
+        AddSession(0.0,45, "00:00", "27/12/2022");
+        AddSession(0.0,78, "00:00", "27/12/2022");
+        AddSession(0.0,34, "00:00", "27/12/2022");
+        AddSession(0.0,10, "00:00", "27/12/2022");
+        AddSession(0.0,65, "00:00", "27/12/2022");
+        AddSession(0.0,34, "00:00", "27/12/2022");
+        AddSession(0.0,79, "00:00", "27/12/2022");
+        AddSession(0.0,68, "00:00", "27/12/2022");
+        AddSession(0.0,80, "00:00", "27/12/2022");
+        AddSession(0.0,90, "00:00", "27/12/2022");
+        AddSession(0.0,95, "00:00", "27/12/2022");
+        AddSession(0.0,23, "00:00", "27/12/2022");
+        AddSession(0.0,65, "00:00", "27/12/2022");
+        AddSession(0.0,79, "00:00", "27/12/2022");
 
-        AddSession(0.0,14, "00:00", "15/12/2022");
-        AddSession(0.0,25, "00:00", "15/12/2022");
-        AddSession(0.0,78, "00:00", "15/12/2022");
-        AddSession(0.0,90, "00:00", "15/12/2022");
-        AddSession(0.0,34, "00:00", "15/12/2022");
-        AddSession(0.0,35, "00:00", "15/12/2022");
-        AddSession(0.0,88, "00:00", "15/12/2022");
-        AddSession(0.0,97, "00:00", "15/12/2022");
-        AddSession(0.0,79, "00:00", "15/12/2022");
-        AddSession(0.0,67, "00:00", "15/12/2022");
-        AddSession(0.0,67, "00:00", "15/12/2022");
-        AddSession(0.0,56, "00:00", "15/12/2022");
-        AddSession(0.0,45, "00:00", "15/12/2022");
-        AddSession(0.0,34, "00:00", "15/12/2022");
-        AddSession(0.0,22, "00:00", "15/12/2022");
+        AddSession(0.0,14, "00:00", "28/12/2022");
+        AddSession(0.0,25, "00:00", "28/12/2022");
+        AddSession(0.0,78, "00:00", "28/12/2022");
+        AddSession(0.0,90, "00:00", "28/12/2022");
+        AddSession(0.0,34, "00:00", "28/12/2022");
+        AddSession(0.0,35, "00:00", "28/12/2022");
+        AddSession(0.0,88, "00:00", "28/12/2022");
+        AddSession(0.0,97, "00:00", "28/12/2022");
+        AddSession(0.0,79, "00:00", "28/12/2022");
+        AddSession(0.0,67, "00:00", "28/12/2022");
+        AddSession(0.0,67, "00:00", "28/12/2022");
+        AddSession(0.0,56, "00:00", "28/12/2022");
+        AddSession(0.0,45, "00:00", "28/12/2022");
+        AddSession(0.0,34, "00:00", "28/12/2022");
+        AddSession(0.0,22, "00:00", "28/12/2022");
     }
 }

@@ -62,7 +62,6 @@ public class VitalJacketManager {
         double mediumLevel = db.getMediumLevel();
         int stressPercentage = HRVMethods.getStressPercentage(rrValues, mediumLevel);
 
-
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(time);
