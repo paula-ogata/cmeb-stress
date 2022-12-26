@@ -179,7 +179,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         yAxisLeft.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         yAxisLeft.setDrawGridLines(true);
         yAxisLeft.setDrawAxisLine(true);
-        yAxisLeft.setAxisMinimum(100);
+        yAxisLeft.setAxisMaximum(100);
         yAxisLeft.setAxisMinimum(0);
         yAxisLeft.setLabelCount(6);
 

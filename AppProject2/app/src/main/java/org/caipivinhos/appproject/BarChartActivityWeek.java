@@ -42,9 +42,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 //
 
+import java.time.*;
+
 public class BarChartActivityWeek extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     String date;
+    boolean updateChart = true;
     Button dateBt;
     private static final String TAG = "BarChartActivityWeek";
     String GET_DATE = "Date_Intent_Info";
@@ -84,14 +87,18 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
             Date time = new Date();
             Calendar calendar = GregorianCalendar.getInstance();
             calendar.setTime(time);
+
+            calendar.setMinimalDaysInFirstWeek(1);
+            calendar.setFirstDayOfWeek(Calendar.MONDAY);
+
             date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
-            weekDays = getWeekDays(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+            weekDays = getWeekDays(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         }
 
         dateBt = findViewById(R.id.buttonDate);
 
         dateBt.setText(date);
-        setBarChartData();
+        setBarChartData(updateChart);
 
         //method for Date selection
         dateBt.setOnClickListener(v -> {
@@ -101,7 +108,9 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
 
     }
 
-    private void setBarChartData(){
+    private void setBarChartData(boolean updateChart){
+
+        if (!updateChart){return;}
 
         // start time of acquisition in the specified day (start time of the first session)
         startDate = date;
@@ -121,7 +130,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         int [] colorLabels = colorLabels(avg_stress_levels);
 
         // creating a string array for displaying the days of the chosen week (7 days)
-        String[] dayLabels = weekDays;
+        String[] dayLabels = getDayLabels(weekDays);
 
         // creating a new bar data set.
         barDataSet1 = new BarDataSet(getBarEntries(avg_stress_levels), "Stress Levels");
@@ -173,7 +182,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         yAxisLeft.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         yAxisLeft.setDrawGridLines(true);
         yAxisLeft.setDrawAxisLine(true);
-        yAxisLeft.setAxisMinimum(100);
+        yAxisLeft.setAxisMaximum(100);
         yAxisLeft.setAxisMinimum(0);
         yAxisLeft.setLabelCount(6);
 
@@ -250,16 +259,35 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         c.set(Calendar.YEAR,year);
         c.set(Calendar.MONTH,month);
         c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+
+        c.setMinimalDaysInFirstWeek(1);
+        c.setFirstDayOfWeek(Calendar.MONDAY);
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         String startDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
 
         weekDays[0] = "";
         weekDays[1] = startDate;
+
         for (int i = 2; i <= 7; i++) {
             c.add(Calendar.DAY_OF_MONTH, 1);
             weekDays[i] = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
         }
 
         return weekDays;
+    }
+
+    private String[] getDayLabels(String[] weekDays){
+        String[] weekDayNames = new String[]{"MON","TUE","WED","THU","FRI","SAT","SUN"};
+        String[] weekDayLabels = new String[8];
+
+        weekDayLabels[0] = weekDays[0];
+        for (int i = 1; i <= 7; i++) {
+            String[] aux_array = weekDays[i].split("/",0);
+            weekDayLabels[i] = weekDayNames[i-1] + " " + String.join("/",aux_array[0],aux_array[1]);
+        }
+
+        return weekDayLabels;
     }
 
     private int[] colorLabels(int[] avg_stress_levels){
@@ -326,19 +354,31 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         c.set(Calendar.YEAR,year);
         c.set(Calendar.MONTH,month);
         c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+
+        c.setMinimalDaysInFirstWeek(1);
+        c.setFirstDayOfWeek(Calendar.MONDAY);
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         String newDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
 
-        weekDays = getWeekDays(year, month, dayOfMonth);
+        weekDays = getWeekDays(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         avg_stress_levels = getAvgStressLevelsWeek(weekDays);
 
         if(Arrays.equals(avg_stress_levels,new int[7])) {
             Toast.makeText(this, "There's no data available for that week yet :)", Toast.LENGTH_LONG).show();
-        } else {
-            date = newDate;
-            Log.d(TAG, "onDateSet: date " + date);
-            dateBt.setText(date);
-            setBarChartData();
+        } else  {
+            if (date!=newDate){
+                updateChart = true;
+                date = newDate;
+            } else {
+                updateChart = false;
+                Log.d(TAG, "onDateSet: date " + date);
+                dateBt.setText(date);
+                setBarChartData(updateChart);
+            }
+
         }
 
     }
+
 }
