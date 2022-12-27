@@ -9,13 +9,22 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="casual"
+        android:paddingTop="10dp"
+        android:text="Daily Report"
+        android:textAlignment="center"
+        android:textSize="34sp" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewDate"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_gravity="center"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:elevation="10dp"
         app:cardCornerRadius="10dp">
@@ -75,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
-                    android:text="Moderado" />
+                    android:text="Moderate" />
 
             </LinearLayout>
 
@@ -97,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
-                    android:text="Alto" />
+                    android:text="High" />
 
             </LinearLayout>
 
@@ -118,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
-                    android:text="Severo" />
+                    android:text="Severe" />
 
             </LinearLayout>
 

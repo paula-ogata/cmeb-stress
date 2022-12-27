@@ -96,7 +96,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
 
         if (bar != null){
             bar.setIcon(R.drawable.icon);
-            bar.setTitle("BeCalm - Weekly Report");
+            bar.setTitle("BeCalm");
         }
         db = new DatabaseManager(this);
 
@@ -109,6 +109,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
 
             calendar.setMinimalDaysInFirstWeek(1);
             calendar.setFirstDayOfWeek(Calendar.MONDAY);
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
             date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
             weekDays = getWeekDays(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -407,7 +408,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
             return(true);
         }
         else if (item.getItemId()==R.id.chartWeek) {
-            String message = "You're already at Bar Chart Week data";
+            String message = "You're already at the Weekly Report page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         else if(item.getItemId()==R.id.chooseBt) {

@@ -86,8 +86,6 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
             date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
         }
 
-
-
         dateBt = findViewById(R.id.buttonDate);
 
         dateBt.setText(date);
@@ -217,6 +215,8 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         // below line is to invalidate
         // our bar chart.
         barChart.invalidate();
+
+        barChart.setHighlightPerTapEnabled(false);
     }
 
     // array list for first set
@@ -292,11 +292,13 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
-            startActivity(new Intent(this, PieChartActivity.class));
+            Intent i = new Intent(this, PieChartActivity.class);
+            i.putExtra(GET_DATE, date);
+            startActivity(i);
             return(true);
         }
         else if (item.getItemId()==R.id.chart) {
-            String message = "You're already at Bar Chart data";
+            String message = "You're already at the Daily Report page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         else if (item.getItemId()==R.id.chartWeek) {

@@ -38,6 +38,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     Button submitComment, dateBt;
     DatabaseManager db;
     private static final String TAG = "PieChartActivity";
+    String GET_DATE = "Date_Intent_Info";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +52,14 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             bar.setTitle("BeCalm");
         }
 
-        Date time = new Date();
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(time);
-        date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+        if(getIntent()!= null && getIntent().getExtras()!=null) {
+            date = getIntent().getStringExtra(GET_DATE);
+        } else {
+            Date time = new Date();
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.setTime(time);
+            date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+        }
 
 
         // Link those objects with their respective
@@ -106,26 +111,30 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             }
         }
 
-        tvModerado.setText(String.valueOf(percentages[0]));
-        tvAlto.setText(String.valueOf(percentages[1]));
-        tvSevero.setText(String.valueOf(percentages[2]));
+        String ModeratePercentage = (percentages[0] + 1) +"%";
+        String HighPercentage = percentages[1] +"%";
+        String SeverePercentage = percentages[2] +"%";
+
+        tvModerado.setText(ModeratePercentage);
+        tvAlto.setText(HighPercentage);
+        tvSevero.setText(SeverePercentage);
 
         // Set the data and color to the pie chart
         pieChart.clearChart();
         pieChart.addPieSlice(
                 new PieModel(
                         "Moderado",
-                        Integer.parseInt(tvModerado.getText().toString()),
+                        Integer.parseInt(ModeratePercentage.split("%")[0]),
                         Color.parseColor("#29B6F6")));
         pieChart.addPieSlice(
                 new PieModel(
                         "Alto",
-                        Integer.parseInt(tvAlto.getText().toString()),
+                        Integer.parseInt(HighPercentage.split("%")[0]),
                         Color.parseColor("#FFA726")));
         pieChart.addPieSlice(
                 new PieModel(
                         "Severo",
-                        Integer.parseInt(tvSevero.getText().toString()),
+                        Integer.parseInt(SeverePercentage.split("%")[0]),
                         Color.parseColor("#EF5350")));
 
         // To animate the pie chart
@@ -145,7 +154,9 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         else if (item.getItemId()==R.id.chart) {
-            startActivity(new Intent(this, BarChartActivity.class));
+            Intent i = new Intent(this, BarChartActivity.class);
+            i.putExtra(GET_DATE, date);
+            startActivity(i);
             return(true);
         }
         else if (item.getItemId()==R.id.chartWeek) {

@@ -14,26 +14,35 @@
         android:background="#FEDDD8"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:paddingTop="15dp"
+            android:text="Home"
+            android:textAlignment="center"
+            android:textSize="34sp" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewDate"
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:layout_gravity="center"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:elevation="10dp"
-            app:cardCornerRadius="10dp"
-            android:layout_gravity="center">
+            app:cardCornerRadius="10dp">
 
 
-                <Button
-                    android:id="@+id/buttonDate"
-                    android:layout_width="300dp"
-                    android:layout_height="55dp"
-                    android:layout_gravity="center"
-                    android:backgroundTint="#B9CBD9"
-                    app:cornerRadius="40dp"
-                    android:textSize="22sp"/>
+            <Button
+                android:id="@+id/buttonDate"
+                android:layout_width="300dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:backgroundTint="#B9CBD9"
+                android:textSize="22sp"
+                app:cornerRadius="40dp" />
 
         </androidx.cardview.widget.CardView>
 
@@ -97,7 +106,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="Moderado" />
+                            android:text="Moderate" />
 
                     </LinearLayout>
 
@@ -120,7 +129,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="Alto" />
+                            android:text="High" />
 
                     </LinearLayout>
 
@@ -142,7 +151,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="Severo" />
+                            android:text="Severe" />
 
                     </LinearLayout>
 
@@ -179,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp"
                     android:layout_marginTop="20dp"
-                    android:text="Stress Level (In Percentage):"
+                    android:text="Stress Level Balance:"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 

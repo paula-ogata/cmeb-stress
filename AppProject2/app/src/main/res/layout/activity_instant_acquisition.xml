@@ -14,10 +14,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50px"
         android:layout_marginBottom="50px"
-        android:fontFamily="monospace"
+        android:fontFamily="casual"
+        android:paddingTop="10dp"
         android:text="Instant Stress Measurement"
         android:textAlignment="center"
-        android:textSize="100px" />
+        android:textSize="34sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:fontFamily="casual"
+        android:text="Remember to breathe :p"
+        android:textAlignment="center"
+        android:textSize="20sp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/measure1"
