@@ -39,7 +39,7 @@ public class DatabaseManager {
         cv.put("stressLevel", stressLevel);
         cv.put("hourBegin",hourBegin);
         cv.put("stressPercentage", stressPercentage);
-        int idReport = GetIdReport(date);
+        int idReport = GetIdReport(date, hourBegin);
         cv.put("idReport", idReport);
         UpdateSessionCount(idReport);
         UpdateStressAvg(idReport);
@@ -84,7 +84,7 @@ public class DatabaseManager {
 
     }
 
-    private Integer GetIdReport(String date) {
+    private Integer GetIdReport(String date, String hour) {
         Integer idReport;
         String SELECT_QUERY = String.format("SELECT idReport FROM %s WHERE date = '%s'",
                 TABLE_REPORT,
@@ -94,21 +94,20 @@ public class DatabaseManager {
             cursor.moveToNext();
             idReport = cursor.getInt(cursor.getColumnIndexOrThrow("idReport"));
         } else {
-            CreateReport(date);
-            idReport = GetIdReport(date);
+            CreateReport(date, hour);
+            idReport = GetIdReport(date, hour);
         }
 
         cursor.close();
         return idReport;
     }
 
-    private void CreateReport(String date) {
-        Date time = new Date();
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(time);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if(calendar.get(Calendar.MINUTE) >= 30) {
-            hour += 1;
+    private void CreateReport(String date, String hourString) {
+        String[] hourmin = hourString.split(":");
+        int hour = Integer.parseInt(hourmin[0]);
+        int min = Integer.parseInt(hourmin[1]);
+        if(min>30) {
+            hour = hour + 1;
         }
 
         ContentValues values = new ContentValues();
