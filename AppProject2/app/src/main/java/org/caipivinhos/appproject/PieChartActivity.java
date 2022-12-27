@@ -214,9 +214,9 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
     public void onBtStartStopClick(View view) {
 
-        //if (!isLongSessionConnected()) {
-        //    Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
-        //} else {
+        if (!VitalJacketManager.checkIfConnected()) {
+            Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
+        } else {
             Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
             if (!serviceRunning) {
                 startStopAcquisition.setText("Stop Acquisition");
@@ -231,17 +231,8 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
                 serviceRunning = false;
                 stopService(ServiceIntent);
             }
-        //}
+       }
     }
 
 
-    public boolean isLongSessionConnected() {
-
-        if (VitalJacketManager.longSession(this, mediumLevel) == -1) {
-            return false;
-        } else {
-            return true;
-        }
-
-    }
 }

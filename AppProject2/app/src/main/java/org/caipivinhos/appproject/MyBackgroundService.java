@@ -37,17 +37,7 @@ public class MyBackgroundService extends Service {
         th = new Thread(
                 () -> {
                     while (acquisition) {
-
-                        double valueR = 0;
-                        valueR = VitalJacketManager.longSession(context, mediumLevel);
-                        double finalValueR = valueR;
-
-                        Log.e("Service", "The Service Background is running");
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        VitalJacketManager.longSession(context, mediumLevel);
                     }
                 }
 
