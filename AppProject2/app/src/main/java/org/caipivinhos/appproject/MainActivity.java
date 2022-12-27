@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView[] dots;
     Button btstart;
     String prevStarted = "prevStarted";
-    public final static String EXTRA_MESSAGE = "userName";
-    public static final int REQUEST_CODE = 1;
     SharedPreferences sharedpreferences;
 
     @Override

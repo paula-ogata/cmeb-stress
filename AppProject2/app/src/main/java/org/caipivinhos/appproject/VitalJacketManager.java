@@ -58,7 +58,6 @@ public class VitalJacketManager {
         // CALCULOS COM O RRVALUES .....................
 
         DatabaseManager db = new DatabaseManager(context);
-        double rrAvg = HRVMethods.rmssdCalculation(rrValues);
         int stressPercentage = HRVMethods.getStressPercentage(rrValues, mediumLevel);
 
         Date time = new Date();
@@ -67,7 +66,7 @@ public class VitalJacketManager {
         String hourBegin = calendar.get(Calendar.HOUR_OF_DAY) +":"+ Calendar.MINUTE;
         String date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
 
-        db.AddSession(rrAvg, stressPercentage, hourBegin, date);
+        db.AddSession(stressPercentage, hourBegin, date);
         return 0;
     }
 

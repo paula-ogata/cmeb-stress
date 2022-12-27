@@ -4,6 +4,7 @@ package org.caipivinhos.appproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class PieChartActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     TextView tvModerado, tvAlto, tvSevero;
+    SharedPreferences sharedpreferences;
     PieChart pieChart;
     EditText commentReport;
     String date;
@@ -42,6 +44,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     private static final String TAG = "PieChartActivity";
     String GET_DATE = "Date_Intent_Info";
     boolean serviceRunning = false;
+    String simulatedData = "simulatedData";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         pieChart = findViewById(R.id.piechart);
         commentReport = findViewById(R.id.commentReport);
         submitComment = findViewById(R.id.submitComment);
+        sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
 
         dateBt = findViewById(R.id.buttonDate);
 
@@ -106,7 +110,13 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
     private void setPieChartData() {
         // Set the percentage of language used
-        db.simulateData();
+        if(!sharedpreferences.getBoolean(simulatedData, false)) {
+            db.simulateData();
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(simulatedData, Boolean.TRUE);
+            editor.apply();
+        }
+        //db.simulateData();
         int[] stressLevels = db.getStressLevelsPieChart(date);
 
         double sumValues = 0;
