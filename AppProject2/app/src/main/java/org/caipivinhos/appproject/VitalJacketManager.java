@@ -30,7 +30,7 @@ public class VitalJacketManager {
         Log.d(TAG, "setMacAddress: " + macAddress);
     }
 
-    public int longSession(Context c) {
+    public static double longSession(Context c, double mediumLevel) {
 
         if(macAddress==null) {
             return -1;
@@ -59,7 +59,6 @@ public class VitalJacketManager {
 
         DatabaseManager db = new DatabaseManager(context);
         double rrAvg = HRVMethods.rmssdCalculation(rrValues);
-        double mediumLevel = db.getMediumLevel();
         int stressPercentage = HRVMethods.getStressPercentage(rrValues, mediumLevel);
 
 

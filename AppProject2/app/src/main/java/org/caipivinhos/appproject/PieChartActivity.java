@@ -2,6 +2,7 @@ package org.caipivinhos.appproject;
 
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     PieChart pieChart;
     EditText commentReport;
     String date;
-    Button submitComment, dateBt;
+    Button submitComment, dateBt, startStopAcquisition;
     DatabaseManager db;
     private static final String TAG = "PieChartActivity";
 
@@ -46,7 +47,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
         ActionBar bar = getSupportActionBar();
 
-        if (bar != null){
+        if (bar != null) {
             bar.setIcon(R.drawable.icon);
             bar.setTitle("BeCalm");
         }
@@ -54,7 +55,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(time);
-        date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+        date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
 
 
         // Link those objects with their respective
@@ -66,15 +67,17 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         pieChart = findViewById(R.id.piechart);
         commentReport = findViewById(R.id.commentReport);
         submitComment = findViewById(R.id.submitComment);
+
         dateBt = findViewById(R.id.buttonDate);
 
         dateBt.setText(date);
         getReportComment(date);
         setPieChartData();
 
+
         submitComment.setOnClickListener(view -> {
             String comment = commentReport.getText().toString();
-            if(!comment.equals("")){
+            if (!comment.equals("")) {
                 db.AddComment(comment, date);
                 Toast.makeText(this, "Comment registered.", Toast.LENGTH_LONG).show();
             } else {
@@ -87,6 +90,16 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             DialogFragment datePicker = new DatePickerFragment();
             datePicker.show(getSupportFragmentManager(), "date picker");
         });
+
+
+        startStopAcquisition = findViewById(R.id.startStopAcquisition);
+        if (isLongSessionConnected() == false) {
+            Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
+        } else {
+            startStopAcquisition.setOnClickListener(view -> onBtStartStopClick());
+        }
+
+
     }
 
     private void setPieChartData() {
@@ -101,7 +114,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
         int[] percentages = new int[stressLevels.length];
         if (sumValues != 0) {
-            for(int i = 0; i<stressLevels.length; i++) {
+            for (int i = 0; i < stressLevels.length; i++) {
                 percentages[i] = (int) (((double) stressLevels[i] / sumValues) * 100);
             }
         }
@@ -143,25 +156,21 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         if (item.getItemId() == R.id.home) {
             String message = "You're already at Home Page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        }
-        else if (item.getItemId()==R.id.chart) {
+        } else if (item.getItemId() == R.id.chart) {
             startActivity(new Intent(this, BarChartActivity.class));
-            return(true);
-        }
-        else if(item.getItemId()==R.id.chooseBt) {
+            return (true);
+        } else if (item.getItemId() == R.id.chooseBt) {
             startActivity(new Intent(this, ChooseBTDevice.class));
-            return(true);
-        }
-        else if (item.getItemId()==R.id.about){
+            return (true);
+        } else if (item.getItemId() == R.id.about) {
             startActivity(new Intent(this, AboutActivity.class));
-            return(true);
-        }
-        else if (item.getItemId()==R.id.hiw) {
+            return (true);
+        } else if (item.getItemId() == R.id.hiw) {
             startActivity(new Intent(this, HowWorksActivity.class));
-            return(true);
+            return (true);
         } else if (item.getItemId() == R.id.instant) {
             startActivity(new Intent(this, InstantAcquisition.class));
-            return(true);
+            return (true);
         }
         return (super.onOptionsItemSelected(item));
     }
@@ -172,15 +181,51 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     }
 
     //method for Date pick
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar c = GregorianCalendar.getInstance();
-        c.set(Calendar.YEAR,year);
-        c.set(Calendar.MONTH,month);
-        c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         date = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
         Log.d(TAG, "onDateSet: date " + date);
         dateBt.setText(date);
         getReportComment(date);
         setPieChartData();
+    }
+
+    public void onBtStartStopClick() {
+        startStopAcquisition = findViewById(R.id.startStopAcquisition);
+        Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+
+        if (startStopAcquisition.getText().equals("Start Acquisition")) {
+            startStopAcquisition.setText("Stop Acquisition");
+            // Start Background Service
+            //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+            startService(ServiceIntent);
+        } else {
+            startStopAcquisition.setText("Start Acquisition");
+            // Stop service
+            //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+            stopService(ServiceIntent);
+        }
+    }
+
+
+    public boolean isLongSessionConnected() {
+
+        // Iniciar variaveis aqui (localmente) é conflituoso?
+        DatabaseManager db = null;
+        double mediumLevel;
+        db = new DatabaseManager(this);
+        mediumLevel = db.getMediumLevel();
+        Context context;
+        context = this;
+
+        if (VitalJacketManager.longSession(this, mediumLevel) == -1) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 }

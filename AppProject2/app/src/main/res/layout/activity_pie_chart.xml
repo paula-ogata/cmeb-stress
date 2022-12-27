@@ -361,7 +361,7 @@
                 android:padding="10dp">
 
                 <Button
-                    android:id="@+id/startAcquisition"
+                    android:id="@+id/startStopAcquisition"
                     android:layout_width="300dp"
                     android:layout_height="55dp"
                     android:backgroundTint="#B9CBD9"
