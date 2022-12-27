@@ -54,11 +54,14 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             bar.setTitle("BeCalm");
         }
 
-        Date time = new Date();
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(time);
-        date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
-
+        if(getIntent()!= null && getIntent().getExtras()!=null) {
+            date = getIntent().getStringExtra(GET_DATE);
+        } else {
+            Date time = new Date();
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.setTime(time);
+            date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+        }
 
         // Link those objects with their respective
         // id's that we have given in .XML file
@@ -98,9 +101,6 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
         startStopAcquisition.setOnClickListener(this::onBtStartStopClick);
 
-
-
-
     }
 
     private void setPieChartData() {
@@ -132,17 +132,17 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         pieChart.clearChart();
         pieChart.addPieSlice(
                 new PieModel(
-                        "Moderado",
+                        "Moderate",
                         Integer.parseInt(ModeratePercentage.split("%")[0]),
                         Color.parseColor("#29B6F6")));
         pieChart.addPieSlice(
                 new PieModel(
-                        "Alto",
+                        "High",
                         Integer.parseInt(HighPercentage.split("%")[0]),
                         Color.parseColor("#FFA726")));
         pieChart.addPieSlice(
                 new PieModel(
-                        "Severo",
+                        "Severe",
                         Integer.parseInt(SeverePercentage.split("%")[0]),
                         Color.parseColor("#EF5350")));
 
