@@ -36,6 +36,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     PieChart pieChart;
     EditText commentReport;
     String date;
+    Double mediumLevel;
     Button submitComment, dateBt, startStopAcquisition;
     DatabaseManager db;
     private static final String TAG = "PieChartActivity";
@@ -92,13 +93,12 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             datePicker.show(getSupportFragmentManager(), "date picker");
         });
 
-
+        mediumLevel = db.getMediumLevel();
         startStopAcquisition = findViewById(R.id.startStopAcquisition);
-        if (isLongSessionConnected() == false) {
-            Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
-        } else {
-            startStopAcquisition.setOnClickListener(view -> onBtStartStopClick());
-        }
+
+        startStopAcquisition.setOnClickListener(this::onBtStartStopClick);
+
+
 
 
     }
@@ -164,6 +164,9 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         } else if (item.getItemId() == R.id.chart) {
             startActivity(new Intent(this, BarChartActivity.class));
             return (true);
+        } else if (item.getItemId()==R.id.chartWeek) {
+            startActivity(new Intent(this, BarChartActivityWeek.class));
+            return(true);
         } else if (item.getItemId() == R.id.chooseBt) {
             startActivity(new Intent(this, ChooseBTDevice.class));
             return (true);
@@ -198,33 +201,29 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         setPieChartData();
     }
 
-    public void onBtStartStopClick() {
-        startStopAcquisition = findViewById(R.id.startStopAcquisition);
-        Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+    public void onBtStartStopClick(View view) {
 
-        if (startStopAcquisition.getText().equals("Start Acquisition")) {
-            startStopAcquisition.setText("Stop Acquisition");
-            // Start Background Service
-            //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
-            startService(ServiceIntent);
+        if (!isLongSessionConnected()) {
+            Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
         } else {
-            startStopAcquisition.setText("Start Acquisition");
-            // Stop service
-            //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
-            stopService(ServiceIntent);
+            Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+
+            if (startStopAcquisition.getText().equals("Start Acquisition")) {
+                startStopAcquisition.setText("Stop Acquisition");
+                // Start Background Service
+                //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+                startService(ServiceIntent);
+            } else {
+                startStopAcquisition.setText("Start Acquisition");
+                // Stop service
+                //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+                stopService(ServiceIntent);
+            }
         }
     }
 
 
     public boolean isLongSessionConnected() {
-
-        // Iniciar variaveis aqui (localmente) é conflituoso?
-        DatabaseManager db = null;
-        double mediumLevel;
-        db = new DatabaseManager(this);
-        mediumLevel = db.getMediumLevel();
-        Context context;
-        context = this;
 
         if (VitalJacketManager.longSession(this, mediumLevel) == -1) {
             return false;
