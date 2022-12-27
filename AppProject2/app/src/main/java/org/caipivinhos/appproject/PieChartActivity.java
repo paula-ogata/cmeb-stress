@@ -41,6 +41,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     DatabaseManager db;
     private static final String TAG = "PieChartActivity";
     String GET_DATE = "Date_Intent_Info";
+    boolean serviceRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,23 +204,24 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
     public void onBtStartStopClick(View view) {
 
-        if (!isLongSessionConnected()) {
-            Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
-        } else {
+        //if (!isLongSessionConnected()) {
+        //    Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
+        //} else {
             Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
-
-            if (startStopAcquisition.getText().equals("Start Acquisition")) {
+            if (!serviceRunning) {
                 startStopAcquisition.setText("Stop Acquisition");
                 // Start Background Service
                 //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+                serviceRunning = true;
                 startService(ServiceIntent);
             } else {
                 startStopAcquisition.setText("Start Acquisition");
                 // Stop service
                 //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+                serviceRunning = false;
                 stopService(ServiceIntent);
             }
-        }
+        //}
     }
 
 

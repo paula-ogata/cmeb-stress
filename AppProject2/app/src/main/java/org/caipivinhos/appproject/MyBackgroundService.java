@@ -12,7 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 public class MyBackgroundService extends Service {
-
+    Thread th;
+    boolean acquisition = true;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -33,34 +34,26 @@ public class MyBackgroundService extends Service {
         }
 
         // Thread that gives the terminal a message, every 2 seconds (just to see if its working in background)
-        new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true) {
+        th = new Thread(
+                () -> {
+                    while (acquisition) {
 
-                            double valueR = 0;
-                            //Trazer o medium level
-                            // vitalJ precisa de um contexto... definir um contexto no PieChart ou wtv OK TOU SAFO
+                        double valueR = 0;
+                        valueR = VitalJacketManager.longSession(context, mediumLevel);
+                        double finalValueR = valueR;
 
-                            // Fazer função boolean a ver se a longSession retorna -1 ou 0
-
-                            valueR = VitalJacketManager.longSession(context, mediumLevel);
-
-
-                            double finalValueR = valueR;
-
-                            Log.e("Service", "The Service Background is running");
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                        Log.e("Service", "The Service Background is running");
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
 
-        ).start();
+        );
+        th.start();
+
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -70,9 +63,14 @@ public class MyBackgroundService extends Service {
         super.onDestroy();
 
         // Stop LongSession comand
-
+        acquisition = false;
+        th.interrupt();
 
         Toast.makeText(this, "Invoke background service onDestroy method.", Toast.LENGTH_LONG).show();
+    }
+
+    public void stopLongAcquisition(){
+        th.interrupt();
     }
 
     @Nullable
