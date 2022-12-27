@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="casual"
         android:paddingTop="10dp"
-        android:text="Daily Report"
+        android:text="Weekly Report"
         android:textAlignment="center"
         android:textSize="34sp" />
 

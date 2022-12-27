@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -36,16 +38,37 @@ import java.util.ArrayList;
 import android.app.DatePickerDialog;
 import android.widget.DatePicker;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 //
 
-public class BarChartActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+// For clicking on the BarChart
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.DataSet;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.listener.OnDrawListener;
+//
+
+import java.time.*;
+import java.util.Objects;
+
+public class BarChartActivityWeek extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     String date;
+    String selectedDate;
+    boolean updateChart = true;
     Button dateBt;
-    private static final String TAG = "BarChartActivity";
+    private static final String TAG = "BarChartActivityWeek";
     String GET_DATE = "Date_Intent_Info";
 
     // variable for our bar chart
@@ -57,9 +80,9 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     // array list for storing entries.
     ArrayList barEntries;
 
-    int[] stress_levels = null;
-    int numSessions;
-    int startTime;
+    int[] avg_stress_levels = null;
+    String startDate;
+    String[] weekDays;
 
     DatabaseManager db = null;
 
@@ -67,7 +90,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bar_chart);
+        setContentView(R.layout.activity_bar_chart_week);
 
         ActionBar bar = getSupportActionBar();
 
@@ -83,13 +106,19 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
             Date time = new Date();
             Calendar calendar = GregorianCalendar.getInstance();
             calendar.setTime(time);
+
+            calendar.setMinimalDaysInFirstWeek(1);
+            calendar.setFirstDayOfWeek(Calendar.MONDAY);
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
             date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+            weekDays = getWeekDays(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         }
 
         dateBt = findViewById(R.id.buttonDate);
 
         dateBt.setText(date);
-        setBarChartData();
+        setBarChartData(updateChart);
 
         //method for Date selection
         dateBt.setOnClickListener(v -> {
@@ -99,36 +128,32 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
 
     }
 
-    private void setBarChartData(){
-        // stress level (percentage) acquisition from database
-        ArrayList<Integer> stress_levels_arraylist = db.getSessionsPercentageByDate(date);
+    private void setBarChartData(boolean updateChart){
 
-        if(stress_levels_arraylist.size() == 0){
-            Toast.makeText(this, "There's no data available for that day yet :)", Toast.LENGTH_LONG).show();
+        if (!updateChart){return;}
+
+        // start time of acquisition in the specified day (start time of the first session)
+        startDate = date;
+
+        int[] avg_stress_levels = getAvgStressLevelsWeek(weekDays);
+
+        // Checks if no measurement has been acquired for any of that week's days
+        if(Arrays.equals(avg_stress_levels,new int[7])){
+            Toast.makeText(this, "There's no data available for that week yet :)", Toast.LENGTH_LONG).show();
             return;
         }
-
-        stress_levels = new int[stress_levels_arraylist.size()];
-        for (int i = 0; i < stress_levels_arraylist.size(); i++){
-            stress_levels[i] = stress_levels_arraylist.get(i);
-        }
-
-        // number of sessions in the specified day
-        numSessions = stress_levels.length;
-        // start time of acquisition in the specified day (start time of the first session)
-        startTime = db.getHourBeginReport(date);
 
         // initializing variable for bar chart.
         barChart = findViewById(R.id.idBarChart);
 
         // attributing colors to bars according to the stress level
-        int [] colorLabels = colorLabels(stress_levels);
+        int [] colorLabels = colorLabels(avg_stress_levels);
 
-        // creating a string array for displaying intervals. Intervals have a fixed duration of 2h
-        String[] intervals = timeIntervals(numSessions, startTime);
+        // creating a string array for displaying the days of the chosen week (7 days)
+        String[] dayLabels = getDayLabels(weekDays);
 
         // creating a new bar data set.
-        barDataSet1 = new BarDataSet(getBarEntries(numSessions, stress_levels), "Stress Levels");
+        barDataSet1 = new BarDataSet(getBarEntries(avg_stress_levels), "Stress Levels");
         barDataSet1.setValueTextSize(14f);
         barDataSet1.setColors(colorLabels);
 
@@ -154,7 +179,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
 
         // below line is to set value formatter to our x-axis and
         // we are adding our intervals to our x axis.
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(intervals));
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(dayLabels));
 
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -216,57 +241,109 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         // our bar chart.
         barChart.invalidate();
 
-        barChart.setHighlightPerTapEnabled(false);
+        barChart.setHighlightPerTapEnabled(true);
+
+        // Methods for interacting wit the chart - João
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+           @Override
+           public void onValueSelected(Entry e, Highlight h) {
+               e.getData();
+               Log.d("VAL SELECTED","Value: " + e.getY() + ", xIndex: " + e.getX() + ", DataSet index: " + h.getDataSetIndex());
+               if (e.getY() != 0.0){
+                   int index = (int) e.getX();
+                   selectedDate = weekDays[index];
+                   Log.d("Selected Date",selectedDate);
+
+                   Intent i = new Intent(getApplicationContext(), BarChartActivity.class);
+                   i.putExtra(GET_DATE, selectedDate);
+                   startActivity(i);
+               }
+
+           }
+
+           @Override
+           public void onNothingSelected() {
+               Log.d("BAR_CHART_SAMPLE", "nothing selected X is ");
+
+           }
+
+       });
+        // Methods for interacting wit the chart - João
     }
 
     // array list for first set
-    private ArrayList<BarEntry> getBarEntries(int numSessions, int[] stress_levels) {
+    private ArrayList<BarEntry> getBarEntries(int[] avg_stress_levels) {
 
         // creating a new array list
         barEntries = new ArrayList<>();
 
         // adding new entry to our array list with bar
         // entry and passing x and y axis value to it.
-        for (int i = 0; i < numSessions; i++) {
+        for (int i = 0; i < 7; i++) {
             float f = i+1;
-            barEntries.add(new BarEntry(f, stress_levels[i])); //Começa em 1f
+            barEntries.add(new BarEntry(f, avg_stress_levels[i])); //Começa em 1f
         }
 
         return barEntries;
     }
 
-    // Returns adjacent intervals of measurement (actual duration of 5min, translated to 2h)
-    // A long-term measurement has around 30min, which represents a 12h period. 5-minute sessions thus represent 2h intervals
-    // If the measurement started at 9am and was comprised of two (5min) sessions, the function below returns "9:00 - 11:00 11:00 - 13:00"
-    private String[] timeIntervals(int numSessions, int startTime){
-        //ArrayList<String> timeIntervals = new ArrayList<String>();
-        String[] timeIntervals = new String[numSessions+1];
-        int intervalBegin = startTime - 2;
-        int intervalEnd = intervalBegin + 2;
+    private int[] getAvgStressLevelsWeek (String[] weekDays){
+        int[] AvgStressLevelsWeek = new int[7];
 
-        timeIntervals[0]="";
-        for (int i = 1; i <= numSessions; i++) {
-            intervalBegin = intervalBegin + 2;
-            intervalEnd = intervalEnd + 2;
-
-            if(intervalBegin >= 24){
-                intervalBegin = intervalBegin - 24;
+        for (int i = 0; i < 7; i++) {
+            if (db.getAvgPercentageByDate(weekDays[i+1]) == null){
+                AvgStressLevelsWeek[i] = 0;
+            } else {
+                AvgStressLevelsWeek[i] = db.getAvgPercentageByDate(weekDays[i + 1]);
             }
-            if(intervalEnd >= 24){
-                intervalEnd = intervalEnd - 24;
-            }
-
-            timeIntervals[i] = String.join("",String.valueOf(new Integer(intervalBegin)),":00 - ",String.valueOf(new Integer(intervalEnd)),":00");
         }
 
-        return timeIntervals;
+        return AvgStressLevelsWeek;
     }
 
-    private int[] colorLabels(int[] stress_levels){
-        int[] color_labels = new int[stress_levels.length];
+    private String[] getWeekDays(int year, int month, int dayOfMonth){
+        String[] weekDays = new String[8];
 
-        for (int i = 0; i < stress_levels.length; i++)
-            color_labels[i] = getColorLabel(stress_levels[i]);
+        Calendar c = GregorianCalendar.getInstance();
+        c.set(Calendar.YEAR,year);
+        c.set(Calendar.MONTH,month);
+        c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+
+        c.setMinimalDaysInFirstWeek(1);
+        c.setFirstDayOfWeek(Calendar.MONDAY);
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        String startDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
+
+        weekDays[0] = "";
+        weekDays[1] = startDate;
+
+        for (int i = 2; i <= 7; i++) {
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            weekDays[i] = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
+        }
+
+        return weekDays;
+    }
+
+    private String[] getDayLabels(String[] weekDays){
+        String[] weekDayNames = new String[]{"MON","TUE","WED","THU","FRI","SAT","SUN"};
+        String[] weekDayLabels = new String[8];
+
+        weekDayLabels[0] = weekDays[0];
+        for (int i = 1; i <= 7; i++) {
+            String[] aux_array = weekDays[i].split("/",0);
+            weekDayLabels[i] = weekDayNames[i-1] + " " + String.join("/",aux_array[0],aux_array[1]);
+        }
+
+        return weekDayLabels;
+    }
+
+    private int[] colorLabels(int[] avg_stress_levels){
+        int[] color_labels = new int[avg_stress_levels.length];
+
+        for (int i = 0; i < avg_stress_levels.length; i++)
+            color_labels[i] = getColorLabel(avg_stress_levels[i]);
 
         return color_labels;
     }
@@ -282,6 +359,37 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         }
     }
 
+    //method for Date picking
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
+        Calendar c = GregorianCalendar.getInstance();
+        c.set(Calendar.YEAR,year);
+        c.set(Calendar.MONTH,month);
+        c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+
+        c.setMinimalDaysInFirstWeek(1);
+        c.setFirstDayOfWeek(Calendar.MONDAY);
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        String newDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
+
+        weekDays = getWeekDays(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        avg_stress_levels = getAvgStressLevelsWeek(weekDays);
+
+        if(Arrays.equals(avg_stress_levels,new int[7])) {
+            Toast.makeText(this, "There's no data available for that week yet :)", Toast.LENGTH_LONG).show();
+        } else  {
+            if (!Objects.equals(date, newDate)){
+                updateChart = true;
+                date = newDate;
+            } else {
+                updateChart = false;
+                Log.d(TAG, "onDateSet: date " + date);
+                dateBt.setText(date);
+                setBarChartData(updateChart);
+            }
+
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -292,18 +400,16 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
-            Intent i = new Intent(this, PieChartActivity.class);
-            i.putExtra(GET_DATE, date);
-            startActivity(i);
+            startActivity(new Intent(this, PieChartActivity.class));
             return(true);
         }
         else if (item.getItemId()==R.id.chart) {
-            String message = "You're already at the Daily Report page";
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, BarChartActivity.class));
+            return(true);
         }
         else if (item.getItemId()==R.id.chartWeek) {
-            startActivity(new Intent(this, BarChartActivityWeek.class));
-            return(true);
+            String message = "You're already at the Weekly Report page";
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         else if(item.getItemId()==R.id.chooseBt) {
             startActivity(new Intent(this, ChooseBTDevice.class));
@@ -323,21 +429,7 @@ public class BarChartActivity extends AppCompatActivity implements DatePickerDia
         return (super.onOptionsItemSelected(item));
     }
 
-    //method for Date picking
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
-        Calendar c = GregorianCalendar.getInstance();
-        c.set(Calendar.YEAR,year);
-        c.set(Calendar.MONTH,month);
-        c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-        String newDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
-        if(db.getSessionsPercentageByDate(newDate).size() == 0) {
-            Toast.makeText(this, "There's no data available for that day yet :)", Toast.LENGTH_LONG).show();
-        } else {
-            date = newDate;
-            Log.d(TAG, "onDateSet: date " + date);
-            dateBt.setText(date);
-            setBarChartData();
-        }
+    // Methods for interacting wit the chart - Zé
+    // Methods for interacting wit the chart - Zé
 
-    }
 }

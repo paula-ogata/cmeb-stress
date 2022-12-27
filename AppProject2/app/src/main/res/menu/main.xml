@@ -13,6 +13,10 @@
         android:title="Daily Report">
     </item>
     <item
+        android:id="@+id/chartWeek"
+        android:title="Weekly Report">
+    </item>
+    <item
         android:id="@+id/chooseBt"
         android:title="Connect Device">
     </item>

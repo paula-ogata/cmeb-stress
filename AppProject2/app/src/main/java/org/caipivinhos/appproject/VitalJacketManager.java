@@ -61,7 +61,6 @@ public class VitalJacketManager {
         double rrAvg = HRVMethods.rmssdCalculation(rrValues);
         int stressPercentage = HRVMethods.getStressPercentage(rrValues, mediumLevel);
 
-
         Date time = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(time);

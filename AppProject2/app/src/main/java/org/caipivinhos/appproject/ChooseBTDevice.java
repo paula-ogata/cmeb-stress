@@ -99,6 +99,10 @@ public class ChooseBTDevice extends AppCompatActivity {
             startActivity(new Intent(this, ChooseBTDevice.class));
             return(true);
         }
+        else if (item.getItemId()==R.id.chartWeek) {
+            startActivity(new Intent(this, BarChartActivityWeek.class));
+            return(true);
+        }
         else if(item.getItemId()==R.id.chooseBt) {
             String message = "You're already at Choose Device page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
