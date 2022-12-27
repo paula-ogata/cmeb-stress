@@ -116,7 +116,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             editor.putBoolean(simulatedData, Boolean.TRUE);
             editor.apply();
         }
-        //db.simulateData();
+
         int[] stressLevels = db.getStressLevelsPieChart(date);
 
         double sumValues = 0;

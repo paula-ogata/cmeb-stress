@@ -47,22 +47,19 @@ public class InstantAcquisition extends AppCompatActivity {
 
         stressValue = findViewById(R.id.stressValue);
 
-        try {
-            Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "InstantAcquisition: Unable to Connect to VitalJacket");
-        }
-
         bt = findViewById(R.id.button);
         spinner = findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
         spinner.isIndeterminate();
 
         bt.setOnClickListener(v -> {
-            spinner.setVisibility(View.VISIBLE);
-            InstantTest runnable = new InstantTest();
-            new Thread(runnable).start();
+            if(!VitalJacketManager.checkIfConnected()) {
+                Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
+            } else {
+                spinner.setVisibility(View.VISIBLE);
+                InstantTest runnable = new InstantTest();
+                new Thread(runnable).start();
+            }
         });
     }
 
