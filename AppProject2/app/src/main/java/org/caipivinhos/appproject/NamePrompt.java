@@ -12,12 +12,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Objects;
 
 public class NamePrompt extends AppCompatActivity {
+    EditText nameET;
+    EditText ageET;
+    RadioGroup rg;
     SharedPreferences sharedpreferences;
     String prevStarted = "prevStarted";
+    String gender = "null";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,33 +38,40 @@ public class NamePrompt extends AppCompatActivity {
             bar.setIcon(R.drawable.icon);
             bar.setTitle("BeCalm");
         }
+        nameET = findViewById(R.id.txtUsername);
+        ageET = findViewById(R.id.txtAge);
+
         findViewById(R.id.button).setOnClickListener(this::btSendOnClick);
+
     }
 
     public void btSendOnClick(View view){
-        EditText nameET = findViewById(R.id.txtUsername);
-        EditText ageET = findViewById(R.id.txtAge);
-        RadioGroup rg = findViewById(R.id.rg_types);
+
         String username = nameET.getText().toString();
-        Integer age = Integer.valueOf(ageET.getText().toString());
-        int genderId = rg.getCheckedRadioButtonId();
-        String gender;
-        if(genderId == 0) {
-            gender = "male";
+        String ageString = ageET.getText().toString();
+        switch(((RadioGroup)findViewById(R.id.rg_types)).getCheckedRadioButtonId()) {
+            case R.id.rb_male:
+                gender = "male";
+                break;
+            case R.id.rb_female:
+                gender = "female";
+                break;
         }
-        else {
-            gender = "female";
+
+        if(Objects.equals(gender, "null") || username.isEmpty() || ageString.isEmpty()) {
+            Toast.makeText(this, "Please complete your information first", Toast.LENGTH_LONG).show();
+        } else {
+            Integer age = Integer.valueOf(ageString);
+            DatabaseManager db = new DatabaseManager(this);
+            db.AddUser(username,gender,age);
+
+            sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(prevStarted, Boolean.TRUE);
+            editor.apply();
+
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
         }
-
-        DatabaseManager db = new DatabaseManager(this);
-        db.AddUser(username,gender,age);
-
-        sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putBoolean(prevStarted, Boolean.TRUE);
-        editor.apply();
-
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
     }
 }
