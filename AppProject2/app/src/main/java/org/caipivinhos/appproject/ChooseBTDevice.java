@@ -43,7 +43,7 @@ public class ChooseBTDevice extends AppCompatActivity {
             VitalJacketManager.setMacAddress(macAddress);
             try {
                 //VitalJacketManager.connectToVJ(this);
-                Toast.makeText(this, "Connect", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Device Connected", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 Log.d(TAG, "onCreate: " + e.getMessage());
                 Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
