@@ -30,11 +30,14 @@ public class VitalJacketManager {
         Log.d(TAG, "setMacAddress: " + macAddress);
     }
 
-    public static double longSession(Context c, double mediumLevel) {
-
+    public static boolean checkIfConnected(){
         if(macAddress==null) {
-            return -1;
-        }
+            return false;
+        } else
+            return true;
+    }
+
+    public static void longSession(Context c, double mediumLevel) {
 
         rrValues = new ArrayList<>();
 
@@ -58,7 +61,6 @@ public class VitalJacketManager {
         // CALCULOS COM O RRVALUES .....................
 
         DatabaseManager db = new DatabaseManager(context);
-        double rrAvg = HRVMethods.rmssdCalculation(rrValues);
         int stressPercentage = HRVMethods.getStressPercentage(rrValues, mediumLevel);
 
         Date time = new Date();
@@ -67,15 +69,10 @@ public class VitalJacketManager {
         String hourBegin = calendar.get(Calendar.HOUR_OF_DAY) +":"+ Calendar.MINUTE;
         String date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
 
-        db.AddSession(rrAvg, stressPercentage, hourBegin, date);
-        return 0;
+        db.AddSession(stressPercentage, hourBegin, date);
     }
 
     public static double instantSession(Context c, double mediumLevel) throws Exception {
-
-        if(macAddress==null) {
-            return -1;
-        }
 
         rrValues = new ArrayList<>();
         double instantValue;

@@ -212,7 +212,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
-                        android:text="Moderado"
+                        android:text="Moderate"
                         android:textSize="18sp" />
 
                     <!--Text view to display the percentage -->
@@ -252,7 +252,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
-                        android:text="Alto"
+                        android:text="High"
                         android:textSize="18sp" />
 
                     <!--Text view to display the percentage -->
@@ -291,8 +291,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
-                        android:text="Severo"
-                        android:textSize="18sp" />
+                        android:text="Severe"
+                        android:textSize="18sp"/>
+
 
                     <!--Text view to display the percentage -->
                     <!-- of programming language used. -->

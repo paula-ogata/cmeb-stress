@@ -65,17 +65,20 @@ import java.util.Objects;
 public class BarChartActivityWeek extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     String date;
+    String dateText;
     String selectedDate;
+    String dayString;
+    String monthString;
     boolean updateChart = true;
     Button dateBt;
     private static final String TAG = "BarChartActivityWeek";
     String GET_DATE = "Date_Intent_Info";
 
-    // variable for our bar chart
+    // variable for the bar chart
     BarChart barChart;
 
-    // variable for our bar data set.
-    BarDataSet barDataSet1;
+    // variable for the bar data set.
+    BarDataSet barDataSet;
 
     // array list for storing entries.
     ArrayList barEntries;
@@ -100,24 +103,32 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         }
         db = new DatabaseManager(this);
 
-        if(getIntent()!= null && getIntent().getExtras()!=null) {
-            date = getIntent().getStringExtra(GET_DATE);
-        } else {
-            Date time = new Date();
-            Calendar calendar = GregorianCalendar.getInstance();
-            calendar.setTime(time);
+        Date time = new Date();
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(time);
 
-            calendar.setMinimalDaysInFirstWeek(1);
-            calendar.setFirstDayOfWeek(Calendar.MONDAY);
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        calendar.setMinimalDaysInFirstWeek(1);
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-            date  = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
-            weekDays = getWeekDays(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        dayString = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        monthString = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+
+        date  = dayString + "/" + monthString + "/" + calendar.get(Calendar.YEAR);
+        // Adding "0" in front of single digits
+        if (dayString.length()==1){
+            dayString = "0"+dayString;
         }
+        if (monthString.length()==1){
+            monthString = "0"+monthString;
+        }
+        dateText  = dayString + "/" + monthString + "/" + calendar.get(Calendar.YEAR);
+
+        weekDays = getWeekDays(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         dateBt = findViewById(R.id.buttonDate);
 
-        dateBt.setText(date);
+        dateBt.setText("Week Start: "+dateText);
         setBarChartData(updateChart);
 
         //method for Date selection
@@ -132,7 +143,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
 
         if (!updateChart){return;}
 
-        // start time of acquisition in the specified day (start time of the first session)
+        // The start date is always a monday (same date as shown in the button above the graph)
         startDate = date;
 
         int[] avg_stress_levels = getAvgStressLevelsWeek(weekDays);
@@ -153,19 +164,21 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         String[] dayLabels = getDayLabels(weekDays);
 
         // creating a new bar data set.
-        barDataSet1 = new BarDataSet(getBarEntries(avg_stress_levels), "Stress Levels");
-        barDataSet1.setValueTextSize(14f);
-        barDataSet1.setColors(colorLabels);
+        barDataSet = new BarDataSet(getBarEntries(avg_stress_levels), "Stress Levels");
+        barDataSet.setValueTextSize(14f);
+        barDataSet.setColors(colorLabels);
 
         // below line hides the legend (stress level)
         barChart.getLegend().setEnabled(false);
 
         // below line is to add bar data set to our bar data.
-        BarData data = new BarData(barDataSet1);
+        BarData data = new BarData(barDataSet);
 
         // after adding data to our bar data we
         // are setting that data to our bar chart.
         barChart.setData(data);
+
+        // The following lines enable/disable chart features of interest and sets its layout
 
         // below line is to remove description
         // label of our bar chart.
@@ -243,7 +256,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
 
         barChart.setHighlightPerTapEnabled(true);
 
-        // Methods for interacting wit the chart - João
+        // Methods for interacting wit the chart - Redirects the user to the corresponding Daily Report upon clicking on a stress bar
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
            @Override
            public void onValueSelected(Entry e, Highlight h) {
@@ -263,15 +276,15 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
 
            @Override
            public void onNothingSelected() {
-               Log.d("BAR_CHART_SAMPLE", "nothing selected X is ");
+               Log.d("BAR_CHART_SAMPLE", "nothing selected; X is ");
 
            }
 
        });
-        // Methods for interacting wit the chart - João
+
     }
 
-    // array list for first set
+    // Array list for first set
     private ArrayList<BarEntry> getBarEntries(int[] avg_stress_levels) {
 
         // creating a new array list
@@ -287,6 +300,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         return barEntries;
     }
 
+    // Retrieves the average stress level for each day of the week of the chosen day
     private int[] getAvgStressLevelsWeek (String[] weekDays){
         int[] AvgStressLevelsWeek = new int[7];
 
@@ -301,6 +315,7 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         return AvgStressLevelsWeek;
     }
 
+    // Finds the dates of all of the days in the week of the chosen day
     private String[] getWeekDays(int year, int month, int dayOfMonth){
         String[] weekDays = new String[8];
 
@@ -329,11 +344,24 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
     private String[] getDayLabels(String[] weekDays){
         String[] weekDayNames = new String[]{"MON","TUE","WED","THU","FRI","SAT","SUN"};
         String[] weekDayLabels = new String[8];
+        String day;
+        String month;
 
         weekDayLabels[0] = weekDays[0];
         for (int i = 1; i <= 7; i++) {
             String[] aux_array = weekDays[i].split("/",0);
-            weekDayLabels[i] = weekDayNames[i-1] + " " + String.join("/",aux_array[0],aux_array[1]);
+            day = aux_array[0];
+            month = aux_array[1];
+
+            // Adding "0" in front of single digits
+            if (day.length()==1){
+                day = "0"+day;
+            }
+            if (month.length()==1){
+                month = "0"+month;
+            }
+
+            weekDayLabels[i] = weekDayNames[i-1] + " " + String.join("/",day,month);
         }
 
         return weekDayLabels;
@@ -370,7 +398,19 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         c.setFirstDayOfWeek(Calendar.MONDAY);
 
         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        String newDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR);
+
+        dayString = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
+        monthString = String.valueOf(c.get(Calendar.MONTH) + 1);
+
+        String newDate = dayString + "/" + monthString + "/" + c.get(Calendar.YEAR);
+        // Adding "0" in front of single digits
+        if (dayString.length()==1){
+            dayString = "0"+dayString;
+        }
+        if (monthString.length()==1){
+            monthString = "0"+monthString;
+        }
+        String newDateText = dayString + "/" + monthString + "/" + c.get(Calendar.YEAR);
 
         weekDays = getWeekDays(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         avg_stress_levels = getAvgStressLevelsWeek(weekDays);
@@ -381,12 +421,13 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
             if (!Objects.equals(date, newDate)){
                 updateChart = true;
                 date = newDate;
+                dateText = newDateText;
             } else {
                 updateChart = false;
                 Log.d(TAG, "onDateSet: date " + date);
-                dateBt.setText(date);
-                setBarChartData(updateChart);
             }
+            dateBt.setText("Week Start: "+dateText);
+            setBarChartData(updateChart);
 
         }
     }
@@ -428,8 +469,5 @@ public class BarChartActivityWeek extends AppCompatActivity implements DatePicke
         }
         return (super.onOptionsItemSelected(item));
     }
-
-    // Methods for interacting wit the chart - Zé
-    // Methods for interacting wit the chart - Zé
 
 }

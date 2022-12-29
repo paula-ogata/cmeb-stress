@@ -4,6 +4,7 @@ package org.caipivinhos.appproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,9 +34,11 @@ import androidx.fragment.app.DialogFragment;
 
 public class PieChartActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     TextView tvModerado, tvAlto, tvSevero;
+    SharedPreferences sharedpreferences;
     PieChart pieChart;
     EditText commentReport;
     String date;
+    Double mediumLevel;
     Button submitComment, dateBt, startStopAcquisition;
     Button btHappy, btTired, btSad, btIndifferent, btIrritable, btAnx;
     DatabaseManager db;
@@ -47,6 +50,8 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     boolean isIndifferent = false;
     boolean isAnx = false;
     boolean isIrritable = false;
+    boolean serviceRunning = false;
+    String simulatedData = "simulatedData";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +65,14 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             bar.setTitle("BeCalm");
         }
 
-        Date time = new Date();
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(time);
-        date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
-
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            date = getIntent().getStringExtra(GET_DATE);
+        } else {
+            Date time = new Date();
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.setTime(time);
+            date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
+        }
 
         // Link those objects with their respective
         // id's that we have given in .XML file
@@ -75,6 +83,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         pieChart = findViewById(R.id.piechart);
         commentReport = findViewById(R.id.commentReport);
         submitComment = findViewById(R.id.submitComment);
+        sharedpreferences = getSharedPreferences("App", MODE_PRIVATE);
 
 
         dateBt = findViewById(R.id.buttonDate);
@@ -91,12 +100,12 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         btIrritable = findViewById(R.id.bt_feel4);
         btAnx = findViewById(R.id.bt_feel6);
 
-        btHappy.setOnClickListener((View v)-> onBtHappyClick());
-        btTired.setOnClickListener((View v)-> onBtTiredClick());
-        btSad.setOnClickListener((View v)-> onBtSadClick());
-        btIndifferent.setOnClickListener((View v)-> onBtIndClick());
-        btIrritable.setOnClickListener((View v)-> onBtIrrClick());
-        btAnx.setOnClickListener((View v)-> onBtAnxClick());
+        btHappy.setOnClickListener((View v) -> onBtHappyClick());
+        btTired.setOnClickListener((View v) -> onBtTiredClick());
+        btSad.setOnClickListener((View v) -> onBtSadClick());
+        btIndifferent.setOnClickListener((View v) -> onBtIndClick());
+        btIrritable.setOnClickListener((View v) -> onBtIrrClick());
+        btAnx.setOnClickListener((View v) -> onBtAnxClick());
 
         submitComment.setOnClickListener(view -> {
             String comment = commentReport.getText().toString();
@@ -114,20 +123,22 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             datePicker.show(getSupportFragmentManager(), "date picker");
         });
 
-
+        mediumLevel = db.getMediumLevel();
         startStopAcquisition = findViewById(R.id.startStopAcquisition);
-        if (isLongSessionConnected() == false) {
-            Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
-        } else {
-            startStopAcquisition.setOnClickListener(view -> onBtStartStopClick());
-        }
 
+        startStopAcquisition.setOnClickListener(this::onBtStartStopClick);
 
     }
 
     private void setPieChartData() {
         // Set the percentage of language used
-        db.simulateData();
+        if (!sharedpreferences.getBoolean(simulatedData, false)) {
+            db.simulateData();
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(simulatedData, Boolean.TRUE);
+            editor.apply();
+        }
+
         int[] stressLevels = db.getStressLevelsPieChart(date);
 
         double sumValues = 0;
@@ -142,9 +153,9 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             }
         }
 
-        String ModeratePercentage = (percentages[0] + 1) +"%";
-        String HighPercentage = percentages[1] +"%";
-        String SeverePercentage = percentages[2] +"%";
+        String ModeratePercentage = (percentages[0] + 1) + "%";
+        String HighPercentage = percentages[1] + "%";
+        String SeverePercentage = percentages[2] + "%";
 
         tvModerado.setText(ModeratePercentage);
         tvAlto.setText(HighPercentage);
@@ -154,17 +165,17 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         pieChart.clearChart();
         pieChart.addPieSlice(
                 new PieModel(
-                        "Moderado",
+                        "Moderate",
                         Integer.parseInt(ModeratePercentage.split("%")[0]),
                         Color.parseColor("#29B6F6")));
         pieChart.addPieSlice(
                 new PieModel(
-                        "Alto",
+                        "High",
                         Integer.parseInt(HighPercentage.split("%")[0]),
                         Color.parseColor("#FFA726")));
         pieChart.addPieSlice(
                 new PieModel(
-                        "Severo",
+                        "Severe",
                         Integer.parseInt(SeverePercentage.split("%")[0]),
                         Color.parseColor("#EF5350")));
 
@@ -184,7 +195,12 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             String message = "You're already at Home Page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         } else if (item.getItemId() == R.id.chart) {
-            startActivity(new Intent(this, BarChartActivity.class));
+            Intent i = new Intent(this, BarChartActivity.class);
+            i.putExtra(GET_DATE, date);
+            startActivity(i);
+            return (true);
+        } else if (item.getItemId() == R.id.chartWeek) {
+            startActivity(new Intent(this, BarChartActivityWeek.class));
             return (true);
         } else if (item.getItemId() == R.id.chooseBt) {
             startActivity(new Intent(this, ChooseBTDevice.class));
@@ -293,40 +309,25 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         setPieChartData();
     }
 
-    public void onBtStartStopClick() {
-        startStopAcquisition = findViewById(R.id.startStopAcquisition);
-        Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+    public void onBtStartStopClick(View view) {
 
-        if (startStopAcquisition.getText().equals("Start Acquisition")) {
-            startStopAcquisition.setText("Stop Acquisition");
-            // Start Background Service
-            //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
-            startService(ServiceIntent);
+        if (!VitalJacketManager.checkIfConnected()) {
+            Toast.makeText(this, "Please Connect To VitalJacket First", Toast.LENGTH_LONG).show();
         } else {
-            startStopAcquisition.setText("Start Acquisition");
-            // Stop service
-            //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
-            stopService(ServiceIntent);
+            Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+            if (!serviceRunning) {
+                startStopAcquisition.setText("Stop Acquisition");
+                // Start Background Service
+                //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+                serviceRunning = true;
+                startService(ServiceIntent);
+            } else {
+                startStopAcquisition.setText("Start Acquisition");
+                // Stop service
+                //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
+                serviceRunning = false;
+                stopService(ServiceIntent);
+            }
         }
-    }
-
-
-
-    public boolean isLongSessionConnected() {
-
-        // Iniciar variaveis aqui (localmente) é conflituoso?
-        DatabaseManager db = null;
-        double mediumLevel;
-        db = new DatabaseManager(this);
-        mediumLevel = db.getMediumLevel();
-        Context context;
-        context = this;
-
-        if (VitalJacketManager.longSession(this, mediumLevel) == -1) {
-            return false;
-        } else {
-            return true;
-        }
-
     }
 }
