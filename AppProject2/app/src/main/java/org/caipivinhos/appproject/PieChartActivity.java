@@ -87,10 +87,8 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
 
         dateBt = findViewById(R.id.buttonDate);
-
         dateBt.setText(date);
-        getReportComment(date);
-        setPieChartData();
+
 
         // feelings buttons
         btHappy = findViewById(R.id.bt_feel1);
@@ -108,12 +106,26 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         btAnx.setOnClickListener((View v) -> onBtAnxClick());
 
         submitComment.setOnClickListener(view -> {
-            String comment = commentReport.getText().toString();
-            if (!comment.equals("")) {
-                db.AddComment(comment, date);
-                Toast.makeText(this, "Comment registered.", Toast.LENGTH_LONG).show();
+            if (!isHappy && !isAnx && !isIndifferent && !isIrritable && !isSad && !isTired) {
+                Toast.makeText(this, "Please select your mood first", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Please add a comment first", Toast.LENGTH_LONG).show();
+                int happy = isHappy? 1 : 0;
+                int anx = isAnx? 1 : 0;
+                int ind = isIndifferent? 1 : 0;
+                int irrit = isIrritable? 1 : 0;
+                int sad = isSad? 1 : 0;
+                int tired = isTired? 1 : 0;
+                String mood = happy + "_" + anx + "_" +
+                        ind + "_" + irrit + "_" +
+                        sad + "_" + tired;
+
+                String comment = commentReport.getText().toString();
+                if(comment.equals("")) {
+                    comment = "NULL";
+                }
+
+                db.AddComment(mood, comment, date);
+                Toast.makeText(this, "Comment registered.", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -128,6 +140,8 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
 
         startStopAcquisition.setOnClickListener(this::onBtStartStopClick);
 
+        getReportComment(date);
+        setPieChartData();
     }
 
     private void setPieChartData() {
@@ -291,7 +305,129 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     }
 
     public void getReportComment(String date) {
-        String comment = db.GetComment(date);
+        String[] state = db.GetComment(date);
+        String comment = null;
+        if(state!=null) {
+            if(state[0]!=null) {
+                String moodString = state[0];
+                String[] moods = moodString.split("_");
+
+                if(Integer.parseInt(moods[0]) == 1) {
+                    isHappy = true;
+                    btHappy.setBackgroundColor(Color.parseColor("#FFB6AF"));
+                    btHappy.setTextColor(Color.parseColor("#FFFFFF"));
+                } else {
+                    btHappy.setTextColor(Color.parseColor("#FFB6AF"));
+                    btHappy.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    isHappy = false;
+                }
+
+                if(Integer.parseInt(moods[1]) == 1) {
+                    isAnx = true;
+                    btAnx.setBackgroundColor(Color.parseColor("#FFB6AF"));
+                    btAnx.setTextColor(Color.parseColor("#FFFFFF"));
+                } else {
+                    btAnx.setTextColor(Color.parseColor("#FFB6AF"));
+                    btAnx.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    isAnx = false;
+                }
+
+                if(Integer.parseInt(moods[2]) == 1) {
+                    isIndifferent = true;
+                    btIndifferent.setBackgroundColor(Color.parseColor("#FFB6AF"));
+                    btIndifferent.setTextColor(Color.parseColor("#FFFFFF"));
+                } else {
+                    btIndifferent.setTextColor(Color.parseColor("#FFB6AF"));
+                    btIndifferent.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    isIndifferent = false;
+                }
+
+                if(Integer.parseInt(moods[3]) == 1) {
+                    isIrritable = true;
+                    btIrritable.setBackgroundColor(Color.parseColor("#FFB6AF"));
+                    btIrritable.setTextColor(Color.parseColor("#FFFFFF"));
+                } else {
+                    btIrritable.setTextColor(Color.parseColor("#FFB6AF"));
+                    btIrritable.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    isIrritable = false;
+                }
+
+                if(Integer.parseInt(moods[4]) == 1) {
+                    isSad = true;
+                    btSad.setBackgroundColor(Color.parseColor("#FFB6AF"));
+                    btSad.setTextColor(Color.parseColor("#FFFFFF"));
+                } else {
+                    btSad.setTextColor(Color.parseColor("#FFB6AF"));
+                    btSad.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    isSad = false;
+                }
+
+                if(Integer.parseInt(moods[5]) == 1) {
+                    isTired = true;
+                    btTired.setBackgroundColor(Color.parseColor("#FFB6AF"));
+                    btTired.setTextColor(Color.parseColor("#FFFFFF"));
+                } else {
+                    btTired.setTextColor(Color.parseColor("#FFB6AF"));
+                    btTired.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    isTired = false;
+                }
+            } else {
+                btHappy.setTextColor(Color.parseColor("#FFB6AF"));
+                btHappy.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                isHappy = false;
+
+                btAnx.setTextColor(Color.parseColor("#FFB6AF"));
+                btAnx.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                isAnx = false;
+
+                btIndifferent.setTextColor(Color.parseColor("#FFB6AF"));
+                btIndifferent.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                isIndifferent = false;
+
+                btIrritable.setTextColor(Color.parseColor("#FFB6AF"));
+                btIrritable.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                isIrritable = false;
+
+                btSad.setTextColor(Color.parseColor("#FFB6AF"));
+                btSad.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                isSad = false;
+
+                btTired.setTextColor(Color.parseColor("#FFB6AF"));
+                btTired.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                isTired = false;
+            }
+
+            if(state[1] != null) {
+                if(!state[1].equals("NULL")) {
+                    comment = state[1];
+                }
+            }
+        } else {
+            btHappy.setTextColor(Color.parseColor("#FFB6AF"));
+            btHappy.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isHappy = false;
+
+            btAnx.setTextColor(Color.parseColor("#FFB6AF"));
+            btAnx.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isAnx = false;
+
+            btIndifferent.setTextColor(Color.parseColor("#FFB6AF"));
+            btIndifferent.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isIndifferent = false;
+
+            btIrritable.setTextColor(Color.parseColor("#FFB6AF"));
+            btIrritable.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isIrritable = false;
+
+            btSad.setTextColor(Color.parseColor("#FFB6AF"));
+            btSad.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isSad = false;
+
+            btTired.setTextColor(Color.parseColor("#FFB6AF"));
+            btTired.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isTired = false;
+        }
+
         commentReport.setText(comment);
     }
 

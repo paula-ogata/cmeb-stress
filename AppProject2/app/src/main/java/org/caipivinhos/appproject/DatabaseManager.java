@@ -146,20 +146,22 @@ public class DatabaseManager {
         return user;
     }
 
-    public void AddComment(String comment, String date) {
-        String UPDATE_QUERY = String.format("UPDATE %s SET comment='%s' WHERE idUser = %s AND date = '%s'" ,
+    public void AddComment(String mood, String comment, String date) {
+        String UPDATE_QUERY = String.format("UPDATE %s SET comment='%s', mood='%s' WHERE idUser = %s AND date = '%s'" ,
                 TABLE_REPORT,
                 comment,
+                mood,
                 MainActivity.userId,
                 date);
 
         db.execSQL(UPDATE_QUERY);
     }
 
-    public String GetComment(String date) {
-        String comment;
-        String SELECT_QUERY = String.format("SELECT %s FROM %s WHERE %s = '%s'",
+    public String[] GetComment(String date) {
+        String comment, mood;
+        String SELECT_QUERY = String.format("SELECT %s, %s FROM %s WHERE %s = '%s'",
                 "comment",
+                "mood",
                 TABLE_REPORT,
                 "date",
                 date);
@@ -171,9 +173,13 @@ public class DatabaseManager {
 
         cursor.moveToNext();
         comment = cursor.getString(cursor.getColumnIndexOrThrow("comment"));
+        mood = cursor.getString(cursor.getColumnIndexOrThrow("mood"));
 
         cursor.close();
-        return comment;
+        String[] result;
+        result = new String[]{mood, comment};
+
+        return result;
     }
 
     private void UpdateSessionCount(int idReport) {
