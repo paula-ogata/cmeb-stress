@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -204,9 +203,9 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="25dp"
                     android:layout_marginLeft="25dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="25dp"
                     android:layout_marginBottom="10dp">
 
                     <TextView
@@ -237,9 +236,9 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/color_two"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp" />
+                    android:layout_marginRight="20dp"
+                    android:background="@color/color_two" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -283,9 +282,9 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="25dp"
                     android:layout_marginLeft="25dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="25dp"
                     android:layout_marginBottom="10dp">
 
                     <TextView
@@ -293,7 +292,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="Severo"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp" />
 
                     <!--Text view to display the percentage -->
                     <!-- of programming language used. -->
@@ -320,7 +319,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/measure"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="match_parent"
             android:layout_below="@+id/details"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
@@ -334,12 +333,119 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/feel_today"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_feel1"
+                            style="@style/MaterialButtonStyle"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:insetBottom="0dp"
+                            android:text="Happy"
+                            android:textSize="11sp"
+                            app:cornerRadius="20dp"
+                            app:strokeColor="#FFB6AF"
+                            app:strokeWidth="2dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_feel3"
+                            style="@style/MaterialButtonStyle"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:insetBottom="0dp"
+                            android:text="Tired"
+                            android:textSize="11sp"
+                            app:cornerRadius="20dp"
+                            app:strokeColor="#FFB6AF"
+                            app:strokeWidth="2dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_feel2"
+                            style="@style/MaterialButtonStyle"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:insetBottom="0dp"
+                            android:text="Sad"
+                            android:textSize="11sp"
+                            app:cornerRadius="20dp"
+                            app:strokeColor="#FFB6AF"
+                            app:strokeWidth="2dp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_feel5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:insetBottom="0dp"
+                            android:padding="0dp"
+                            android:text="Indifferent"
+                            android:textColor="#FFB6AF"
+                            android:textSize="11sp"
+                            app:backgroundTint="@color/white"
+                            app:cornerRadius="20dp"
+                            app:strokeColor="#FFB6AF"
+                            app:strokeWidth="2dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_feel6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:insetBottom="0dp"
+                            android:text="Anxious"
+                            android:textColor="#FFB6AF"
+                            android:textSize="11sp"
+                            app:backgroundTint="@color/white"
+                            app:cornerRadius="20dp"
+                            app:strokeColor="#FFB6AF"
+                            app:strokeWidth="2dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_feel4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:insetBottom="0dp"
+                            android:text="Irritable"
+                            android:textColor="#FFB6AF"
+                            android:textSize="11sp"
+                            app:backgroundTint="@color/white"
+                            app:cornerRadius="20dp"
+                            app:strokeColor="#FFB6AF"
+                            app:strokeWidth="2dp"/>
+                    </TableRow>
+
+                </TableLayout>
+
                 <EditText
                     android:id="@+id/commentReport"
                     android:layout_width="match_parent"
-                    android:layout_height="300px"
-                    android:hint="Add Comment..."
-                    android:gravity="top"/>
+                    android:layout_height="80dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="top"
+                    android:hint="Add Comment..." />
 
                 <Button
                     android:id="@+id/submitComment"

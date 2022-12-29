@@ -37,9 +37,16 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
     EditText commentReport;
     String date;
     Button submitComment, dateBt, startStopAcquisition;
+    Button btHappy, btTired, btSad, btIndifferent, btIrritable, btAnx;
     DatabaseManager db;
     private static final String TAG = "PieChartActivity";
     String GET_DATE = "Date_Intent_Info";
+    boolean isHappy = false;
+    boolean isTired = false;
+    boolean isSad = false;
+    boolean isIndifferent = false;
+    boolean isAnx = false;
+    boolean isIrritable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +76,27 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         commentReport = findViewById(R.id.commentReport);
         submitComment = findViewById(R.id.submitComment);
 
+
         dateBt = findViewById(R.id.buttonDate);
 
         dateBt.setText(date);
         getReportComment(date);
         setPieChartData();
 
+        // feelings buttons
+        btHappy = findViewById(R.id.bt_feel1);
+        btTired = findViewById(R.id.bt_feel2);
+        btSad = findViewById(R.id.bt_feel3);
+        btIndifferent = findViewById(R.id.bt_feel5);
+        btIrritable = findViewById(R.id.bt_feel4);
+        btAnx = findViewById(R.id.bt_feel6);
+
+        btHappy.setOnClickListener((View v)-> onBtHappyClick());
+        btTired.setOnClickListener((View v)-> onBtTiredClick());
+        btSad.setOnClickListener((View v)-> onBtSadClick());
+        btIndifferent.setOnClickListener((View v)-> onBtIndClick());
+        btIrritable.setOnClickListener((View v)-> onBtIrrClick());
+        btAnx.setOnClickListener((View v)-> onBtAnxClick());
 
         submitComment.setOnClickListener(view -> {
             String comment = commentReport.getText().toString();
@@ -180,10 +202,83 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
         return (super.onOptionsItemSelected(item));
     }
 
+    public void onBtHappyClick() {
+        if (isHappy) {
+            btHappy.setTextColor(Color.parseColor("#FFB6AF"));
+            btHappy.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isHappy = false;
+        } else {
+            btHappy.setBackgroundColor(Color.parseColor("#FFB6AF"));
+            btHappy.setTextColor(Color.parseColor("#FFFFFF"));
+            isHappy = true;
+        }
+    }
+
+    public void onBtTiredClick() {
+        if (isTired) {
+            btTired.setTextColor(Color.parseColor("#FFB6AF"));
+            btTired.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isTired = false;
+        } else {
+            btTired.setBackgroundColor(Color.parseColor("#FFB6AF"));
+            btTired.setTextColor(Color.parseColor("#FFFFFF"));
+            isTired = true;
+        }
+    }
+
+    public void onBtSadClick() {
+        if (isSad) {
+            btSad.setTextColor(Color.parseColor("#FFB6AF"));
+            btSad.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isSad = false;
+        } else {
+            btSad.setBackgroundColor(Color.parseColor("#FFB6AF"));
+            btSad.setTextColor(Color.parseColor("#FFFFFF"));
+            isSad = true;
+        }
+    }
+
+    public void onBtIndClick() {
+        if (isIndifferent) {
+            btIndifferent.setTextColor(Color.parseColor("#FFB6AF"));
+            btIndifferent.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isIndifferent = false;
+        } else {
+            btIndifferent.setBackgroundColor(Color.parseColor("#FFB6AF"));
+            btIndifferent.setTextColor(Color.parseColor("#FFFFFF"));
+            isIndifferent = true;
+        }
+    }
+
+    public void onBtAnxClick() {
+        if (isAnx) {
+            btAnx.setTextColor(Color.parseColor("#FFB6AF"));
+            btAnx.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isAnx = false;
+        } else {
+            btAnx.setBackgroundColor(Color.parseColor("#FFB6AF"));
+            btAnx.setTextColor(Color.parseColor("#FFFFFF"));
+            isAnx = true;
+        }
+    }
+
+    public void onBtIrrClick() {
+        if (isIrritable) {
+            btIrritable.setTextColor(Color.parseColor("#FFB6AF"));
+            btIrritable.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            isIrritable = false;
+        } else {
+            btIrritable.setBackgroundColor(Color.parseColor("#FFB6AF"));
+            btIrritable.setTextColor(Color.parseColor("#FFFFFF"));
+            isIrritable = true;
+        }
+    }
+
     public void getReportComment(String date) {
         String comment = db.GetComment(date);
         commentReport.setText(comment);
     }
+
 
     //method for Date pick
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -214,6 +309,7 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             stopService(ServiceIntent);
         }
     }
+
 
 
     public boolean isLongSessionConnected() {

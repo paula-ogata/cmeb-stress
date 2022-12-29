@@ -34,4 +34,5 @@
     <string name="about_p2">This app, together with VitalJacket, will help you recognize the patterns and habits in your daily life that induce stress, so you can manage them better in future situations, avoiding more stress.</string>
     <string name="about_p3">We are a team of four young students from the Faculty of Engineering of the University of Porto and we create this app under the Mobile Computing in Biomedical Engineering class.</string>
     <string name="about_p4">Furthermore, we would like to thank João Paulo Cunha and António Miguel Monteiro for teaching and advising us; and Biodevices S.A. for providing VitalJacket, a heart monitor medical device built into a t-shirt.</string>
+    <string name="feel_today">How do you feel today?</string>
 </resources>
