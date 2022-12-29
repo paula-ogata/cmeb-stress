@@ -27,11 +27,11 @@
     <string name="hiw_end_msg1">Doing this on a constant bases will help you to better understand your thoughts and emotions throughout the day</string>
     <string name="hiw_end_msg2">With that, you will be able to control your stress when subjected to different everyday scenarios</string>
     <string name="hiw_end_msg3">You can also do a quick measure of your stress levels whenever you feel like it in the "Instant Measurement" page</string>
-    <string name="hiw_end_msg4">The comments that you leave everyday will be stored in the "Log Book" page as well as the stress levels of that day, so that you can review them whenever you want</string>
+    <string name="hiw_end_msg4">The comments that you leave everyday will be stored, so that you can review them whenever you want in the Homepage</string>
     <string name="hiw_end_msg5">Welcome to Your better Future :)</string>
     <string name="about_title">About the App</string>
     <string name="about_p1">You are already tired of hearing tons of tips to relieve stress and nothing really working out, right? Be calm that BeCalm is here to finally solve your problem ;)</string>
     <string name="about_p2">This app, together with VitalJacket, will help you recognize the patterns and habits in your daily life that induce stress, so you can manage them better in future situations, avoiding more stress.</string>
-    <string name="about_p3">We are a team of four young students from the Faculty of Engineering of the University of Porto and we create this app under the Mobile Computing in Biomedical Engineering class.</string>
-    <string name="about_p4">Furthermore, we would like to thank João Paulo Cunha and António Miguel Monteiro for teaching and advising us; and Biodevices S.A. for providing VitalJacket, a heart monitor medical device built into a t-shirt.</string>
+    <string name="about_p3">We are a team of four young students from the Faculty of Engineering of the University of Porto challenged to create this app under the Mobile Computing in Biomedical Engineering class.</string>
+    <string name="about_p4">We would like to thank João Paulo Cunha and António Miguel Monteiro for teaching and advising us; and Biodevices S.A. for providing the VitalJacket, a heart monitor medical device built into a t-shirt used in our tests.</string>
 </resources>
