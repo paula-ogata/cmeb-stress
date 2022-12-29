@@ -173,8 +173,10 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             String message = "You're already at Home Page";
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         } else if (item.getItemId() == R.id.chart) {
-            startActivity(new Intent(this, BarChartActivity.class));
-            return (true);
+            Intent i = new Intent(this, BarChartActivity.class);
+            i.putExtra(GET_DATE, date);
+            startActivity(i);
+            return(true);
         } else if (item.getItemId()==R.id.chartWeek) {
             startActivity(new Intent(this, BarChartActivityWeek.class));
             return(true);
