@@ -26,12 +26,9 @@ public class MyBackgroundService extends Service {
         context = this;
 
 
-        try {
-            Toast.makeText(this, "LongSession Running", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "LongAcquisition: Error");
-        }
+
+        Toast.makeText(this, "LongSession Running", Toast.LENGTH_LONG).show();
+
 
         // Thread that gives the terminal a message, every 2 seconds (just to see if its working in background)
         th = new Thread(
