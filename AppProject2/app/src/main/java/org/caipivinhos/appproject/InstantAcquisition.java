@@ -106,13 +106,26 @@ public class InstantAcquisition extends AppCompatActivity {
         @Override
         public void run() {
             double valueR = 0;
+            double finalValueR;
             try {
                 Log.d(TAG, "run: Connected to VJ");
                 valueR = VitalJacketManager.instantSession(context, mediumLevel);
             } catch (Exception e) {
                 Log.d(TAG, "Runnable: Caught Error " + e.getMessage());
             }
-            double finalValueR = valueR;
+
+            if(valueR == -1) {
+                finalValueR = valueR;
+            } else if(valueR>100) {
+                finalValueR = 100;
+                Toast.makeText(context, "Inconclusive result, please measure again", Toast.LENGTH_LONG).show();
+            } else if(valueR<0) {
+                finalValueR = 0;
+                Toast.makeText(context, "Inconclusive result, please measure again", Toast.LENGTH_LONG).show();
+            } else {
+                finalValueR = valueR;
+            }
+
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {

@@ -90,6 +90,7 @@ public class VitalJacketManager {
         }
         catch (Exception e) {
             Log.d(TAG, "instantSession: Error Stopping " + e.getMessage());
+            return -1;
         }
 
         instantValue = HRVMethods.getStressPercentage(rrValues, mediumLevel);
