@@ -453,14 +453,10 @@ public class PieChartActivity extends AppCompatActivity implements DatePickerDia
             Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
             if (!serviceRunning) {
                 startStopAcquisition.setText("Stop Acquisition");
-                // Start Background Service
-                //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
                 serviceRunning = true;
                 startService(ServiceIntent);
             } else {
                 startStopAcquisition.setText("Start Acquisition");
-                // Stop service
-                //Intent ServiceIntent = new Intent(this, MyBackgroundService.class);
                 serviceRunning = false;
                 stopService(ServiceIntent);
             }

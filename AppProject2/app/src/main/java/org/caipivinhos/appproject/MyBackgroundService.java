@@ -1,12 +1,8 @@
 package org.caipivinhos.appproject;
 
-import static android.content.ContentValues.TAG;
-
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,26 +14,19 @@ public class MyBackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        DatabaseManager db = null;
-        double mediumLevel;
-        db = new DatabaseManager(this);
-        mediumLevel = db.getMediumLevel();
-        Context context;
-        context = this;
+        DatabaseManager db = new DatabaseManager(this);
+        double mediumLevel = db.getMediumLevel();
 
-
-
-        Toast.makeText(this, "LongSession Running", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Background Acquisition Started", Toast.LENGTH_LONG).show();
 
 
         // Thread that gives the terminal a message, every 2 seconds (just to see if its working in background)
         th = new Thread(
                 () -> {
                     while (acquisition) {
-                        VitalJacketManager.longSession(context, mediumLevel);
+                        VitalJacketManager.longSession(this, mediumLevel);
                     }
                 }
-
         );
         th.start();
 
@@ -49,15 +38,11 @@ public class MyBackgroundService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        // Stop LongSession comand
+        // Stop LongSession command
         acquisition = false;
         th.interrupt();
 
-        Toast.makeText(this, "Invoke background service onDestroy method.", Toast.LENGTH_LONG).show();
-    }
-
-    public void stopLongAcquisition(){
-        th.interrupt();
+        Toast.makeText(this, "Background Acquisition Stopped", Toast.LENGTH_LONG).show();
     }
 
     @Nullable
